@@ -1,5 +1,5 @@
 {
   "extends": "@repo/typescript-config/react-app.json",
-  "include": ["."],
+  "include": [".", "../../packages/web-ui/stories/button.stories.tsx"],
   "exclude": ["dist", "build", "node_modules"]
 }

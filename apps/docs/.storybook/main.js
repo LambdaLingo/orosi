@@ -5,7 +5,10 @@ function getAbsolutePath(value) {
 }
 
 const config = {
-  stories: ["../stories/*.stories.tsx", "../stories/**/*.stories.tsx"],
+  stories: [
+    "../../../packages/web-ui/stories/*.stories.tsx",
+    "../../../packages/web-ui/stories/**/*.stories.tsx",
+  ],
   addons: [
     getAbsolutePath("@storybook/addon-links"),
     getAbsolutePath("@storybook/addon-essentials"),
@@ -26,8 +29,8 @@ const config = {
       resolve: {
         alias: [
           {
-            find: "ui",
-            replacement: resolve(__dirname, "../../../packages/ui/"),
+            find: "web-ui",
+            replacement: resolve(__dirname, "../../../packages/web-ui/"),
           },
         ],
       },
