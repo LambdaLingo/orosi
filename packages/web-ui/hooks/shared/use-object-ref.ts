@@ -15,7 +15,7 @@ export function useObjectRef<T>(
     | ((instance: T | null) => void)
     | MutableRefObject<T | null>
     | null
-): MutableRefObject<T> {
+): MutableRefObject<T | undefined> {
   const objRef = useRef<T>();
   return useMemo(
     () => ({
@@ -25,9 +25,9 @@ export function useObjectRef<T>(
       set current(value) {
         objRef.current = value;
         if (typeof forwardedRef === "function") {
-          forwardedRef(value);
+          forwardedRef(value !== undefined ? value : null);
         } else if (forwardedRef) {
-          forwardedRef.current = value;
+          forwardedRef.current = value !== undefined ? value : null;
         }
       },
     }),
