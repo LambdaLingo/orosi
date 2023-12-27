@@ -1,11 +1,20 @@
-import type { ForwardedRef, RefObject, Context } from "react";
+import {
+  type ForwardedRef,
+  type RefObject,
+  type Context,
+  useMemo,
+} from "react";
+import type { SlotProps, ContextValue } from "../../types/shared/context";
+import { useSlottedContext } from "./use-slotted-context";
+
+export const slotCallbackSymbol = Symbol("callback");
 
 export function useContextProps<T, U extends SlotProps, E extends Element>(
   props: T & SlotProps,
   ref: ForwardedRef<E>,
   context: Context<ContextValue<U, E>>
 ): [T, RefObject<E>] {
-  let ctx = useSlottedContext(context, props.slot) || {};
+  const ctx = useSlottedContext(context, props.slot) || {};
   // @ts-ignore - TS says "Type 'unique symbol' cannot be used as an index type." but not sure why.
   let {
     ref: contextRef,

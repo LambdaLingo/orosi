@@ -4,3 +4,5 @@ declare function forwardRef<T, P = {}>(
 ): (props: P & React.RefAttributes<T>) => React.ReactElement | null;
 
 export type ForwardRefType = typeof forwardRef;
+
+export type WithRef<T, E> = T & { ref?: ForwardedRef<E> };
