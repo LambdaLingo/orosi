@@ -1,97 +1,17 @@
-import {
-  AriaButtonProps,
-  HoverEvents,
-  mergeProps,
-  useButton,
-  useFocusRing,
-  useHover,
-} from "react-aria";
-import {
-  ContextValue,
-  createHideableComponent,
-  RenderProps,
-  SlotProps,
-  useContextProps,
-  useRenderProps,
-} from "./utils";
-import { filterDOMProps } from "../utilities/filter-dom-props";
-import { createContext } from "react";
-import type { ForwardedRef } from "react";
+import React, { type ForwardedRef, createContext } from "react";
+import type { ComponentProp } from "../types/shared/component.d.ts";
+import type { ContextValue } from "../types/shared/context.js";
+import { useContextProps } from "../hooks/shared/use-context-prop.js";
+import { filterDOMProps } from "../utilities/filter-dom-props.js";
 
-export interface ButtonRenderProps {
-  /**
-   * Whether the button is currently hovered with a mouse.
-   * @selector [data-hovered]
-   */
-  isHovered: boolean;
-  /**
-   * Whether the button is currently in a pressed state.
-   * @selector [data-pressed]
-   */
-  isPressed: boolean;
-  /**
-   * Whether the button is focused, either via a mouse or keyboard.
-   * @selector [data-focused]
-   */
-  isFocused: boolean;
-  /**
-   * Whether the button is keyboard focused.
-   * @selector [data-focus-visible]
-   */
-  isFocusVisible: boolean;
-  /**
-   * Whether the button is disabled.
-   * @selector [data-disabled]
-   */
-  isDisabled: boolean;
-}
+/**
+ * This is the updated component props using ComponentPropWithRef
+ */
+type ButtonProps = ComponentProp<"button", { color?: "white" | "black" }>;
 
-export interface ButtonProps
-  extends Omit<
-      AriaButtonProps,
-      "children" | "href" | "target" | "rel" | "elementType"
-    >,
-    HoverEvents,
-    SlotProps,
-    RenderProps<ButtonRenderProps> {
-  /**
-   * The <form> element to associate the button with.
-   * The value of this attribute must be the id of a <form> in the same document.
-   */
-  form?: string;
-  /**
-   * The URL that processes the information submitted by the button.
-   * Overrides the action attribute of the button's form owner.
-   */
-  formAction?: string;
-  /** Indicates how to encode the form data that is submitted. */
-  formEncType?: string;
-  /** Indicates the HTTP method used to submit the form. */
-  formMethod?: string;
-  /** Indicates that the form is not to be validated when it is submitted. */
-  formNoValidate?: boolean;
-  /** Overrides the target attribute of the button's form owner. */
-  formTarget?: string;
-  /** Submitted as a pair with the button's value as part of the form data. */
-  name?: string;
-  /** The value associated with the button's name when it's submitted with the form data. */
-  value?: string;
-}
-
-interface ButtonContextValue extends ButtonProps {
+type ButtonContextValue = ButtonProps & {
   isPressed?: boolean;
-}
-
-const additionalButtonHTMLAttributes = new Set([
-  "form",
-  "formAction",
-  "formEncType",
-  "formMethod",
-  "formNoValidate",
-  "formTarget",
-  "name",
-  "value",
-]);
+};
 
 export const ButtonContext = createContext<
   ContextValue<ButtonContextValue, HTMLButtonElement>
@@ -99,11 +19,11 @@ export const ButtonContext = createContext<
 
 function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
   [props, ref] = useContextProps(props, ref, ButtonContext);
-  let ctx = props as ButtonContextValue;
-  let { buttonProps, isPressed } = useButton(props, ref);
-  let { focusProps, isFocused, isFocusVisible } = useFocusRing(props);
-  let { hoverProps, isHovered } = useHover(props);
-  let renderProps = useRenderProps({
+  const ctx = props as ButtonContextValue;
+  const { buttonProps, isPressed } = useButton(props, ref);
+  const { focusProps, isFocused, isFocusVisible } = useFocusRing(props);
+  const { hoverProps, isHovered } = useHover(props);
+  const renderProps = useRenderProps({
     ...props,
     values: {
       isHovered,
