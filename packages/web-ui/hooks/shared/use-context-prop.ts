@@ -3,9 +3,13 @@ import {
   type RefObject,
   type Context,
   useMemo,
+  useEffect,
 } from "react";
 import type { SlotProps, ContextValue } from "../../types/shared/context";
+import { mergeProps } from "../../utilities/merge-props";
 import { useSlottedContext } from "./use-slotted-context";
+import { useObjectRef } from "./use-object-ref";
+import { mergeRefs } from "../../utilities/merge-refs";
 
 export const slotCallbackSymbol = Symbol("callback");
 
@@ -15,16 +19,17 @@ export function useContextProps<T, U extends SlotProps, E extends Element>(
   context: Context<ContextValue<U, E>>
 ): [T, RefObject<E>] {
   const ctx = useSlottedContext(context, props.slot) || {};
-  // @ts-ignore - TS says "Type 'unique symbol' cannot be used as an index type." but not sure why.
-  let {
+  const {
     ref: contextRef,
+    // @ts-ignore - TS says "Type 'unique symbol' cannot be used as an index type." but not sure why.
     [slotCallbackSymbol]: callback,
     ...contextProps
   } = ctx;
-  let mergedRef = useObjectRef(
+
+  const mergedRef = useObjectRef(
     useMemo(() => mergeRefs(ref, contextRef), [ref, contextRef])
   );
-  let mergedProps = mergeProps(contextProps, props) as unknown as T;
+  const mergedProps = mergeProps(contextProps, props) as unknown as T;
 
   // mergeProps does not merge `style`. Adding this there might be a breaking change.
   if (

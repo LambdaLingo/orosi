@@ -14,7 +14,7 @@ export function useSlottedContext<T>(
     return null;
   }
   if (ctx && typeof ctx === "object" && "slots" in ctx && ctx.slots) {
-    const availableSlots: string = new Intl.ListFormat().format(
+    const availableSlots = new Intl.ListFormat().format(
       Object.keys(ctx.slots).map((p) => `"${p}"`)
     );
 
@@ -31,5 +31,6 @@ export function useSlottedContext<T>(
     }
     return ctx.slots[slotKey];
   }
-  return ctx as T;
+  // @ts-ignore
+  return ctx;
 }
