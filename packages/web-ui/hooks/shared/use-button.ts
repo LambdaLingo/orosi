@@ -1,4 +1,4 @@
-import {
+import type {
   AnchorHTMLAttributes,
   ButtonHTMLAttributes,
   ElementType,
@@ -57,7 +57,7 @@ export function useButton(
   props: AriaButtonOptions<ElementType>,
   ref: RefObject<any>
 ): ButtonAria<HTMLAttributes<any>> {
-  let {
+  const {
     elementType = "button",
     isDisabled,
     onPress,
@@ -65,11 +65,8 @@ export function useButton(
     onPressEnd,
     onPressUp,
     onPressChange,
-    // @ts-ignore - undocumented
     preventFocusOnPress,
-    // @ts-ignore - undocumented
     allowFocusWhenDisabled,
-    // @ts-ignore
     onClick: deprecatedOnClick,
     href,
     target,
@@ -96,7 +93,7 @@ export function useButton(
     };
   }
 
-  let { pressProps, isPressed } = usePress({
+  const { pressProps, isPressed } = usePress({
     onPressStart,
     onPressEnd,
     onPressChange,
@@ -107,11 +104,11 @@ export function useButton(
     ref,
   });
 
-  let { focusableProps } = useFocusable(props, ref);
+  const { focusableProps } = useFocusable(props, ref);
   if (allowFocusWhenDisabled) {
     focusableProps.tabIndex = isDisabled ? -1 : focusableProps.tabIndex;
   }
-  let buttonProps = mergeProps(
+  const buttonProps = mergeProps(
     focusableProps,
     pressProps,
     filterDOMProps(props, { labelable: true })

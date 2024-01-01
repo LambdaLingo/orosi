@@ -1,4 +1,4 @@
-import { DOMAttributes } from "@react-types/shared";
+import type { DOMAttributes } from "@react-types/shared";
 import {
   isFocusVisible,
   useFocus,
