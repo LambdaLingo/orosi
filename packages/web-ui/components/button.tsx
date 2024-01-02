@@ -13,6 +13,17 @@ import type {
   ButtonProps,
 } from "../types/button/button.js";
 
+const additionalButtonHTMLAttributes = new Set([
+  "form",
+  "formAction",
+  "formEncType",
+  "formMethod",
+  "formNoValidate",
+  "formTarget",
+  "name",
+  "value",
+]);
+
 export const ButtonContext = createContext<
   ContextValue<ButtonContextValue, HTMLButtonElement>
 >({});
@@ -29,7 +40,7 @@ function Button(
   const { buttonProps, isPressed } = useButton(props, ref);
   const { focusProps, isFocused, isFocusVisible } = useFocusRing(props);
   const { hoverProps, isHovered } = useHover(props);
-  const renderProps = useRenderChildren({
+  const renderChildren = useRenderChildren({
     ...props,
     values: {
       isHovered,
@@ -45,7 +56,7 @@ function Button(
     <button
       {...filterDOMProps(props, { propNames: additionalButtonHTMLAttributes })}
       {...mergeProps(buttonProps, focusProps, hoverProps)}
-      {...renderProps}
+      {...renderChildren}
       ref={ref}
       slot={props.slot || undefined}
       data-disabled={props.isDisabled || undefined}
