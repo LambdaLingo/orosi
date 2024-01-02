@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { WithRef } from "./ref";
 
 /**
@@ -16,8 +17,7 @@ export type AsProp<E extends React.ElementType> = {
 export type ComponentProp<
   E extends React.ElementType,
   P extends Record<string, unknown> = Record<string, never>,
-> = React.PropsWithChildren<P> &
-  Omit<React.ComponentPropsWithoutRef<E>, keyof P>;
+> = P & Omit<React.ComponentPropsWithoutRef<E>, keyof P>;
 
 /**
  * Represents a type for a component prop with a ref.
@@ -29,7 +29,33 @@ export type PolymorphicComponentProp<
   E extends React.ElementType,
   P extends Record<string, unknown> = Record<string, never>,
 > = WithRef<
-  React.PropsWithChildren<AsProp<E> & P> &
+  AsProp<E> &
+    P &
     Omit<React.ComponentPropsWithoutRef<E>, keyof (AsProp<E> & P)>,
   E
 >;
+
+export type RenderChildren<T> = {
+  /** The children of the component. A function may be provided to alter the children based on component state. */
+  children?: ReactNode | ((values: T) => ReactNode);
+};
+
+export type RenderChildrenHookOptions<T> = RenderChildren<T> &
+  SharedDOMProps &
+  AriaLabelingProps & {
+    values: T;
+    defaultChildren?: ReactNode;
+  };
+
+/**
+ * A helper function that accepts a user-provided render prop value (either a static value or a function),
+ * and combines it with another value to create a final result.
+ */
+export function composeRenderProps<T, U, V extends T>(
+  // https://stackoverflow.com/questions/60898079/typescript-type-t-or-function-t-usage
+  value: T extends any ? T | ((renderProps: U) => V) : never,
+  wrap: (prevValue: T, renderProps: U) => V
+): (renderProps: U) => V {
+  return (renderProps) =>
+    wrap(typeof value === "function" ? value(renderProps) : value, renderProps);
+}

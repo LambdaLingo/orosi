@@ -1,5 +1,4 @@
-import React, { type ForwardedRef, createContext } from "react";
-import type { ComponentProp } from "../types/shared/component.d.ts";
+import { type ForwardedRef, createContext, type ReactElement } from "react";
 import type { ContextValue } from "../types/shared/context.js";
 import { useContextProps } from "../hooks/shared/use-context-prop.js";
 import { filterDOMProps } from "../utilities/filter-dom-props.js";
@@ -7,29 +6,30 @@ import { mergeProps } from "../utilities/merge-props.js";
 import { useButton } from "../hooks/shared/use-button.js";
 import { useFocusRing } from "../hooks/shared/use-focus-ring.js";
 import { useHover } from "../hooks/shared/use-hover.js";
-import { useRenderProps } from "../hooks/shared/use-render-props.js";
 import { createHideableComponent } from "../utilities/create-hideable-component.js";
-
-/**
- * This is the updated component props using ComponentPropWithRef
- */
-type ButtonProps = ComponentProp<"button", { color?: "white" | "black" }>;
-
-type ButtonContextValue = ButtonProps & {
-  isPressed?: boolean;
-};
+import { useRenderChildren } from "../hooks/shared/use-render-children.js";
+import type {
+  ButtonContextValue,
+  ButtonProps,
+} from "../types/button/button.js";
 
 export const ButtonContext = createContext<
   ContextValue<ButtonContextValue, HTMLButtonElement>
 >({});
 
-function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
+function Button(
+  props: ButtonProps,
+  ref: ForwardedRef<HTMLButtonElement>
+): ReactElement {
+  /**
+   * Merge the local props and ref with the ones provided via context.
+   */
   [props, ref] = useContextProps(props, ref, ButtonContext);
   const ctx = props as ButtonContextValue;
   const { buttonProps, isPressed } = useButton(props, ref);
   const { focusProps, isFocused, isFocusVisible } = useFocusRing(props);
   const { hoverProps, isHovered } = useHover(props);
-  const renderProps = useRenderProps({
+  const renderProps = useRenderChildren({
     ...props,
     values: {
       isHovered,

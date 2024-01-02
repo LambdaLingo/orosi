@@ -1,5 +1,4 @@
-import type { Context } from "react";
-import { useContext } from "react";
+import { type Context, useContext } from "react";
 import type { SlottedContextValue } from "../../types/shared/context";
 
 export const defaultSlot = Symbol("default");

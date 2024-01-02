@@ -100,13 +100,6 @@ export interface PressEvents {
   onPressUp?: (e: PressEvent) => void;
 }
 
-export interface FocusableProps<Target = Element>
-  extends FocusEvents<Target>,
-    KeyboardEvents {
-  /** Whether the element should receive focus on render. */
-  autoFocus?: boolean;
-}
-
 interface BaseMoveEvent {
   /** The pointer type that triggered the move event. */
   pointerType: PointerType;

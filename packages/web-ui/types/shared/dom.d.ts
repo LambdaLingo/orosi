@@ -11,36 +11,6 @@ import type {
   ReactEventHandler,
 } from "react";
 
-export interface AriaLabelingProps {
-  /**
-   * Defines a string value that labels the current element.
-   */
-  "aria-label"?: string;
-
-  /**
-   * Identifies the element (or elements) that labels the current element.
-   */
-  "aria-labelledby"?: string;
-
-  /**
-   * Identifies the element (or elements) that describes the object.
-   */
-  "aria-describedby"?: string;
-
-  /**
-   * Identifies the element (or elements) that provide a detailed, extended description for the object.
-   */
-  "aria-details"?: string;
-}
-
-export interface AriaValidationProps {
-  // https://www.w3.org/TR/wai-aria-1.2/#aria-errormessage
-  /**
-   * Identifies the element that provides an error message for the object.
-   */
-  "aria-errormessage"?: string;
-}
-
 // A set of common DOM props that are allowed on any component
 // Ensure this is synced with DOMPropNames in filterDOMProps
 export interface DOMProps {
@@ -58,6 +28,8 @@ export interface FocusableDOMProps extends DOMProps {
    * the element or its functionality via the keyboard is available.
    */
   excludeFromTabOrder?: boolean;
+  /** Whether the element should receive focus on render. */
+  autoFocus?: boolean;
 }
 
 export interface TextInputDOMEvents {
@@ -207,37 +179,4 @@ export interface DOMAttributes<T = FocusableElement>
 export interface GroupDOMAttributes
   extends Omit<DOMAttributes<HTMLElement>, "role"> {
   role?: "group" | "region" | "presentation";
-}
-
-export interface StyleProps {
-  /** The CSS [className](https://developer.mozilla.org/en-US/docs/Web/API/Element/className) for the element. */
-  className?: string;
-  /** The inline [style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style) for the element. */
-  style?: CSSProperties;
-}
-
-export interface DOMProps extends StyleProps {
-  /** The children of the component. */
-  children?: ReactNode;
-}
-
-export interface StyleRenderProps<T> {
-  /** The CSS [className](https://developer.mozilla.org/en-US/docs/Web/API/Element/className) for the element. A function may be provided to compute the class based on component state. */
-  className?: string | ((values: T) => string);
-  /** The inline [style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style) for the element. A function may be provided to compute the style based on component state. */
-  style?: CSSProperties | ((values: T) => CSSProperties);
-}
-
-export interface RenderProps<T> extends StyleRenderProps<T> {
-  /** The children of the component. A function may be provided to alter the children based on component state. */
-  children?: ReactNode | ((values: T) => ReactNode);
-}
-
-interface RenderPropsHookOptions<T>
-  extends RenderProps<T>,
-    SharedDOMProps,
-    AriaLabelingProps {
-  values: T;
-  defaultChildren?: ReactNode;
-  defaultClassName?: string;
 }
