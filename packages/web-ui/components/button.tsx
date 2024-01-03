@@ -54,16 +54,17 @@ function Button(
 
   return (
     <button
+      type="button"
       {...filterDOMProps(props, { propNames: additionalButtonHTMLAttributes })}
       {...mergeProps(buttonProps, focusProps, hoverProps)}
       {...renderChildren}
+      data-disabled={props.isDisabled || undefined}
+      data-focus-visible={isFocusVisible || undefined}
+      data-focused={isFocused || undefined}
+      data-hovered={isHovered || undefined}
+      data-pressed={ctx.isPressed || isPressed || undefined}
       ref={ref}
       slot={props.slot || undefined}
-      data-disabled={props.isDisabled || undefined}
-      data-pressed={ctx.isPressed || isPressed || undefined}
-      data-hovered={isHovered || undefined}
-      data-focused={isFocused || undefined}
-      data-focus-visible={isFocusVisible || undefined}
     />
   );
 }
