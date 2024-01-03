@@ -33,7 +33,7 @@ interface Options {
   propNames?: Set<string>;
 }
 
-const propRe = /^(data-.*)$/;
+const propRe = /(?:data-.*)/;
 
 /**
  * Filters out all props that aren't valid DOM props or defined via override prop obj.
@@ -45,7 +45,7 @@ export function filterDOMProps(
   opts: Options = {}
 ): DOMProps & AriaLabelingProps {
   const { labelable, isLink, propNames } = opts;
-  const filteredProps = {};
+  const filteredProps: DOMProps & AriaLabelingProps = {};
 
   for (const prop in props) {
     if (
@@ -56,7 +56,8 @@ export function filterDOMProps(
         propNames?.has(prop) ||
         propRe.test(prop))
     ) {
-      filteredProps[prop] = props[prop];
+      filteredProps[prop as keyof (DOMProps & AriaLabelingProps)] =
+        props[prop as keyof (DOMProps & AriaLabelingProps)];
     }
   }
 

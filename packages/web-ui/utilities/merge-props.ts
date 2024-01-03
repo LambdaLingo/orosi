@@ -1,10 +1,7 @@
 import { chain } from "./chain";
-import clsx from "clsx";
-import { mergeIds } from "./useId";
+import { mergeIds } from "./merge-ids";
 
-interface Props {
-  [key: string]: any;
-}
+type Props = Record<string, unknown>;
 
 type PropsArg = Props | null | undefined;
 
@@ -13,10 +10,9 @@ type TupleTypes<T> = { [P in keyof T]: T[P] } extends { [key: number]: infer V }
   ? NullToObject<V>
   : never;
 type NullToObject<T> = T extends null | undefined ? {} : T;
-// eslint-disable-next-line no-undef, @typescript-eslint/no-unused-vars
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
-  k: infer I
-) => void
+type UnionToIntersection<U> = (
+  U extends unknown ? (k: U) => void : never
+) extends (k: infer I) => void
   ? I
   : never;
 
@@ -50,14 +46,6 @@ export function mergeProps<T extends PropsArg[]>(
         key.charCodeAt(2) <= /* 'Z' */ 90
       ) {
         result[key] = chain(a, b);
-
-        // Merge classnames, sometimes classNames are empty string which eval to false, so we just need to do a type check
-      } else if (
-        (key === "className" || key === "UNSAFE_className") &&
-        typeof a === "string" &&
-        typeof b === "string"
-      ) {
-        result[key] = clsx(a, b);
       } else if (key === "id" && a && b) {
         result.id = mergeIds(a, b);
         // Override others

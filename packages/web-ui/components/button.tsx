@@ -66,7 +66,7 @@ function Button(
       slot={props.slot || undefined}
       /* eslint-disable react/button-has-type -- because the button type is set dynamically using props. 
       see this link: https://github.com/jsx-eslint/eslint-plugin-react/issues/1555 */
-      type={props.type || "button"}
+      type={props.type ?? "button"}
     />
   );
 }
