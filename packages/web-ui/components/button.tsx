@@ -54,7 +54,6 @@ function Button(
 
   return (
     <button
-      type="button"
       {...filterDOMProps(props, { propNames: additionalButtonHTMLAttributes })}
       {...mergeProps(buttonProps, focusProps, hoverProps)}
       {...renderChildren}
@@ -65,6 +64,9 @@ function Button(
       data-pressed={ctx.isPressed || isPressed || undefined}
       ref={ref}
       slot={props.slot || undefined}
+      /* eslint-disable react/button-has-type -- because the button type is set dynamically using props. 
+      see this link: https://github.com/jsx-eslint/eslint-plugin-react/issues/1555 */
+      type={props.type || "button"}
     />
   );
 }

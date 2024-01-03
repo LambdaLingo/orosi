@@ -61,7 +61,7 @@ export type ButtonAriaProps = AriaLabelingProps & {
   "aria-pressed"?: boolean | "true" | "false" | "mixed";
   /**
    * The behavior of the button when used in an HTML form.
-   * @default 'button'
+   * @defaultValue `button`
    */
   type?: "button" | "submit" | "reset";
 };
