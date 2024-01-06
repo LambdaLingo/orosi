@@ -47,7 +47,15 @@ export function mergeProps<T extends PropsArg[]>(
       ) {
         result[key] = chain(a, b);
       } else if (key === "id" && a && b) {
-        result.id = mergeIds(a, b);
+        if (typeof a === "string" && typeof b === "string") {
+          result.id = mergeIds(a, b);
+        } else if (typeof a === "string") {
+          result.id = a;
+        } else if (typeof b === "string") {
+          result.id = b;
+        } else {
+          result.id = undefined;
+        }
         // Override others
       } else {
         result[key] = b !== undefined ? b : a;
