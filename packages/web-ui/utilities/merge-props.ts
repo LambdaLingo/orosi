@@ -6,10 +6,10 @@ type Props = Record<string, unknown>;
 type PropsArg = Props | null | undefined;
 
 // taken from: https://stackoverflow.com/questions/51603250/typescript-3-parameter-list-intersection-type/51604379#51604379
-type TupleTypes<T> = { [P in keyof T]: T[P] } extends { [key: number]: infer V }
+type TupleTypes<T> = { [P in keyof T]: T[P] } extends Record<number, infer V>
   ? NullToObject<V>
   : never;
-type NullToObject<T> = T extends null | undefined ? {} : T;
+type NullToObject<T> = T extends null | undefined ? Record<string, never> : T;
 type UnionToIntersection<U> = (
   U extends unknown ? (k: U) => void : never
 ) extends (k: infer I) => void
