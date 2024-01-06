@@ -6,7 +6,7 @@ import { useMemo, useRef } from "react";
  * helfpul when passing forwarded refs (created using `React.forwardRef`) to
  * React Aria Hooks.
  *
- * @param forwardedRef The original ref intended to be used.
+ * @param forwardedRef - The original ref intended to be used.
  * @returns An object ref that updates the given ref.
  * @see https://reactjs.org/docs/forwarding-refs.html
  */
