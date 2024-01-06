@@ -30,6 +30,5 @@ export function useSlottedContext<T>(
     }
     return ctx.slots[slotKey];
   }
-  // @ts-ignore
-  return ctx;
+  return ctx as T;
 }
