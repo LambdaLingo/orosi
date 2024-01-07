@@ -1,15 +1,17 @@
 import { useMemo } from "react";
 import type { RenderChildrenHookOptions } from "../../types/shared/component";
 
-export function useRenderChildren<T>(props: RenderChildrenHookOptions<T>) {
-  let { children, defaultChildren, values } = props;
+export function useRenderChildren<T>(props: RenderChildrenHookOptions<T>): {
+  children: React.ReactNode | undefined;
+} {
+  const { children, defaultChildren, values } = props;
 
   return useMemo(() => {
     let computedChildren: React.ReactNode | undefined;
 
     if (typeof children === "function") {
       computedChildren = children(values);
-    } else if (children == null) {
+    } else if (children === null) {
       computedChildren = defaultChildren;
     } else {
       computedChildren = children;

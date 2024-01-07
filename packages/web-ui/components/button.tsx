@@ -1,12 +1,16 @@
-import { type ForwardedRef, createContext, type ReactElement } from "react";
+import {
+  type ForwardedRef,
+  createContext,
+  type ReactElement,
+  forwardRef,
+} from "react";
 import type { ContextValue } from "../types/shared/context.js";
 import { useContextProps } from "../hooks/shared/use-context-prop.js";
 import { filterDOMProps } from "../utilities/filter-dom-props.js";
 import { mergeProps } from "../utilities/merge-props.js";
-import { useButton } from "../hooks/shared/use-button.js";
-import { useFocusRing } from "../hooks/shared/use-focus-ring.js";
-import { useHover } from "../hooks/shared/use-hover.js";
-import { createHideableComponent } from "../utilities/create-hideable-component.js";
+import { useButton } from "../hooks/button/use-button.js";
+import { useFocusRing } from "../hooks/focus/use-focus-ring.js";
+import { useHover } from "../hooks/interactions/use-hover.js";
 import { useRenderChildren } from "../hooks/shared/use-render-children.js";
 import type {
   ButtonContextValue,
@@ -74,5 +78,5 @@ function Button(
 /**
  * A button allows a user to perform an action, with mouse, touch, and keyboard interactions.
  */
-const _Button = /*#__PURE__*/ createHideableComponent(Button);
+const _Button = forwardRef(Button);
 export { _Button as Button };

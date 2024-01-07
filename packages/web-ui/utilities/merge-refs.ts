@@ -7,8 +7,7 @@ export function mergeRefs<T>(...refs: ForwardedRef<T>[]): ForwardedRef<T> {
   if (refs.length === 1) {
     return refs[0];
   }
-
-  return (value: T) => {
+  return (value: T | null) => {
     for (const ref of refs) {
       if (typeof ref === "function") {
         ref(value);

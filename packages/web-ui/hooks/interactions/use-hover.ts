@@ -1,5 +1,6 @@
-import { DOMAttributes, HoverEvents } from "@react-types/shared";
 import { useEffect, useMemo, useRef, useState } from "react";
+import type { HoverEvents } from "../../types/shared/events";
+import type { DOMAttributes } from "../../types/shared/dom";
 
 export interface HoverProps extends HoverEvents {
   /** Whether the hover events should be disabled. */
