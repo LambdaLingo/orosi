@@ -1,6 +1,7 @@
-import { isMac, isVirtualClick } from "@react-aria/utils";
 import { useEffect, useState } from "react";
-import { useIsSSR } from "@react-aria/ssr";
+import { isMac } from "../../utilities/platform";
+import { isVirtualClick } from "../../utilities/is-virtual-click";
+import { useIsSSR } from "../ssr/ssr-provider";
 
 export type Modality = "keyboard" | "pointer" | "virtual";
 type HandlerEvent =

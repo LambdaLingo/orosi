@@ -3,13 +3,10 @@
 // NOTICE file in the root directory of this source tree.
 // See https://github.com/facebook/react/tree/cc7c1aece46a6b69b41958d731e0fd27c94bfc6c/packages/react-interactions
 
-import {
-  DOMAttributes,
-  FocusableElement,
-  FocusEvents,
-} from "@react-types/shared";
 import { FocusEvent, useCallback } from "react";
-import { useSyntheticBlurEvent } from "./utils";
+import type { DOMAttributes, FocusableElement } from "../../types/shared/dom";
+import { useSyntheticBlurEvent } from "../../utilities/interactions/utils";
+import type { FocusEvents } from "../../types/shared/events";
 
 export interface FocusProps<Target = FocusableElement>
   extends FocusEvents<Target> {
