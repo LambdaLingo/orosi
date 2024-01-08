@@ -1,4 +1,5 @@
-import { createContext, ReactNode, useContext, useMemo } from "react";
+import type { ReactNode } from "react";
+import { createContext, useContext, useMemo } from "react";
 import type { LinkDOMProps } from "../types/shared/dom";
 import { isFirefox, isIPad, isMac, isWebKit } from "./platform";
 import { focusWithoutScrolling } from "./focus-without-scrolling";
@@ -132,22 +133,22 @@ function getSyntheticLink(
   if (target instanceof HTMLAnchorElement) {
     open(target);
   } else if (target.hasAttribute("data-href")) {
-    let link = document.createElement("a");
-    link.href = target.getAttribute("data-href");
+    const link = document.createElement("a");
+    link.href = target.getAttribute("data-href")!;
     if (target.hasAttribute("data-target")) {
-      link.target = target.getAttribute("data-target");
+      link.target = target.getAttribute("data-target")!;
     }
     if (target.hasAttribute("data-rel")) {
-      link.rel = target.getAttribute("data-rel");
+      link.rel = target.getAttribute("data-rel")!;
     }
     if (target.hasAttribute("data-download")) {
-      link.download = target.getAttribute("data-download");
+      link.download = target.getAttribute("data-download")!;
     }
     if (target.hasAttribute("data-ping")) {
-      link.ping = target.getAttribute("data-ping");
+      link.ping = target.getAttribute("data-ping")!;
     }
     if (target.hasAttribute("data-referrer-policy")) {
-      link.referrerPolicy = target.getAttribute("data-referrer-policy");
+      link.referrerPolicy = target.getAttribute("data-referrer-policy")!;
     }
     target.appendChild(link);
     open(link);

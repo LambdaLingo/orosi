@@ -1,3 +1,10 @@
+/**
+ * Add data types to window.navigator for use in this file.
+ * See https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html#-reference-types- for more info.
+ */
+/// <reference types="user-agent-data-types" />
+
+console.log(window.navigator.userAgentData); // no type error!
 function testUserAgent(re: RegExp) {
   if (typeof window === "undefined" || window.navigator == null) {
     return false;
