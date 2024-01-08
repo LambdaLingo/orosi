@@ -101,6 +101,10 @@ export type ButtonProps = ButtonDOMProps &
     name?: string;
     /** The value associated with the button's name when it's submitted with the form data. */
     value?: string;
+    /** Whether the target should not receive focus on press. */
+    preventFocusOnPress?: boolean;
+    /** Whether text selection should be enabled on the pressable element. */
+    allowFocusWhenDisabled?: boolean;
   };
 
 export type ButtonContextValue = ButtonProps & {

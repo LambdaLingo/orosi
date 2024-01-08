@@ -1,12 +1,5 @@
 import { disableTextSelection, restoreTextSelection } from "./textSelection";
 import {
-  DOMAttributes,
-  FocusableElement,
-  PressEvent as IPressEvent,
-  PointerType,
-  PressEvents,
-} from "@react-types/shared";
-import {
   focusWithoutScrolling,
   getOwnerDocument,
   getOwnerWindow,
@@ -19,7 +12,6 @@ import {
   useGlobalListeners,
   useSyncRef,
 } from "@react-aria/utils";
-import { PressResponderContext } from "./context";
 import {
   type RefObject,
   useContext,
@@ -28,6 +20,13 @@ import {
   useRef,
   useState,
 } from "react";
+import type {
+  PointerType,
+  PressEvents,
+  PressEvent as IPressEvent,
+} from "../../types/shared/events";
+import type { DOMAttributes, FocusableElement } from "../../types/shared/dom";
+import { PressResponderContext } from "./context";
 
 export interface PressProps extends PressEvents {
   /** Whether the target is in a controlled press state (e.g. an overlay it triggers is open). */
