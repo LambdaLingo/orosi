@@ -1,6 +1,6 @@
-import { getOwnerDocument } from "../../utilities/get-owner-document";
-import { isIOS } from "../../utilities/platform";
-import { runAfterTransition } from "../../utilities/run-after-transition";
+import { getOwnerDocument } from "../get-owner-document";
+import { isIOS } from "../platform";
+import { runAfterTransition } from "../run-after-transition";
 // Safari on iOS starts selecting text on long press. The only way to avoid this, it seems,
 // is to add user-select: none to the entire page. Adding it to the pressable element prevents
 // that element from being selected, but nearby elements may still receive selection. We add

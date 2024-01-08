@@ -1,21 +1,28 @@
-import {
-  DOMAttributes,
-  FocusableDOMProps,
-  FocusableElement,
-  FocusableProps,
-} from "@react-types/shared";
-import { focusSafely } from "./";
-import { mergeProps, useObjectRef, useSyncRef } from "@react-aria/utils";
-import React, {
+import type {
   ForwardedRef,
   MutableRefObject,
   ReactNode,
   RefObject,
+} from "react";
+import {
+  createContext,
+  forwardRef,
   useContext,
   useEffect,
   useRef,
 } from "react";
-import { useFocus, useKeyboard } from "@react-aria/interactions";
+import type {
+  DOMAttributes,
+  FocusableDOMProps,
+  FocusableElement,
+} from "../../types/shared/dom";
+import type { FocusableProps } from "../../types/shared/events";
+import { mergeProps } from "../../utilities/merge-props";
+import { useObjectRef } from "../shared/use-object-ref";
+import { useSyncRef } from "../shared/use-sync-ref";
+import { useFocus } from "../interactions/use-focus";
+import { useKeyboard } from "../interactions/use-keyboard";
+import { focusSafely } from "./focus-safely";
 
 export interface FocusableOptions extends FocusableProps, FocusableDOMProps {
   /** Whether focus should be disabled. */
@@ -31,7 +38,7 @@ interface FocusableContextValue extends FocusableProviderProps {
   ref?: MutableRefObject<FocusableElement>;
 }
 
-let FocusableContext = React.createContext<FocusableContextValue | null>(null);
+let FocusableContext = createContext<FocusableContextValue | null>(null);
 
 function useFocusableContext(
   ref: RefObject<FocusableElement>
@@ -65,7 +72,7 @@ function FocusableProvider(
   );
 }
 
-let _FocusableProvider = React.forwardRef(FocusableProvider);
+let _FocusableProvider = forwardRef(FocusableProvider);
 export { _FocusableProvider as FocusableProvider };
 
 export interface FocusableAria {

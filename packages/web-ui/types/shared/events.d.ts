@@ -56,6 +56,13 @@ export interface HoverEvent {
   target: HTMLElement;
 }
 
+export interface FocusableProps<Target = Element>
+  extends FocusEvents<Target>,
+    KeyboardEvents {
+  /** Whether the element should receive focus on render. */
+  autoFocus?: boolean;
+}
+
 export interface KeyboardEvents {
   /** Handler that is called when a key is pressed. */
   onKeyDown?: (e: KeyboardEvent) => void;

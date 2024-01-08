@@ -1,6 +1,6 @@
 import { createContext, type MutableRefObject } from "react";
 import type { FocusableElement } from "../../types/shared/dom";
-import type { PressProps } from "./use-press";
+import type { PressProps } from "../../hooks/interactions/use-press";
 
 interface IPressResponderContext extends PressProps {
   register: () => void;

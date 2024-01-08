@@ -27,8 +27,11 @@ import { openLink } from "../../utilities/open-link";
 import { useEffectEvent } from "../shared/use-effect-event";
 import { useGlobalListeners } from "../shared/use-global-listeners";
 import { useSyncRef } from "../shared/use-sync-ref";
-import { disableTextSelection, restoreTextSelection } from "./text-selection";
-import { PressResponderContext } from "./context";
+import {
+  disableTextSelection,
+  restoreTextSelection,
+} from "../../utilities/interactions/text-selection";
+import { PressResponderContext } from "../../utilities/interactions/context";
 
 export interface PressProps extends PressEvents {
   /** Whether the target is in a controlled press state (e.g. an overlay it triggers is open). */

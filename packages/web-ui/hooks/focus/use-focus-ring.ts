@@ -1,11 +1,11 @@
-import type { DOMAttributes } from "@react-types/shared";
+import { useCallback, useRef, useState } from "react";
+import type { DOMAttributes } from "../../types/shared/dom";
 import {
   isFocusVisible,
-  useFocus,
   useFocusVisibleListener,
-  useFocusWithin,
-} from "@react-aria/interactions";
-import { useCallback, useRef, useState } from "react";
+} from "../interactions/use-focus-visible";
+import { useFocus } from "../interactions/use-focus";
+import { useFocusWithin } from "../interactions/use-focus-within";
 
 export interface AriaFocusRingProps {
   /**
