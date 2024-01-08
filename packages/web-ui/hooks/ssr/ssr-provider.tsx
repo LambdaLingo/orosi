@@ -104,7 +104,6 @@ let componentIds = new WeakMap();
 function useCounter(isDisabled = false) {
   let ctx = useContext(SSRContext);
   let ref = useRef<number | null>(null);
-  // eslint-disable-next-line rulesdir/pure-render
   if (ref.current === null && !isDisabled) {
     // In strict mode, React renders components twice, and the ref will be reset to null on the second render.
     // This means our id counter will be incremented twice instead of once. This is a problem because on the
@@ -115,8 +114,9 @@ function useCounter(isDisabled = false) {
     // To ensure that we only increment the global counter once, we store the starting id for this component in
     // a weak map associated with the Fiber. On the second render, we reset the global counter to this value.
     // Since React runs the second render immediately after the first, this is safe.
-    // @ts-ignore
+
     let currentOwner =
+      // @ts-ignore
       React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED
         ?.ReactCurrentOwner?.current;
     if (currentOwner) {
@@ -135,12 +135,8 @@ function useCounter(isDisabled = false) {
         componentIds.delete(currentOwner);
       }
     }
-
-    // eslint-disable-next-line rulesdir/pure-render
     ref.current = ++ctx.current;
   }
-
-  // eslint-disable-next-line rulesdir/pure-render
   return ref.current;
 }
 

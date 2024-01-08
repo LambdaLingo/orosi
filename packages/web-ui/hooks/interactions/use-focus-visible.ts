@@ -31,7 +31,7 @@ let hasEventBeforeFocus = false;
 let hasBlurredWindowRecently = false;
 
 // Only Tab or Esc keys will make focus visible on text input elements
-const FOCUS_VISIBLE_INPUT_KEYS = {
+const FOCUS_VISIBLE_INPUT_KEYS: Record<string, boolean> = {
   Tab: true,
   Escape: true,
 };

@@ -1,3 +1,4 @@
+import type { KeyboardEvent } from "react";
 import type { DOMAttributes } from "../../types/shared/dom";
 import type { KeyboardEvents } from "../../types/shared/events";
 import { createEventHandler } from "../../utilities/interactions/create-event-handler";
@@ -20,8 +21,8 @@ export function useKeyboard(props: KeyboardProps): KeyboardResult {
     keyboardProps: props.isDisabled
       ? {}
       : {
-          onKeyDown: createEventHandler(props.onKeyDown),
-          onKeyUp: createEventHandler(props.onKeyUp),
+          onKeyDown: createEventHandler<KeyboardEvent>(props.onKeyDown),
+          onKeyUp: createEventHandler<KeyboardEvent>(props.onKeyUp),
         },
   };
 }

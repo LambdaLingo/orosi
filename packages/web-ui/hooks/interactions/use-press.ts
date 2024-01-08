@@ -85,6 +85,10 @@ export interface PressResult {
   pressProps: DOMAttributes;
 }
 
+interface PressKeyboardEvent extends KeyboardEvent {
+  [LINK_CLICKED]?: boolean;
+}
+
 function usePressResponderContext(props: PressHookProps): PressHookProps {
   // Consume context from <PressResponder> and merge with props.
   let context = useContext(PressResponderContext);
@@ -377,7 +381,7 @@ export function usePress(props: PressHookProps): PressResult {
       },
     };
 
-    let onKeyUp = (e: KeyboardEvent) => {
+    let onKeyUp = (e: PressKeyboardEvent) => {
       if (
         state.isPressed &&
         state.target &&
