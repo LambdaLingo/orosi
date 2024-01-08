@@ -1,17 +1,3 @@
-import { disableTextSelection, restoreTextSelection } from "./textSelection";
-import {
-  focusWithoutScrolling,
-  getOwnerDocument,
-  getOwnerWindow,
-  isMac,
-  isVirtualClick,
-  isVirtualPointerEvent,
-  mergeProps,
-  openLink,
-  useEffectEvent,
-  useGlobalListeners,
-  useSyncRef,
-} from "@react-aria/utils";
 import {
   type RefObject,
   useContext,
@@ -26,6 +12,22 @@ import type {
   PressEvent as IPressEvent,
 } from "../../types/shared/events";
 import type { DOMAttributes, FocusableElement } from "../../types/shared/dom";
+import { mergeProps } from "../../utilities/merge-props";
+import { focusWithoutScrolling } from "../../utilities/focus-without-scrolling";
+import {
+  getOwnerDocument,
+  getOwnerWindow,
+} from "../../utilities/get-owner-document";
+import { isMac } from "../../utilities/platform";
+import {
+  isVirtualClick,
+  isVirtualPointerEvent,
+} from "../../utilities/is-virtual-click";
+import { openLink } from "../../utilities/open-link";
+import { useEffectEvent } from "../shared/use-effect-event";
+import { useGlobalListeners } from "../shared/use-global-listeners";
+import { useSyncRef } from "../shared/use-sync-ref";
+import { disableTextSelection, restoreTextSelection } from "./text-selection";
 import { PressResponderContext } from "./context";
 
 export interface PressProps extends PressEvents {
