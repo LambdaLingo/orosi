@@ -4,6 +4,8 @@ import { useFocusable } from "../focus/use-focusable";
 import { filterDOMProps } from "../../utilities/filter-dom-props";
 import { mergeProps } from "../../utilities/merge-props";
 import type { ButtonProps } from "../../types/button/button";
+import { useHover } from "../interactions/use-hover";
+import { useFocusRing } from "../focus/use-focus-ring";
 
 export type ButtonPropsWithoutChildren = Omit<ButtonProps, "children">;
 
@@ -12,6 +14,12 @@ export interface ButtonResult<T> {
   buttonProps: T;
   /** Whether the button is currently pressed. */
   isPressed: boolean;
+  /** Whether the button is currently hovered. */
+  isHovered: boolean;
+  /** Whether the button is currently focused. */
+  isFocused: boolean;
+  /** Whether the button is currently focused and the focus is visible. */
+  isFocusVisible: boolean;
 }
 /**
  * Provides the behavior and accessibility implementation for a button component. Handles mouse, keyboard, and touch interactions,
@@ -32,6 +40,9 @@ export function useButton(
     onPressChange,
     preventFocusOnPress,
     allowFocusWhenDisabled,
+    onHoverStart,
+    onHoverEnd,
+    onHoverChange,
     type = "button",
   } = props;
   const additionalProps = {
@@ -50,6 +61,15 @@ export function useButton(
     ref,
   });
 
+  const { hoverProps, isHovered } = useHover({
+    onHoverStart,
+    onHoverEnd,
+    onHoverChange,
+    isDisabled,
+  });
+
+  const { focusProps, isFocused, isFocusVisible } = useFocusRing();
+
   const { focusableProps } = useFocusable(props, ref);
   if (allowFocusWhenDisabled) {
     focusableProps.tabIndex = isDisabled ? -1 : focusableProps.tabIndex;
@@ -57,11 +77,16 @@ export function useButton(
   const buttonProps = mergeProps(
     focusableProps,
     pressProps,
+    hoverProps,
+    focusProps,
     filterDOMProps(props, { labelable: true })
   );
 
   return {
     isPressed, // Used to indicate press state for visual
+    isHovered, // Used to indicate hover state for visual
+    isFocused, // Used to indicate focus state for visual
+    isFocusVisible, // Used to indicate focus state for visual
     buttonProps: mergeProps(additionalProps, buttonProps, {
       "aria-haspopup": props["aria-haspopup"],
       "aria-expanded": props["aria-expanded"],

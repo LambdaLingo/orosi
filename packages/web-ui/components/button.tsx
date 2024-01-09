@@ -7,10 +7,7 @@ import {
 import type { ContextValue } from "../types/shared/context.js";
 import { useContextProps } from "../hooks/shared/use-context-prop.js";
 import { filterDOMProps } from "../utilities/filter-dom-props.js";
-import { mergeProps } from "../utilities/merge-props.js";
 import { useButton } from "../hooks/button/use-button.js";
-import { useFocusRing } from "../hooks/focus/use-focus-ring.js";
-import { useHover } from "../hooks/interactions/use-hover.js";
 import { useRenderChildren } from "../hooks/shared/use-render-children.js";
 import type {
   ButtonContextValue,
@@ -44,9 +41,8 @@ function Button(
    */
   [props, ref] = useContextProps(props, ref, ButtonContext);
   const ctx = props as ButtonContextValue;
-  const { buttonProps, isPressed } = useButton(props, ref);
-  const { focusProps, isFocused, isFocusVisible } = useFocusRing(props);
-  const { hoverProps, isHovered } = useHover(props);
+  const { buttonProps, isPressed, isHovered, isFocused, isFocusVisible } =
+    useButton(props, ref);
   const renderChildren = useRenderChildren<ButtonUIStates>({
     ...props,
     values: {
@@ -61,7 +57,7 @@ function Button(
   return (
     <button
       {...filterDOMProps(props, { propNames: additionalButtonHTMLAttributes })}
-      {...mergeProps(buttonProps, focusProps, hoverProps)}
+      {...buttonProps}
       {...renderChildren}
       data-disabled={props.isDisabled || undefined}
       data-focus-visible={isFocusVisible || undefined}
