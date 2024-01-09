@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { HoverEvents } from "../../types/shared/events";
 import type { DOMAttributes } from "../../types/shared/dom";
-import type { isDisabledProp } from "../../types/shared/component";
+import type { IsDisabledProp } from "../../types/shared/component";
 
-export type HoverProps = HoverEvents & isDisabledProp;
+export type HoverProps = HoverEvents & IsDisabledProp;
 
 export type HoverResult = {
   /** Props to spread on the target element. */

@@ -40,26 +40,28 @@ export type FocusRingResult = {
  * not with a mouse, touch, or other input methods.
  */
 export function useFocusRing(props: FocusRingProps = {}): FocusRingResult {
-  let { autoFocus = false, isTextInput, within } = props;
-  let state = useRef({
+  const { autoFocus = false, isTextInput, within } = props;
+  const state = useRef({
     isFocused: false,
     isFocusVisible: autoFocus || isFocusVisible(),
   });
-  let [isFocused, setFocused] = useState(false);
-  let [isFocusVisibleState, setFocusVisible] = useState(
+  const [isFocused, setIsFocused] = useState(false);
+  const [isFocusVisibleState, setIsFocusVisibleState] = useState(
     () => state.current.isFocused && state.current.isFocusVisible
   );
 
-  let updateState = useCallback(
+  const updateState = useCallback(
     () =>
-      setFocusVisible(state.current.isFocused && state.current.isFocusVisible),
+      setIsFocusVisibleState(
+        state.current.isFocused && state.current.isFocusVisible
+      ),
     []
   );
 
-  let onFocusChange = useCallback(
+  const onFocusChange = useCallback(
     (isFocused) => {
       state.current.isFocused = isFocused;
-      setFocused(isFocused);
+      setIsFocused(isFocused);
       updateState();
     },
     [updateState]
@@ -74,12 +76,12 @@ export function useFocusRing(props: FocusRingProps = {}): FocusRingResult {
     { isTextInput }
   );
 
-  let { focusProps } = useFocus({
+  const { focusProps } = useFocus({
     isDisabled: within,
     onFocusChange,
   });
 
-  let { focusWithinProps } = useFocusWithin({
+  const { focusWithinProps } = useFocusWithin({
     isDisabled: !within,
     onFocusWithinChange: onFocusChange,
   });

@@ -11,7 +11,7 @@ export type AsProp<E extends React.ElementType> = {
   as?: E;
 };
 
-export type isDisabledProp = {
+export type IsDisabledProp = {
   /** Whether the component is disabled. */
   isDisabled?: boolean;
 };

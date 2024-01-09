@@ -22,10 +22,10 @@ import { useObjectRef } from "../shared/use-object-ref";
 import { useSyncRef } from "../shared/use-sync-ref";
 import { useFocus } from "../interactions/use-focus";
 import { useKeyboard } from "../interactions/use-keyboard";
+import type { IsDisabledProp } from "../../types/shared/component";
 import { focusSafely } from "./focus-safely";
-import { isDisabledProp } from "../../types/shared/component";
 
-type FocusableOptions = FocusableProps & FocusableDOMProps & isDisabledProp;
+type FocusableOptions = FocusableProps & FocusableDOMProps & IsDisabledProp;
 
 export interface FocusableProviderProps extends DOMAttributes {
   /** The child element to provide DOM props to. */
