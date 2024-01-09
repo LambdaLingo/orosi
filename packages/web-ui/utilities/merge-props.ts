@@ -1,7 +1,7 @@
 import { chain } from "./chain";
 import { mergeIds } from "./merge-ids";
 
-type Props = Record<string, unknown>;
+type Props = Record<string, any>;
 
 type PropsArg = Props | null | undefined;
 
