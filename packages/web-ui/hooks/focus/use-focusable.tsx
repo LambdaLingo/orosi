@@ -23,11 +23,9 @@ import { useSyncRef } from "../shared/use-sync-ref";
 import { useFocus } from "../interactions/use-focus";
 import { useKeyboard } from "../interactions/use-keyboard";
 import { focusSafely } from "./focus-safely";
+import { isDisabledProp } from "../../types/shared/component";
 
-export interface FocusableOptions extends FocusableProps, FocusableDOMProps {
-  /** Whether focus should be disabled. */
-  isDisabled?: boolean;
-}
+type FocusableOptions = FocusableProps & FocusableDOMProps & isDisabledProp;
 
 export interface FocusableProviderProps extends DOMAttributes {
   /** The child element to provide DOM props to. */

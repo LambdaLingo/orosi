@@ -11,6 +11,11 @@ export type AsProp<E extends React.ElementType> = {
   as?: E;
 };
 
+export type isDisabledProp = {
+  /** Whether the component is disabled. */
+  isDisabled?: boolean;
+};
+
 /**
  * Represents a generic component prop.
  * @template E - The type of the React element.

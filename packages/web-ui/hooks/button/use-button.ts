@@ -7,7 +7,7 @@ import type { ButtonProps } from "../../types/button/button";
 
 export type ButtonPropsWithoutChildren = Omit<ButtonProps, "children">;
 
-export interface ButtonAria<T> {
+export interface ButtonResult<T> {
   /** Props for the button element. */
   buttonProps: T;
   /** Whether the button is currently pressed. */
@@ -22,7 +22,7 @@ export interface ButtonAria<T> {
 export function useButton(
   props: ButtonPropsWithoutChildren,
   ref: RefObject<HTMLButtonElement>
-): ButtonAria<ButtonHTMLAttributes<HTMLButtonElement>> {
+): ButtonResult<ButtonHTMLAttributes<HTMLButtonElement>> {
   const {
     isDisabled,
     onPress,

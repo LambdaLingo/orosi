@@ -1,17 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { HoverEvents } from "../../types/shared/events";
 import type { DOMAttributes } from "../../types/shared/dom";
+import type { isDisabledProp } from "../../types/shared/component";
 
-export interface HoverProps extends HoverEvents {
-  /** Whether the hover events should be disabled. */
-  isDisabled?: boolean;
-}
+export type HoverProps = HoverEvents & isDisabledProp;
 
-export interface HoverResult {
+export type HoverResult = {
   /** Props to spread on the target element. */
   hoverProps: DOMAttributes;
   isHovered: boolean;
-}
+};
 
 // iOS fires onPointerEnter twice: once with pointerType="touch" and again with pointerType="mouse".
 // We want to ignore these emulated events so they do not trigger hover behavior.
@@ -31,7 +29,7 @@ function setGlobalIgnoreEmulatedMouseEvents() {
   }, 50);
 }
 
-function handleGlobalPointerEvent(e) {
+function handleGlobalPointerEvent(e: { pointerType: string }) {
   if (e.pointerType === "touch") {
     setGlobalIgnoreEmulatedMouseEvents();
   }
