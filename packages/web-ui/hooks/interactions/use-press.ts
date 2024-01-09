@@ -159,7 +159,7 @@ export function usePress(props: PressHookProps): PressResult {
     ...domProps
   } = usePressResponderContext(props);
 
-  const [isPressed, setPressed] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
   const ref = useRef<PressState>({
     isPressed: false,
     ignoreEmulatedMouseEvents: false,
@@ -195,7 +195,7 @@ export function usePress(props: PressHookProps): PressResult {
 
       state.isTriggeringEvent = false;
       state.didFirePressStart = true;
-      setPressed(true);
+      setIsPressed(true);
       return shouldStopPropagation;
     }
   );
@@ -222,7 +222,7 @@ export function usePress(props: PressHookProps): PressResult {
         onPressChange(false);
       }
 
-      setPressed(false);
+      setIsPressed(false);
 
       if (onPress && wasPressed && !isDisabled) {
         const event = new PressEvent("press", pointerType, originalEvent);
