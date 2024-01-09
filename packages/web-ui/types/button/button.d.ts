@@ -66,12 +66,11 @@ export type ButtonAriaProps = AriaLabelingProps & {
   type?: "button" | "submit" | "reset";
 };
 
-export type ButtonDOMProps = FocusableDOMProps & {
-  /** Whether the button is disabled. */
-  isDisabled?: boolean;
-  /** The content to display in the button. */
-  children?: RenderChildren<ButtonUIStates>;
-};
+export type ButtonDOMProps = FocusableDOMProps &
+  RenderChildren<ButtonUIStates> & {
+    /** Whether the button is disabled. */
+    isDisabled?: boolean;
+  };
 
 export type ButtonLayoutProps = SlotProps;
 

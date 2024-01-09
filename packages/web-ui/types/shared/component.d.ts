@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import type { WithRef } from "./ref";
 import type { AriaLabelingProps } from "./a11y";
-import { DOMProps } from "./dom";
+import type { DOMProps } from "./dom";
 
 /**
  * Represents a generic prop that allows specifying the component type.

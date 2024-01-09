@@ -15,6 +15,7 @@ import { useRenderChildren } from "../hooks/shared/use-render-children.js";
 import type {
   ButtonContextValue,
   ButtonProps,
+  ButtonUIStates,
 } from "../types/button/button.js";
 
 const additionalButtonHTMLAttributes = new Set([
@@ -26,6 +27,8 @@ const additionalButtonHTMLAttributes = new Set([
   "formTarget",
   "name",
   "value",
+  "preventFocusOnPress",
+  "preventScrollOnPress",
 ]);
 
 export const ButtonContext = createContext<
@@ -44,16 +47,15 @@ function Button(
   const { buttonProps, isPressed } = useButton(props, ref);
   const { focusProps, isFocused, isFocusVisible } = useFocusRing(props);
   const { hoverProps, isHovered } = useHover(props);
-  const renderChildren = useRenderChildren({
+  const renderChildren = useRenderChildren<ButtonUIStates>({
     ...props,
     values: {
-      isHovered,
       isPressed,
       isFocused,
       isFocusVisible,
+      isHovered,
       isDisabled: props.isDisabled || false,
     },
-    defaultClassName: "react-aria-Button",
   });
 
   return (
