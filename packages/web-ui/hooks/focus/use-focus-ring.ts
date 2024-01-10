@@ -50,16 +50,14 @@ export function useFocusRing(props: FocusRingProps = {}): FocusRingResult {
     () => state.current.isFocused && state.current.isFocusVisible
   );
 
-  const updateState = useCallback(
-    () =>
-      setIsFocusVisibleState(
-        state.current.isFocused && state.current.isFocusVisible
-      ),
-    []
-  );
+  const updateState = useCallback(() => {
+    setIsFocusVisibleState(
+      state.current.isFocused && state.current.isFocusVisible
+    );
+  }, []);
 
   const onFocusChange = useCallback(
-    (isFocused) => {
+    (isFocused: boolean) => {
       state.current.isFocused = isFocused;
       setIsFocused(isFocused);
       updateState();
