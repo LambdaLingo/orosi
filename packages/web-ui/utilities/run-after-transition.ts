@@ -1,32 +1,37 @@
-let transitionsByElement = new Map<EventTarget, Set<string>>();
+const transitionsByElement = new Map<EventTarget, Set<string>>();
 
 // A list of callbacks to call once there are no transitioning elements.
-let transitionCallbacks = new Set<() => void>();
+const transitionCallbacks = new Set<() => void>();
 
 function setupGlobalEvents() {
   if (typeof window === "undefined") {
     return;
   }
 
-  let onTransitionStart = (e: TransitionEvent) => {
+  const onTransitionStart = (e: TransitionEvent) => {
     // Add the transitioning property to the list for this element.
-    let transitions = transitionsByElement.get(e.target);
+    let transitions = transitionsByElement.get(e.target!);
     if (!transitions) {
       transitions = new Set();
-      transitionsByElement.set(e.target, transitions);
+      transitionsByElement.set(e.target!, transitions);
 
       // The transitioncancel event must be registered on the element itself, rather than as a global
       // event. This enables us to handle when the node is deleted from the document while it is transitioning.
       // In that case, the cancel event would have nowhere to bubble to so we need to handle it directly.
-      e.target.addEventListener("transitioncancel", onTransitionEnd);
+      if (e.target) {
+        e.target.addEventListener(
+          "transitioncancel",
+          onTransitionEnd as EventListener
+        );
+      }
     }
 
     transitions.add(e.propertyName);
   };
 
-  let onTransitionEnd = (e: TransitionEvent) => {
+  const onTransitionEnd = (e: TransitionEvent) => {
     // Remove property from list of transitioning properties.
-    let properties = transitionsByElement.get(e.target);
+    let properties = transitionsByElement.get(e.target!);
     if (!properties) {
       return;
     }
@@ -35,8 +40,12 @@ function setupGlobalEvents() {
 
     // If empty, remove transitioncancel event, and remove the element from the list of transitioning elements.
     if (properties.size === 0) {
-      e.target.removeEventListener("transitioncancel", onTransitionEnd);
-      transitionsByElement.delete(e.target);
+      const target = e.target!;
+      target.removeEventListener(
+        "transitioncancel",
+        onTransitionEnd as EventListener
+      );
+      transitionsByElement.delete(target);
     }
 
     // If no transitioning elements, call all of the queued callbacks.

@@ -1,5 +1,5 @@
 import type { AriaLabelingProps } from "../shared/a11y";
-import type { RenderChildren, isDisabledProp } from "../shared/component";
+import type { RenderChildren, IsDisabledProp } from "../shared/component";
 import type { SlotProps } from "../shared/context";
 import type { FocusableDOMProps } from "../shared/dom";
 import type {
@@ -68,7 +68,7 @@ export type ButtonAriaProps = AriaLabelingProps & {
 
 export type ButtonDOMProps = FocusableDOMProps &
   RenderChildren<ButtonUIStates> &
-  isDisabledProp;
+  IsDisabledProp;
 
 export type ButtonLayoutProps = SlotProps;
 
