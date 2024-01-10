@@ -27,25 +27,24 @@ import { focusSafely } from "./focus-safely";
 
 type FocusableOptions = FocusableProps & FocusableDOMProps & IsDisabledProp;
 
-export interface FocusableProviderProps extends DOMAttributes {
+type FocusableProviderProps = DOMAttributes & {
   /** The child element to provide DOM props to. */
   children?: ReactNode;
-}
+};
 
-interface FocusableContextValue extends FocusableProviderProps {
+type FocusableContextValue = FocusableProviderProps & {
   ref?: MutableRefObject<FocusableElement>;
-}
+};
 
-let FocusableContext = createContext<FocusableContextValue | null>(null);
+const FocusableContext = createContext<FocusableContextValue | null>(null);
 
 function useFocusableContext(
   ref: RefObject<FocusableElement>
 ): FocusableContextValue {
-  let context = useContext(FocusableContext) || {};
+  const context = useContext(FocusableContext) || {};
   useSyncRef(context, ref);
 
-  // eslint-disable-next-line
-  let { ref: _, ...otherProps } = context;
+  const { ref: _, ...otherProps } = context;
   return otherProps;
 }
 
@@ -55,12 +54,13 @@ function useFocusableContext(
 function FocusableProvider(
   props: FocusableProviderProps,
   ref: ForwardedRef<FocusableElement>
-) {
-  let { children, ...otherProps } = props;
-  let objRef = useObjectRef(ref);
-  let context = {
+): JSX.Element {
+  const { children, ...otherProps } = props;
+  const objRef = useObjectRef(ref);
+
+  const context = {
     ...otherProps,
-    ref: objRef,
+    ref: objRef as MutableRefObject<FocusableElement>, //review this line later
   };
 
   return (
@@ -70,7 +70,7 @@ function FocusableProvider(
   );
 }
 
-let _FocusableProvider = forwardRef(FocusableProvider);
+const _FocusableProvider = forwardRef(FocusableProvider);
 export { _FocusableProvider as FocusableProvider };
 
 export interface FocusableAria {
@@ -85,12 +85,12 @@ export function useFocusable(
   props: FocusableOptions,
   domRef: RefObject<FocusableElement>
 ): FocusableAria {
-  let { focusProps } = useFocus(props);
-  let { keyboardProps } = useKeyboard(props);
-  let interactions = mergeProps(focusProps, keyboardProps);
-  let domProps = useFocusableContext(domRef);
-  let interactionProps = props.isDisabled ? {} : domProps;
-  let autoFocusRef = useRef(props.autoFocus);
+  const { focusProps } = useFocus(props);
+  const { keyboardProps } = useKeyboard(props);
+  const interactions = mergeProps(focusProps, keyboardProps);
+  const domProps = useFocusableContext(domRef);
+  const interactionProps = props.isDisabled ? {} : domProps;
+  const autoFocusRef = useRef(props.autoFocus);
 
   useEffect(() => {
     if (autoFocusRef.current && domRef.current) {
