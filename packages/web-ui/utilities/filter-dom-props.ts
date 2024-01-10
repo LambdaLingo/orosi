@@ -20,7 +20,7 @@ const linkPropNames = new Set([
   "referrerPolicy",
 ]);
 
-interface Options {
+type Options = {
   /**
    * If labelling associated aria properties should be included in the filter.
    */
@@ -31,7 +31,7 @@ interface Options {
    * A Set of other property names that should be included in the filter.
    */
   propNames?: Set<string>;
-}
+};
 
 const propRe = /(?:data-.*)/;
 
