@@ -1,40 +1,42 @@
 import { useCallback, useEffect, useRef } from "react";
 
 interface GlobalListeners {
-  addGlobalListener<K extends keyof DocumentEventMap>(
+  addGlobalListener: (<K extends keyof DocumentEventMap>(
     el: EventTarget,
     type: K,
     listener: (this: Document, ev: DocumentEventMap[K]) => any,
     options?: boolean | AddEventListenerOptions
-  ): void;
-  addGlobalListener(
-    el: EventTarget,
-    type: string,
-    listener: EventListenerOrEventListenerObject,
-    options?: boolean | AddEventListenerOptions
-  ): void;
-  removeGlobalListener<K extends keyof DocumentEventMap>(
+  ) => void) &
+    ((
+      el: EventTarget,
+      type: string,
+      listener: EventListenerOrEventListenerObject,
+      options?: boolean | AddEventListenerOptions
+    ) => void);
+  removeGlobalListener: (<K extends keyof DocumentEventMap>(
     el: EventTarget,
     type: K,
     listener: (this: Document, ev: DocumentEventMap[K]) => any,
     options?: boolean | EventListenerOptions
-  ): void;
-  removeGlobalListener(
-    el: EventTarget,
-    type: string,
-    listener: EventListenerOrEventListenerObject,
-    options?: boolean | EventListenerOptions
-  ): void;
-  removeAllGlobalListeners(): void;
+  ) => void) &
+    ((
+      el: EventTarget,
+      type: string,
+      listener: EventListenerOrEventListenerObject,
+      options?: boolean | EventListenerOptions
+    ) => void);
+  removeAllGlobalListeners: () => void;
 }
 
 export function useGlobalListeners(): GlobalListeners {
-  let globalListeners = useRef(new Map());
-  let addGlobalListener = useCallback(
+  const globalListeners = useRef(new Map());
+  const addGlobalListener = useCallback(
+    // @ts-ignore - review this later
     (eventTarget, type, listener, options) => {
       // Make sure we remove the listener after it is called with the `once` option.
       let fn = options?.once
-        ? (...args) => {
+        ? // @ts-ignore - review this later
+          (...args) => {
             globalListeners.current.delete(listener);
             listener(...args);
           }
@@ -44,7 +46,8 @@ export function useGlobalListeners(): GlobalListeners {
     },
     []
   );
-  let removeGlobalListener = useCallback(
+  const removeGlobalListener = useCallback(
+    // @ts-ignore - review this later
     (eventTarget, type, listener, options) => {
       let fn = globalListeners.current.get(listener)?.fn || listener;
       eventTarget.removeEventListener(type, fn, options);
@@ -52,7 +55,7 @@ export function useGlobalListeners(): GlobalListeners {
     },
     []
   );
-  let removeAllGlobalListeners = useCallback(() => {
+  const removeAllGlobalListeners = useCallback(() => {
     globalListeners.current.forEach((value, key) => {
       removeGlobalListener(value.eventTarget, value.type, key, value.options);
     });

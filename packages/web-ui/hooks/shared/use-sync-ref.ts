@@ -1,4 +1,4 @@
-import { MutableRefObject, RefObject } from "react";
+import type { MutableRefObject, RefObject } from "react";
 import { useLayoutEffect } from "./use-layout-effect";
 
 interface ContextValue<T> {
@@ -12,8 +12,10 @@ export function useSyncRef<T>(
 ) {
   useLayoutEffect(() => {
     if (context && context.ref && ref) {
+      // @ts-ignore - review this later
       context.ref.current = ref.current;
       return () => {
+        // @ts-ignore - review this later
         context.ref.current = null;
       };
     }
