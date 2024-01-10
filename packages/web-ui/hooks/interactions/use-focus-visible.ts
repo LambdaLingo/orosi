@@ -25,7 +25,7 @@ export interface FocusVisibleResult {
 }
 
 let currentModality: null | Modality = null;
-let changeHandlers = new Set<Handler>();
+const changeHandlers = new Set<Handler>();
 let hasSetupGlobalListeners = false;
 let hasEventBeforeFocus = false;
 let hasBlurredWindowRecently = false;
@@ -37,7 +37,7 @@ const FOCUS_VISIBLE_INPUT_KEYS: Record<string, boolean> = {
 };
 
 function triggerChangeHandlers(modality: Modality, e: HandlerEvent) {
-  for (let handler of changeHandlers) {
+  for (const handler of changeHandlers) {
     handler(modality, e);
   }
 }
@@ -118,7 +118,7 @@ function setupGlobalFocusEvents() {
   // However, we need to detect other cases when a focus event occurs without
   // a preceding user event (e.g. screen reader focus). Overriding the focus
   // method on HTMLElement.prototype is a bit hacky, but works.
-  let focus = HTMLElement.prototype.focus;
+  const focus = HTMLElement.prototype.focus;
   HTMLElement.prototype.focus = function () {
     hasEventBeforeFocus = true;
     focus.apply(
@@ -179,9 +179,9 @@ export function setInteractionModality(modality: Modality) {
 export function useInteractionModality(): Modality | null {
   setupGlobalFocusEvents();
 
-  let [modality, setModality] = useState(currentModality);
+  const [modality, setModality] = useState(currentModality);
   useEffect(() => {
-    let handler = () => {
+    const handler = () => {
       setModality(currentModality);
     };
 
@@ -235,8 +235,8 @@ function isKeyboardFocusEvent(
 export function useFocusVisible(
   props: FocusVisibleProps = {}
 ): FocusVisibleResult {
-  let { isTextInput, autoFocus } = props;
-  let [isFocusVisibleState, setFocusVisible] = useState(
+  const { isTextInput, autoFocus } = props;
+  const [isFocusVisibleState, setFocusVisible] = useState(
     autoFocus || isFocusVisible()
   );
   useFocusVisibleListener(
@@ -261,7 +261,7 @@ export function useFocusVisibleListener(
   setupGlobalFocusEvents();
 
   useEffect(() => {
-    let handler = (modality: Modality, e: HandlerEvent) => {
+    const handler = (modality: Modality, e: HandlerEvent) => {
       if (!isKeyboardFocusEvent(!!opts?.isTextInput, modality, e)) {
         return;
       }

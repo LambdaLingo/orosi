@@ -27,7 +27,7 @@ export interface FocusResult<Target = FocusableElement> {
 export function useFocus<Target extends FocusableElement = FocusableElement>(
   props: FocusProps<Target>
 ): FocusResult<Target> {
-  let {
+  const {
     isDisabled,
     onFocus: onFocusProp,
     onBlur: onBlurProp,

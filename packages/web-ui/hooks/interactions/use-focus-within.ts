@@ -28,12 +28,13 @@ export interface FocusWithinResult {
  * Handles focus events for the target and its descendants.
  */
 export function useFocusWithin(props: FocusWithinProps): FocusWithinResult {
-  let { isDisabled, onBlurWithin, onFocusWithin, onFocusWithinChange } = props;
-  let state = useRef({
+  const { isDisabled, onBlurWithin, onFocusWithin, onFocusWithinChange } =
+    props;
+  const state = useRef({
     isFocusWithin: false,
   });
 
-  let onBlur = useCallback(
+  const onBlur = useCallback(
     (e: FocusEvent) => {
       // We don't want to trigger onBlurWithin and then immediately onFocusWithin again
       // when moving focus inside the element. Only trigger if the currentTarget doesn't
@@ -56,8 +57,8 @@ export function useFocusWithin(props: FocusWithinProps): FocusWithinResult {
     [onBlurWithin, onFocusWithinChange, state]
   );
 
-  let onSyntheticFocus = useSyntheticBlurEvent(onBlur);
-  let onFocus = useCallback(
+  const onSyntheticFocus = useSyntheticBlurEvent(onBlur);
+  const onFocus = useCallback(
     (e: FocusEvent) => {
       // Double check that document.activeElement actually matches e.target in case a previously chained
       // focus handler already moved focus somewhere else.
