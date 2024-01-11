@@ -33,13 +33,13 @@ export const ButtonContext = createContext<
 >({});
 
 function Button(
-  props: ButtonProps,
-  ref: ForwardedRef<HTMLButtonElement>
+  localprops: ButtonProps,
+  localref: ForwardedRef<HTMLButtonElement>
 ): ReactElement {
   /**
    * Merge the local props and ref with the ones provided via context.
    */
-  [props, ref] = useContextProps(props, ref, ButtonContext);
+  const [props, ref] = useContextProps(localprops, localref, ButtonContext);
   const ctx = props as ButtonContextValue;
   const { buttonProps, isPressed, isHovered, isFocused, isFocusVisible } =
     useButton(props, ref);
