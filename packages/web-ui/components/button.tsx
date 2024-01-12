@@ -1,19 +1,17 @@
 import {
   type ForwardedRef,
-  createContext,
   type ReactElement,
+  createContext,
   forwardRef,
 } from "react";
-import type { ContextValue } from "../types/shared/context.js";
-import { useContextProps } from "../hooks/shared/use-context-prop.js";
-import { filterDOMProps } from "../utilities/filter-dom-props.js";
-import { useButton } from "../hooks/button/use-button.js";
-import { useRenderChildren } from "../hooks/shared/use-render-children.js";
+import { useContextProps, useButton, useRenderChildren } from "hooks";
+import { filterDOMProps } from "utilities";
 import type {
   ButtonContextValue,
   ButtonProps,
   ButtonUIStates,
-} from "../types/button/button.js";
+  ContextValue,
+} from "types";
 
 const additionalButtonHTMLAttributes = new Set([
   "form",
@@ -63,8 +61,6 @@ function Button(
       data-pressed={ctx.isPressed || isPressed || undefined}
       ref={ref}
       slot={props.slot || undefined}
-      /* eslint-disable react/button-has-type -- because the button type is set dynamically using props. 
-      see this link: https://github.com/jsx-eslint/eslint-plugin-react/issues/1555 */
       type={props.type ?? "button"}
     />
   );

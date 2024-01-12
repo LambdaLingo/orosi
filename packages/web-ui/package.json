@@ -10,15 +10,15 @@
   "author": "mrmo",
   "license": "ISC",
   "devDependencies": {
-    "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
-    "@types/node": "^20.10.5",
-    "@types/react": "^18.2.38",
-    "@types/react-dom": "^18.2.17",
-    "eslint": "^8.54.0",
+    "@orosi/eslint-config": "workspace:*",
+    "@orosi/typescript-config": "workspace:*",
+    "@types/node": "^20.11.0",
+    "@types/react": "^18.2.47",
+    "@types/react-dom": "^18.2.18",
+    "eslint": "^8.56.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "typescript": "^5.3.2",
+    "typescript": "^5.3.3",
     "user-agent-data-types": "^0.4.2"
   },
   "peerDependencies": {
