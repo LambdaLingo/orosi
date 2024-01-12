@@ -15,15 +15,12 @@ import type {
   DOMAttributes,
   FocusableDOMProps,
   FocusableElement,
-} from "../../types/shared/dom";
-import type { FocusableProps } from "../../types/shared/events";
-import { mergeProps } from "../../utilities/merge-props";
-import { useObjectRef } from "../shared/use-object-ref";
-import { useSyncRef } from "../shared/use-sync-ref";
-import { useFocus } from "../interactions/use-focus";
-import { useKeyboard } from "../interactions/use-keyboard";
-import type { IsDisabledProp } from "../../types/shared/component";
-import { focusSafely } from "../../utilities/focus-safely";
+  IsDisabledProp,
+  FocusableProps,
+} from "types";
+import { mergeProps, focusSafely } from "utilities";
+import { useFocus, useKeyboard } from "hooks/interactions";
+import { useObjectRef, useSyncRef } from "hooks/shared";
 
 type FocusableOptions = FocusableProps & FocusableDOMProps & IsDisabledProp;
 

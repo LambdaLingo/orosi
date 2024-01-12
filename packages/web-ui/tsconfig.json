@@ -1,14 +1,7 @@
 {
   "extends": "@orosi/typescript-config/react-library.json",
   "compilerOptions": {
-    "baseUrl": "./", // This is to avoid adding the ./src prefix to each path below.
-    "paths": {
-      "@components/*": ["components/*"],
-      "@hooks/*": ["hooks/*"],
-      "@utilities/*": ["utilities/*"],
-      "@types/*": ["types/*"],
-      "@intl/*": ["intl/*"]
-    }
+    "baseUrl": "." // This is to avoid adding the ./src prefix to each path below.
   },
   "include": ["."],
   "exclude": ["dist", "build", "node_modules"]

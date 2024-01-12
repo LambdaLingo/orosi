@@ -1,11 +1,8 @@
 import type { ButtonHTMLAttributes, RefObject } from "react";
-import { usePress } from "../interactions/use-press";
-import { useFocusable } from "../focus/use-focusable";
-import { filterDOMProps } from "../../utilities/filter-dom-props";
-import { mergeProps } from "../../utilities/merge-props";
-import type { ButtonProps } from "../../types/button/button";
-import { useHover } from "../interactions/use-hover";
-import { useFocusRing } from "../focus/use-focus-ring";
+import { usePress, useHover } from "hooks/interactions";
+import { useFocusable, useFocusRing } from "hooks/focus";
+import { filterDOMProps, mergeProps } from "utilities";
+import type { ButtonProps } from "types";
 
 export type ButtonPropsWithoutChildren = Omit<ButtonProps, "children">;
 

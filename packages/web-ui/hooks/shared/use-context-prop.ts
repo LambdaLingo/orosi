@@ -20,7 +20,7 @@ export function useContextProps<T, U extends SlotProps, E extends Element>(
   props: T & SlotProps,
   ref: ForwardedRef<E>,
   context: Context<ContextValue<U, E>>
-): [T, RefObject<E>] {
+): [T & SlotProps, RefObject<E>] {
   const ctx: {
     ref?: ForwardedRef<E>;
     [slotCallbackSymbol]?: (props: T & SlotProps) => void;
@@ -34,7 +34,7 @@ export function useContextProps<T, U extends SlotProps, E extends Element>(
   const mergedRef = useObjectRef(
     useMemo(() => mergeRefs(ref, contextRef || null), [ref, contextRef])
   );
-  const mergedProps = mergeProps(contextProps, props) as unknown as T;
+  const mergedProps = mergeProps(contextProps, props) as T & SlotProps;
 
   // A parent component might need the props from a child, so call slot callback if needed.
   useEffect(() => {

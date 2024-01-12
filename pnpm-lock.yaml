@@ -96,13 +96,14 @@ importers:
   packages/typescript-config: {}
 
   packages/web-ui:
-    devDependencies:
+    dependencies:
       '@orosi/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
       '@orosi/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
+    devDependencies:
       '@types/node':
         specifier: ^20.11.0
         version: 20.11.0

@@ -1,11 +1,11 @@
 import { useCallback, useRef, useState } from "react";
-import type { DOMAttributes } from "../../types/shared/dom";
+import type { DOMAttributes } from "types";
 import {
   isFocusVisible,
   useFocusVisibleListener,
-} from "../interactions/use-focus-visible";
-import { useFocus } from "../interactions/use-focus";
-import { useFocusWithin } from "../interactions/use-focus-within";
+  useFocus,
+  useFocusWithin,
+} from "hooks/interactions";
 
 export type FocusRingProps = {
   /**

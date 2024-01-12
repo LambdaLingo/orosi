@@ -9,9 +9,11 @@
   "keywords": [],
   "author": "mrmo",
   "license": "ISC",
-  "devDependencies": {
+  "dependencies": {
     "@orosi/eslint-config": "workspace:*",
-    "@orosi/typescript-config": "workspace:*",
+    "@orosi/typescript-config": "workspace:*"
+  },
+  "devDependencies": {
     "@types/node": "^20.11.0",
     "@types/react": "^18.2.47",
     "@types/react-dom": "^18.2.18",
