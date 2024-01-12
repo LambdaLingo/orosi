@@ -1,8 +1,8 @@
-import type { FocusableElement } from "../../types/shared/dom";
-import { focusWithoutScrolling } from "../../utilities/focus-without-scrolling";
-import { getOwnerDocument } from "../../utilities/get-owner-document";
-import { runAfterTransition } from "../../utilities/run-after-transition";
-import { getInteractionModality } from "../interactions/use-focus-visible";
+import type { FocusableElement } from "../types/shared/dom";
+import { focusWithoutScrolling } from "./focus-without-scrolling";
+import { getOwnerDocument } from "./get-owner-document";
+import { runAfterTransition } from "./run-after-transition";
+import { getInteractionModality } from "../hooks/interactions/use-focus-visible";
 
 /**
  * A utility function that focuses an element while avoiding undesired side effects such

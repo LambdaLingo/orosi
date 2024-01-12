@@ -13,6 +13,9 @@ import { useObjectRef } from "./use-object-ref";
 
 export const slotCallbackSymbol = Symbol("callback");
 
+/**
+ * Merge the local props and ref with the ones provided via context.
+ */
 export function useContextProps<T, U extends SlotProps, E extends Element>(
   props: T & SlotProps,
   ref: ForwardedRef<E>,

@@ -23,7 +23,7 @@ import { useSyncRef } from "../shared/use-sync-ref";
 import { useFocus } from "../interactions/use-focus";
 import { useKeyboard } from "../interactions/use-keyboard";
 import type { IsDisabledProp } from "../../types/shared/component";
-import { focusSafely } from "./focus-safely";
+import { focusSafely } from "../../utilities/focus-safely";
 
 type FocusableOptions = FocusableProps & FocusableDOMProps & IsDisabledProp;
 
@@ -73,10 +73,10 @@ function FocusableProvider(
 const _FocusableProvider = forwardRef(FocusableProvider);
 export { _FocusableProvider as FocusableProvider };
 
-export interface FocusableAria {
+export type FocusableAria = {
   /** Props for the focusable element. */
   focusableProps: DOMAttributes;
-}
+};
 
 /**
  * Used to make an element focusable and capable of auto focus.

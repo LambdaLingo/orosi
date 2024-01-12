@@ -36,9 +36,6 @@ function Button(
   localprops: ButtonProps,
   localref: ForwardedRef<HTMLButtonElement>
 ): ReactElement {
-  /**
-   * Merge the local props and ref with the ones provided via context.
-   */
   const [props, ref] = useContextProps(localprops, localref, ButtonContext);
   const ctx = props as ButtonContextValue;
   const { buttonProps, isPressed, isHovered, isFocused, isFocusVisible } =
