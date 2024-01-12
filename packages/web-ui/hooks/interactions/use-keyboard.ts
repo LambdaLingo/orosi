@@ -1,7 +1,7 @@
 import type { KeyboardEvent } from "react";
 import type { DOMAttributes } from "../../types/shared/dom";
 import type { KeyboardEvents } from "../../types/shared/events";
-import { createEventHandler } from "../../utilities/interactions/create-event-handler";
+import { createEventHandler } from "../../utilities/create-event-handler";
 
 export interface KeyboardProps extends KeyboardEvents {
   /** Whether the keyboard events should be disabled. */

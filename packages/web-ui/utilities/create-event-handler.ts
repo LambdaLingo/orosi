@@ -1,5 +1,5 @@
 import type { SyntheticEvent } from "react";
-import type { BaseEvent } from "../../types/shared/events";
+import type { BaseEvent } from "../types/shared/events";
 
 /**
  * This function wraps a React event handler to make stopPropagation the default, and support continuePropagation instead.

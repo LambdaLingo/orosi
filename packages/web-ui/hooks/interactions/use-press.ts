@@ -30,8 +30,8 @@ import { useSyncRef } from "../shared/use-sync-ref";
 import {
   disableTextSelection,
   restoreTextSelection,
-} from "../../utilities/interactions/text-selection";
-import { PressResponderContext } from "../../utilities/interactions/context";
+} from "../../utilities/text-selection";
+import { PressResponderContext } from "../../utilities/context";
 
 export interface PressProps extends PressEvents {
   /** Whether the target is in a controlled press state (e.g. an overlay it triggers is open). */

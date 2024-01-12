@@ -1,7 +1,7 @@
 import type { FocusEvent as ReactFocusEvent } from "react";
 import { useCallback, useRef } from "react";
-import { useLayoutEffect } from "../../hooks/shared/use-layout-effect";
-import { useEffectEvent } from "../../hooks/shared/use-effect-event";
+import { useLayoutEffect } from "../hooks/shared/use-layout-effect";
+import { useEffectEvent } from "../hooks/shared/use-effect-event";
 
 export class SyntheticFocusEvent<Target = Element>
   implements ReactFocusEvent<Target>
