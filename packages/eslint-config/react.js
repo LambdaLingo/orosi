@@ -24,17 +24,27 @@ module.exports = {
   globals: {
     JSX: true,
   },
-  settings: {
-    "import/resolver": {
-      typescript: {
-        project,
-      },
-    },
-  },
   ignorePatterns: ["node_modules/", "dist/", ".eslintrc.js", "**/*.css"],
   // add rules configurations here
   rules: {
     "import/no-default-export": "off",
     "@typescript-eslint/consistent-type-definitions": ["warn", "type"],
+  },
+  settings: {
+    "import/resolver": {
+      typescript: {},
+    },
+  },
+  plugins: ["import"],
+  settings: {
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"],
+    },
+    "import/resolver": {
+      typescript: {
+        alwaysTryTypes: true,
+        project: "packages/*/tsconfig.json",
+      },
+    },
   },
 };

@@ -6,7 +6,7 @@ import type { ButtonProps } from "types";
 
 export type ButtonPropsWithoutChildren = Omit<ButtonProps, "children">;
 
-export interface ButtonResult<T> {
+export type ButtonResult<T> = {
   /** Props for the button element. */
   buttonProps: T;
   /** Whether the button is currently pressed. */
@@ -17,7 +17,7 @@ export interface ButtonResult<T> {
   isFocused: boolean;
   /** Whether the button is currently focused and the focus is visible. */
   isFocusVisible: boolean;
-}
+};
 /**
  * Provides the behavior and accessibility implementation for a button component. Handles mouse, keyboard, and touch interactions,
  * focus behavior, and ARIA props for both native button elements and custom element types.
