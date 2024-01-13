@@ -13,14 +13,14 @@ import type {
 
 // A set of common DOM props that are allowed on any component
 // Ensure this is synced with DOMPropNames in filterDOMProps
-export interface DOMProps {
+export type DOMProps = {
   /**
    * The element's unique identifier. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/id).
    */
   id?: string;
-}
+};
 
-export interface FocusableDOMProps extends DOMProps {
+export type FocusableDOMProps = {
   /**
    * Whether to exclude the element from the sequential tab order. If true,
    * the element will not be focusable via the keyboard by tabbing. This should
@@ -30,9 +30,9 @@ export interface FocusableDOMProps extends DOMProps {
   excludeFromTabOrder?: boolean;
   /** Whether the element should receive focus on render. */
   autoFocus?: boolean;
-}
+} & DOMProps;
 
-export interface TextInputDOMEvents {
+export type TextInputDOMEvents = {
   // Clipboard events
   /**
    * Handler that is called when the user copies text. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/oncopy).
@@ -80,21 +80,18 @@ export interface TextInputDOMEvents {
    * Handler that is called when the input value is modified. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/input_event).
    */
   onInput?: FormEventHandler<HTMLInputElement>;
-}
+};
 
-export interface InputDOMProps {
+export type InputDOMProps = {
   /**
    * The name of the input element, used when submitting an HTML form. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#htmlattrdefname).
    */
   name?: string;
-}
+};
 
 // DOM props that apply to all text inputs
 // Ensure this is synced with useTextField
-export interface TextInputDOMProps
-  extends DOMProps,
-    InputDOMProps,
-    TextInputDOMEvents {
+export type TextInputDOMProps = {
   /**
    * Describes the type of autocomplete functionality the input should provide if any. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#htmlattrdefautocomplete).
    */
@@ -144,10 +141,12 @@ export interface TextInputDOMProps
     | "numeric"
     | "decimal"
     | "search";
-}
+} & DOMProps &
+  InputDOMProps &
+  TextInputDOMEvents;
 
 // Make sure to update filterDOMProps.ts when updating this.
-export interface LinkDOMProps {
+export type LinkDOMProps = {
   /** A URL to link to. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#href). */
   href?: string;
   /** The target window for the link. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#target). */
@@ -160,23 +159,21 @@ export interface LinkDOMProps {
   ping?: string;
   /** How much of the referrer to send when following the link. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#referrerpolicy). */
   referrerPolicy?: HTMLAttributeReferrerPolicy;
-}
+};
 
 /** Any focusable element, including both HTML and SVG elements. */
-export interface FocusableElement extends Element, HTMLOrSVGElement {}
+export type FocusableElement = {} & Element & HTMLOrSVGElement;
 
 /** All DOM attributes supported across both HTML and SVG elements. */
-export interface DOMAttributes<T = FocusableElement>
-  extends AriaAttributes,
-    ReactDOMAttributes<T> {
+export type DOMAttributes<T = FocusableElement> = {
   id?: string | undefined;
   role?: AriaRole | undefined;
   tabIndex?: number | undefined;
   style?: CSSProperties | undefined;
   className?: string | undefined;
-}
+} & AriaAttributes &
+  ReactDOMAttributes<T>;
 
-export interface GroupDOMAttributes
-  extends Omit<DOMAttributes<HTMLElement>, "role"> {
+export type GroupDOMAttributes = {
   role?: "group" | "region" | "presentation";
-}
+} & Omit<DOMAttributes<HTMLElement>, "role">;

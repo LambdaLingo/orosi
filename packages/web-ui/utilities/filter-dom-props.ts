@@ -42,9 +42,9 @@ const propRe = /(?:data-.*)/;
 export function filterDOMProps(
   props: DOMProps & AriaLabelingProps & LinkDOMProps,
   opts: Options = {}
-): DOMProps & AriaLabelingProps {
+): DOMProps & AriaLabelingProps & LinkDOMProps {
   const { labelable, isLink, propNames } = opts;
-  const filteredProps: DOMProps & AriaLabelingProps = {};
+  const filteredProps: DOMProps & AriaLabelingProps & LinkDOMProps = {};
 
   for (const prop in props) {
     if (
@@ -55,8 +55,7 @@ export function filterDOMProps(
         propNames?.has(prop) ||
         propRe.test(prop))
     ) {
-      filteredProps[prop as keyof (DOMProps & AriaLabelingProps)] =
-        props[prop as keyof (DOMProps & AriaLabelingProps)];
+      filteredProps[prop] = props[prop];
     }
   }
 
