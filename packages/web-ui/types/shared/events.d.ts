@@ -18,7 +18,7 @@ export type KeyboardEvent = BaseEvent<ReactKeyboardEvent<unknown>>;
 
 export type PointerType = "mouse" | "pen" | "touch" | "keyboard" | "virtual";
 
-export interface PressEvent {
+export type PressEvent = {
   /** The type of press event being fired. */
   type: "pressstart" | "pressend" | "pressup" | "press";
   /** The pointer type that triggered the press event. */
@@ -39,56 +39,54 @@ export interface PressEvent {
    * it can call `continuePropagation()` to allow a parent to handle it.
    */
   continuePropagation: () => void;
-}
+};
 
-export interface LongPressEvent
-  extends Omit<PressEvent, "type" | "continuePropagation"> {
+export type LongPressEvent = {
   /** The type of long press event being fired. */
   type: "longpressstart" | "longpressend" | "longpress";
-}
+} & Omit<PressEvent, "type" | "continuePropagation">;
 
-export interface HoverEvent {
+export type HoverEvent = {
   /** The type of hover event being fired. */
   type: "hoverstart" | "hoverend";
   /** The pointer type that triggered the hover event. */
   pointerType: "mouse" | "pen";
   /** The target element of the hover event. */
   target: HTMLElement;
-}
+};
 
-export interface FocusableProps<Target = Element>
-  extends FocusEvents<Target>,
-    KeyboardEvents {
+export type FocusableProps<Target = Element> = {
   /** Whether the element should receive focus on render. */
   autoFocus?: boolean;
-}
+} & FocusEvents<Target> &
+  KeyboardEvents;
 
-export interface KeyboardEvents {
+export type KeyboardEvents = {
   /** Handler that is called when a key is pressed. */
   onKeyDown?: (e: KeyboardEvent) => void;
   /** Handler that is called when a key is released. */
   onKeyUp?: (e: KeyboardEvent) => void;
-}
+};
 
-export interface FocusEvents<Target = Element> {
+export type FocusEvents<Target = Element> = {
   /** Handler that is called when the element receives focus. */
   onFocus?: (e: FocusEvent<Target>) => void;
   /** Handler that is called when the element loses focus. */
   onBlur?: (e: FocusEvent<Target>) => void;
   /** Handler that is called when the element's focus status changes. */
   onFocusChange?: (isFocused: boolean) => void;
-}
+};
 
-export interface HoverEvents {
+export type HoverEvents = {
   /** Handler that is called when a hover interaction starts. */
   onHoverStart?: (e: HoverEvent) => void;
   /** Handler that is called when a hover interaction ends. */
   onHoverEnd?: (e: HoverEvent) => void;
   /** Handler that is called when the hover state changes. */
   onHoverChange?: (isHovering: boolean) => void;
-}
+};
 
-export interface PressEvents {
+export type PressEvents = {
   /** Handler that is called when the press is released over the target. */
   onPress?: (e: PressEvent) => void;
   /** Handler that is called when a press interaction starts. */
@@ -105,9 +103,9 @@ export interface PressEvents {
    * whether it started on the target or not.
    */
   onPressUp?: (e: PressEvent) => void;
-}
+};
 
-interface BaseMoveEvent {
+type BaseMoveEvent = {
   /** The pointer type that triggered the move event. */
   pointerType: PointerType;
   /** Whether the shift keyboard modifier was held during the move event. */
@@ -118,51 +116,51 @@ interface BaseMoveEvent {
   metaKey: boolean;
   /** Whether the alt keyboard modifier was held during the move event. */
   altKey: boolean;
-}
+};
 
-export interface MoveStartEvent extends BaseMoveEvent {
+export type MoveStartEvent = {
   /** The type of move event being fired. */
   type: "movestart";
-}
+} & BaseMoveEvent;
 
-export interface MoveMoveEvent extends BaseMoveEvent {
+export type MoveMoveEvent = {
   /** The type of move event being fired. */
   type: "move";
   /** The amount moved in the X direction since the last event. */
   deltaX: number;
   /** The amount moved in the Y direction since the last event. */
   deltaY: number;
-}
+} & BaseMoveEvent;
 
-export interface MoveEndEvent extends BaseMoveEvent {
+export type MoveEndEvent = {
   /** The type of move event being fired. */
   type: "moveend";
-}
+} & BaseMoveEvent;
 
 export type MoveEvent = MoveStartEvent | MoveMoveEvent | MoveEndEvent;
 
-export interface MoveEvents {
+export type MoveEvents = {
   /** Handler that is called when a move interaction starts. */
   onMoveStart?: (e: MoveStartEvent) => void;
   /** Handler that is called when the element is moved. */
   onMove?: (e: MoveMoveEvent) => void;
   /** Handler that is called when a move interaction ends. */
   onMoveEnd?: (e: MoveEndEvent) => void;
-}
+};
 
-export interface ScrollEvent {
+export type ScrollEvent = {
   /** The amount moved in the X direction since the last event. */
   deltaX: number;
   /** The amount moved in the Y direction since the last event. */
   deltaY: number;
-}
+};
 
-export interface ScrollEvents {
+export type ScrollEvents = {
   /** Handler that is called when the scroll wheel moves. */
   onScroll?: (e: ScrollEvent) => void;
-}
+};
 
-export interface ScrollableProps<T extends Element> {
+export type ScrollableProps<T extends Element> = {
   /** Handler that is called when a user scrolls. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Element/scroll_event). */
   onScroll?: (e: UIEvent<T>) => void;
-}
+};

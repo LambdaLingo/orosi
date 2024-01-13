@@ -20,7 +20,7 @@ module.exports = {
   parserOptions: {
     project,
   },
-  plugins: ["only-warn"],
+  plugins: ["import", "only-warn"],
   globals: {
     JSX: true,
   },
@@ -30,12 +30,6 @@ module.exports = {
     "import/no-default-export": "off",
     "@typescript-eslint/consistent-type-definitions": ["warn", "type"],
   },
-  settings: {
-    "import/resolver": {
-      typescript: {},
-    },
-  },
-  plugins: ["import"],
   settings: {
     "import/parsers": {
       "@typescript-eslint/parser": [".ts", ".tsx"],

@@ -1,13 +1,14 @@
-import type { AriaLabelingProps } from "../shared/a11y";
-import type { RenderChildren, IsDisabledProp } from "../shared/component";
-import type { SlotProps } from "../shared/context";
-import type { FocusableDOMProps } from "../shared/dom";
 import type {
   FocusEvents,
   HoverEvents,
   KeyboardEvents,
   PressEvents,
-} from "../shared/events";
+  FocusableDOMProps,
+  SlotProps,
+  RenderChildren,
+  IsDisabledProp,
+  AriaLabelingProps,
+} from "types/shared";
 
 export type ButtonUIStates = {
   /**

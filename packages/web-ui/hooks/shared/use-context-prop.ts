@@ -5,9 +5,8 @@ import {
   useMemo,
   useEffect,
 } from "react";
-import type { SlotProps, ContextValue } from "../../types/shared/context";
-import { mergeProps } from "../../utilities/merge-props";
-import { mergeRefs } from "../../utilities/merge-refs";
+import type { SlotProps, ContextValue } from "types";
+import { mergeProps, mergeRefs } from "utilities";
 import { useSlottedContext } from "./use-slotted-context";
 import { useObjectRef } from "./use-object-ref";
 
