@@ -1,5 +1,4 @@
-import type { AriaLabelingProps } from "../types/shared/a11y.js";
-import type { DOMProps, LinkDOMProps } from "../types/shared/dom.js";
+import type { DOMProps, LinkDOMProps, AriaLabelingProps } from "types";
 
 const DOMPropNames = new Set(["id"]);
 

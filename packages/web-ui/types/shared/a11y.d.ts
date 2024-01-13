@@ -1,4 +1,4 @@
-export interface AriaLabelingProps {
+export type AriaLabelingProps = {
   /**
    * Defines a string value that labels the current element.
    */
@@ -18,12 +18,12 @@ export interface AriaLabelingProps {
    * Identifies the element (or elements) that provide a detailed, extended description for the object.
    */
   "aria-details"?: string;
-}
+};
 
-export interface AriaValidationProps {
+export type AriaValidationProps = {
   // https://www.w3.org/TR/wai-aria-1.2/#aria-errormessage
   /**
    * Identifies the element that provides an error message for the object.
    */
   "aria-errormessage"?: string;
-}
+};

@@ -1,13 +1,13 @@
-import { useMemo } from "react";
-import type { RenderChildrenHookOptions } from "../../types/shared/component";
+import { type ReactNode, useMemo } from "react";
+import type { RenderChildrenHookOptions } from "types";
 
 export function useRenderChildren<T>(props: RenderChildrenHookOptions<T>): {
-  children: React.ReactNode | undefined;
+  children: ReactNode;
 } {
   const { children, defaultChildren, values } = props;
 
   return useMemo(() => {
-    let computedChildren: React.ReactNode | undefined;
+    let computedChildren: ReactNode;
 
     if (typeof children === "function") {
       computedChildren = children(values);

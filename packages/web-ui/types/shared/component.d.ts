@@ -1,7 +1,5 @@
 import type { ReactNode } from "react";
 import type { WithRef } from "./ref";
-import type { AriaLabelingProps } from "./a11y";
-import type { DOMProps } from "./dom";
 
 /**
  * Represents a generic prop that allows specifying the component type.
@@ -47,12 +45,10 @@ export type RenderChildren<T> = {
   children?: ReactNode | ((values: T) => ReactNode);
 };
 
-export type RenderChildrenHookOptions<T> = RenderChildren<T> &
-  DOMProps &
-  AriaLabelingProps & {
-    values: T;
-    defaultChildren?: ReactNode;
-  };
+export type RenderChildrenHookOptions<T> = RenderChildren<T> & {
+  values: T;
+  defaultChildren?: ReactNode;
+};
 
 /**
  * A helper function that accepts a user-provided render prop value (either a static value or a function),
