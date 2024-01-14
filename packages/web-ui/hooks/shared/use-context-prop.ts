@@ -15,14 +15,18 @@ export const slotCallbackSymbol = Symbol("callback");
 /**
  * Merge the local props and ref with the ones provided via context.
  */
-export function useContextProps<T, U extends SlotProps, E extends Element>(
-  props: T & SlotProps,
+export function useContextProps<
+  T extends SlotProps,
+  U extends SlotProps,
+  E extends Element,
+>(
+  props: T,
   ref: ForwardedRef<E>,
   context: Context<ContextValue<U, E>>
-): [T & SlotProps, RefObject<E>] {
+): [T, RefObject<E>] {
   const ctx: {
     ref?: ForwardedRef<E>;
-    [slotCallbackSymbol]?: (props: T & SlotProps) => void;
+    [slotCallbackSymbol]?: (props: T) => void;
   } = useSlottedContext(context, props.slot) || {};
   const {
     ref: contextRef,
@@ -33,7 +37,7 @@ export function useContextProps<T, U extends SlotProps, E extends Element>(
   const mergedRef = useObjectRef(
     useMemo(() => mergeRefs(ref, contextRef || null), [ref, contextRef])
   );
-  const mergedProps = mergeProps(contextProps, props) as T & SlotProps;
+  const mergedProps = mergeProps(contextProps, props) as T;
 
   // A parent component might need the props from a child, so call slot callback if needed.
   useEffect(() => {

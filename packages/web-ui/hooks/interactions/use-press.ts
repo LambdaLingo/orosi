@@ -10,30 +10,25 @@ import type {
   PointerType,
   PressEvents,
   PressEvent as IPressEvent,
-} from "../../types/shared/events";
-import type { DOMAttributes, FocusableElement } from "../../types/shared/dom";
-import { mergeProps } from "../../utilities/merge-props";
-import { focusWithoutScrolling } from "../../utilities/focus-without-scrolling";
+  DOMAttributes,
+  FocusableElement,
+} from "types";
 import {
+  mergeProps,
+  focusWithoutScrolling,
   getOwnerDocument,
   getOwnerWindow,
-} from "../../utilities/get-owner-document";
-import { isMac } from "../../utilities/platform";
-import {
+  isMac,
   isVirtualClick,
   isVirtualPointerEvent,
-} from "../../utilities/is-virtual-click";
-import { openLink } from "../../utilities/open-link";
-import { useEffectEvent } from "../shared/use-effect-event";
-import { useGlobalListeners } from "../shared/use-global-listeners";
-import { useSyncRef } from "../shared/use-sync-ref";
-import {
+  openLink,
   disableTextSelection,
   restoreTextSelection,
-} from "../../utilities/text-selection";
-import { PressResponderContext } from "../../utilities/context";
+  PressResponderContext,
+} from "utilities";
+import { useEffectEvent, useGlobalListeners, useSyncRef } from "hooks/shared";
 
-export interface PressProps extends PressEvents {
+export type PressProps = {
   /** Whether the target is in a controlled press state (e.g. an overlay it triggers is open). */
   isPressed?: boolean;
   /** Whether the press events should be disabled. */
@@ -49,14 +44,14 @@ export interface PressProps extends PressEvents {
   shouldCancelOnPointerExit?: boolean;
   /** Whether text selection should be enabled on the pressable element. */
   allowTextSelectionOnPress?: boolean;
-}
+} & PressEvents;
 
-export interface PressHookProps extends PressProps {
+export type PressHookProps = {
   /** A ref to the target element. */
   ref?: RefObject<Element>;
-}
+} & PressProps;
 
-interface PressState {
+type PressState = {
   isPressed: boolean;
   ignoreEmulatedMouseEvents: boolean;
   ignoreClickAfterPress: boolean;
@@ -68,26 +63,26 @@ interface PressState {
   pointerType: PointerType | null;
   userSelect?: string;
   metaKeyEvents?: Map<string, KeyboardEvent>;
-}
+};
 
-interface EventBase {
+type EventBase = {
   currentTarget: EventTarget | null;
   shiftKey: boolean;
   ctrlKey: boolean;
   metaKey: boolean;
   altKey: boolean;
-}
+};
 
-export interface PressResult {
+export type PressResult = {
   /** Whether the target is currently pressed. */
   isPressed: boolean;
   /** Props to spread on the target element. */
   pressProps: DOMAttributes;
-}
+};
 
-interface PressKeyboardEvent extends KeyboardEvent {
+type PressKeyboardEvent = {
   [LINK_CLICKED]?: boolean;
-}
+} & KeyboardEvent;
 
 function usePressResponderContext(props: PressHookProps): PressHookProps {
   // Consume context from <PressResponder> and merge with props.
@@ -957,21 +952,21 @@ function createEvent(target: FocusableElement, e: EventBase): EventBase {
   };
 }
 
-interface Rect {
+type Rect = {
   top: number;
   right: number;
   bottom: number;
   left: number;
-}
+};
 
-interface EventPoint {
+type EventPoint = {
   clientX: number;
   clientY: number;
   width?: number;
   height?: number;
   radiusX?: number;
   radiusY?: number;
-}
+};
 
 function getPointClientRect(point: EventPoint): Rect {
   let offsetX = 0;

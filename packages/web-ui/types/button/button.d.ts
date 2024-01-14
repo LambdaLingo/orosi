@@ -60,11 +60,6 @@ export type ButtonAriaProps = AriaLabelingProps & {
   "aria-controls"?: string;
   /** Indicates the current "pressed" state of toggle buttons. */
   "aria-pressed"?: boolean | "true" | "false" | "mixed";
-  /**
-   * The behavior of the button when used in an HTML form.
-   * @defaultValue `button`
-   */
-  type?: "button" | "submit" | "reset";
 };
 
 export type ButtonDOMProps = FocusableDOMProps &
@@ -103,6 +98,11 @@ export type ButtonProps = ButtonDOMProps &
     preventFocusOnPress?: boolean;
     /** Whether text selection should be enabled on the pressable element. */
     allowFocusWhenDisabled?: boolean;
+    /**
+     * The behavior of the button when used in an HTML form.
+     * @defaultValue `button`
+     */
+    type?: "button" | "submit" | "reset";
   };
 
 export type ButtonContextValue = ButtonProps & {

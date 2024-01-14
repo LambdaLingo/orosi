@@ -31,7 +31,7 @@ export const ButtonContext = createContext<
 >({});
 
 function Button(
-  localprops: ButtonProps,
+  { type = "button", ...localprops }: ButtonProps,
   localref: ForwardedRef<HTMLButtonElement>
 ): ReactElement {
   const [props, ref] = useContextProps(localprops, localref, ButtonContext);
@@ -61,13 +61,16 @@ function Button(
       data-pressed={ctx.isPressed || isPressed || undefined}
       ref={ref}
       slot={props.slot || undefined}
-      type={props.type ?? "button"}
+      // eslint-disable-next-line react/button-has-type -- default is type="button"
+      type={type}
     />
   );
 }
-
+Button.displayName = "Button";
 /**
  * A button allows a user to perform an action, with mouse, touch, and keyboard interactions.
  */
-const _Button = forwardRef(Button);
+const _Button = forwardRef(Button) as (
+  props: ButtonProps & { ref?: ForwardedRef<HTMLButtonElement> }
+) => ReactElement;
 export { _Button as Button };
