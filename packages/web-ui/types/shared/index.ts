@@ -4,3 +4,4 @@ export * from "./context";
 export * from "./dom";
 export * from "./events";
 export * from "./ref";
+export * from "./input";

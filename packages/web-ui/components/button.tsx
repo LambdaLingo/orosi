@@ -66,11 +66,13 @@ function Button(
     />
   );
 }
+
 Button.displayName = "Button";
 /**
  * A button allows a user to perform an action, with mouse, touch, and keyboard interactions.
  */
 const _Button = forwardRef(Button) as (
-  props: ButtonProps & { ref?: ForwardedRef<HTMLButtonElement> }
+  props: ButtonProps,
+  ref: ForwardedRef<HTMLButtonElement>
 ) => ReactElement;
 export { _Button as Button };
