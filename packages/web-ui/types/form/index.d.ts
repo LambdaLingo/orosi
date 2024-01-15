@@ -1,4 +1,4 @@
-import type { AriaLabelingProps, ValidationErrors } from "types";
+import type { AriaLabelingProps, Validation, ValidationErrors } from "types";
 import type { FormEvent, FormHTMLAttributes } from "react";
 
 export type FormProps = {
@@ -57,3 +57,36 @@ export type FormProps = {
    */
   role?: "search" | "presentation";
 } & AriaLabelingProps;
+
+export type FormValidationState = {
+  /** Realtime validation results, updated as the user edits the value. */
+  realtimeValidation: ValidationResult;
+  /** Currently displayed validation results, updated when the user commits their changes. */
+  displayValidation: ValidationResult;
+  /** Updates the current validation result. Not displayed to the user until `commitValidation` is called. */
+  updateValidation: (result: ValidationResult) => void;
+  /** Resets the displayed validation state to valid when the user resets the form. */
+  resetValidation: () => void;
+  /** Commits the realtime validation so it is displayed to the user. */
+  commitValidation: () => void;
+};
+
+// Override base type to change the default.
+export type RACValidation = {
+  /**
+   * Whether to use native HTML form validation to prevent form submission
+   * when the value is missing or invalid, or mark the field as required
+   * or invalid via ARIA.
+   * @default 'native'
+   */
+  validationBehavior?: "native" | "aria";
+};
+
+type ValidatableElement =
+  | HTMLInputElement
+  | HTMLTextAreaElement
+  | HTMLSelectElement;
+
+type FormValidationProps<T> = {
+  focus?: () => void;
+} & Validation<T>;

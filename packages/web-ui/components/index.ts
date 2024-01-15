@@ -4,3 +4,4 @@ export * from "./checkbox";
 export * from "./text";
 export * from "./field-error";
 export * from "./label";
+export * from "./visually-hidden";

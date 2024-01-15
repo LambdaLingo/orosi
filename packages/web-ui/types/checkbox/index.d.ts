@@ -1,53 +1,18 @@
 import type {
   AriaLabelingProps,
+  AriaToggleProps,
   AriaValidationProps,
   DOMProps,
-  FocusableDOMProps,
-  FocusableProps,
+  FormValidationState,
   HelpTextProps,
   InputBase,
   InputDOMProps,
   LabelableProps,
+  ToggleProps,
   Validation,
+  ValidationState,
   ValueBase,
 } from "types";
-import type { ReactNode } from "react";
-
-export type ToggleProps = {
-  /**
-   * The label for the element.
-   */
-  children?: ReactNode;
-  /**
-   * Whether the element should be selected (uncontrolled).
-   */
-  defaultSelected?: boolean;
-  /**
-   * Whether the element should be selected (controlled).
-   */
-  isSelected?: boolean;
-  /**
-   * Handler that is called when the element's selection state changes.
-   */
-  onChange?: (isSelected: boolean) => void;
-  /**
-   * The value of the input element, used when submitting an HTML form. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#htmlattrdefvalue).
-   */
-  value?: string;
-} & InputBase &
-  Validation<boolean> &
-  FocusableProps;
-
-export type AriaToggleProps = {
-  /**
-   * Identifies the element (or elements) whose contents or presence are controlled by the current element.
-   */
-  "aria-controls"?: string;
-} & ToggleProps &
-  FocusableDOMProps &
-  AriaLabelingProps &
-  AriaValidationProps &
-  InputDOMProps;
 
 export type CheckboxGroupProps = ValueBase<string[]> &
   InputBase &
@@ -74,3 +39,47 @@ export type AriaCheckboxGroupProps = CheckboxGroupProps &
 export type AriaCheckboxGroupItemProps = {
   value: string;
 } & Omit<AriaCheckboxProps, "isSelected" | "defaultSelected">;
+
+export type CheckboxGroupState = {
+  /** Current selected values. */
+  readonly value: readonly string[];
+
+  /** Whether the checkbox group is disabled. */
+  readonly isDisabled: boolean;
+
+  /** Whether the checkbox group is read only. */
+  readonly isReadOnly: boolean;
+
+  /**
+   * The current validation state of the checkbox group.
+   * @deprecated Use `isInvalid` instead.
+   */
+  readonly validationState: ValidationState | null;
+
+  /** Whether the checkbox group is invalid. */
+  readonly isInvalid: boolean;
+
+  /**
+   * Whether the checkboxes in the group are required.
+   * This changes to false once at least one item is selected.
+   */
+  readonly isRequired: boolean;
+
+  /** Returns whether the given value is selected. */
+  isSelected: (value: string) => boolean;
+
+  /** Sets the selected values. */
+  setValue: (value: string[]) => void;
+
+  /** Adds a value to the set of selected values. */
+  addValue: (value: string) => void;
+
+  /** Removes a value from the set of selected values. */
+  removeValue: (value: string) => void;
+
+  /** Toggles a value in the set of selected values. */
+  toggleValue: (value: string) => void;
+
+  /** Sets whether one of the checkboxes is invalid. */
+  setInvalid: (value: string, validation: ValidationResult) => void;
+} & FormValidationState;

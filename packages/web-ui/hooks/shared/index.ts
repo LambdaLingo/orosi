@@ -6,3 +6,4 @@ export * from "./use-object-ref";
 export * from "./use-render-children";
 export * from "./use-slotted-context";
 export * from "./use-sync-ref";
+export * from "./use-controlled-state";

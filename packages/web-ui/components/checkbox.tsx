@@ -10,12 +10,11 @@ import type {
   AriaCheckboxProps,
   HoverEvents,
   CheckboxGroupState,
-  VisuallyHidden,
   RACValidation,
   RenderProps,
   SlotProps,
   ContextValue,
-  forwardRefType,
+  ForwardRefType,
 } from "types";
 import {
   useCheckbox,
@@ -33,8 +32,9 @@ import { Provider, mergeProps, filterDOMProps } from "utilities";
 import { FieldErrorContext } from "./field-error";
 import { LabelContext } from "./label";
 import { TextContext } from "./text";
+import { VisuallyHidden } from "./visually-hidden";
 
-export type CheckboxGroupProps = {} & Omit<
+export type CheckboxGroupProps = Omit<
   AriaCheckboxGroupProps,
   | "children"
   | "label"
@@ -46,7 +46,7 @@ export type CheckboxGroupProps = {} & Omit<
   RACValidation &
   RenderProps<CheckboxGroupRenderProps> &
   SlotProps;
-export type CheckboxProps = {} & Omit<
+export type CheckboxProps = Omit<
   AriaCheckboxProps,
   "children" | "validationState" | "validationBehavior"
 > &
@@ -310,12 +310,12 @@ function Checkbox(props: CheckboxProps, ref: ForwardedRef<HTMLLabelElement>) {
  * A checkbox allows a user to select multiple items from a list of individual items, or
  * to mark one individual item as selected.
  */
-const _Checkbox = /*#__PURE__*/ (forwardRef as forwardRefType)(Checkbox);
+const _Checkbox = /*#__PURE__*/ (forwardRef as ForwardRefType)(Checkbox);
 
 /**
  * A checkbox group allows a user to select multiple items from a list of options.
  */
-const _CheckboxGroup = /*#__PURE__*/ (forwardRef as forwardRefType)(
+const _CheckboxGroup = /*#__PURE__*/ (forwardRef as ForwardRefType)(
   CheckboxGroup
 );
 
