@@ -34,30 +34,28 @@ import { FieldErrorContext } from "./field-error";
 import { LabelContext } from "./label";
 import { TextContext } from "./text";
 
-export interface CheckboxGroupProps
-  extends Omit<
-      AriaCheckboxGroupProps,
-      | "children"
-      | "label"
-      | "description"
-      | "errorMessage"
-      | "validationState"
-      | "validationBehavior"
-    >,
-    RACValidation,
-    RenderProps<CheckboxGroupRenderProps>,
-    SlotProps {}
-export interface CheckboxProps
-  extends Omit<
-      AriaCheckboxProps,
-      "children" | "validationState" | "validationBehavior"
-    >,
-    HoverEvents,
-    RACValidation,
-    RenderProps<CheckboxRenderProps>,
-    SlotProps {}
+export type CheckboxGroupProps = {} & Omit<
+  AriaCheckboxGroupProps,
+  | "children"
+  | "label"
+  | "description"
+  | "errorMessage"
+  | "validationState"
+  | "validationBehavior"
+> &
+  RACValidation &
+  RenderProps<CheckboxGroupRenderProps> &
+  SlotProps;
+export type CheckboxProps = {} & Omit<
+  AriaCheckboxProps,
+  "children" | "validationState" | "validationBehavior"
+> &
+  HoverEvents &
+  RACValidation &
+  RenderProps<CheckboxRenderProps> &
+  SlotProps;
 
-export interface CheckboxGroupRenderProps {
+export type CheckboxGroupRenderProps = {
   /**
    * Whether the checkbox group is disabled.
    * @selector [data-disabled]
@@ -82,9 +80,9 @@ export interface CheckboxGroupRenderProps {
    * State of the checkbox group.
    */
   state: CheckboxGroupState;
-}
+};
 
-export interface CheckboxRenderProps {
+export type CheckboxRenderProps = {
   /**
    * Whether the checkbox is selected.
    * @selector [data-selected]
@@ -135,7 +133,7 @@ export interface CheckboxRenderProps {
    * @selector [data-required]
    */
   isRequired: boolean;
-}
+};
 
 export const CheckboxGroupContext =
   createContext<ContextValue<CheckboxGroupProps, HTMLDivElement>>(null);

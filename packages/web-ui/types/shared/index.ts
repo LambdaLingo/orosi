@@ -5,3 +5,5 @@ export * from "./dom";
 export * from "./events";
 export * from "./ref";
 export * from "./input";
+export * from "./labelable";
+export * from "./orientation";

@@ -1,5 +1,4 @@
 import type { ComponentPropsWithRef, ForwardedRef, ReactNode } from "react";
-import type { WithRef } from "./ref";
 
 export type IsDisabledProp = {
   /** Whether the component is disabled. */
