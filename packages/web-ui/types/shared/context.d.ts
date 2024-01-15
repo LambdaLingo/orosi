@@ -13,5 +13,5 @@ export type SlotProps = {
    * A slot name for the component. Slots allow the component to receive props from a parent component.
    * An explicit `null` value indicates that the local props completely override all props received from a parent.
    */
-  slot?: string | null;
+  slot?: string; // check this for null value later
 };

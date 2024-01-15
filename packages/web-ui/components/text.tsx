@@ -13,7 +13,7 @@ import {
 } from "react";
 
 export type TextProps = PolymorphicComponentPropWithRef<
-  "span" | "p",
+  "span" | "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6",
   SlotProps
 >;
 
@@ -23,7 +23,9 @@ export const TextContext = createContext<ContextValue<TextProps, HTMLElement>>(
 
 function Text(
   localprops: TextProps,
-  localref: PolymorphicRef<"span" | "p">
+  localref: PolymorphicRef<
+    "span" | "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6"
+  >
 ): ReactElement {
   const [props, ref] = useContextProps(localprops, localref, TextContext);
   const { as: Component = "span", ...domProps } = props;

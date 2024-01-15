@@ -1,42 +1,38 @@
 import {
+  createContext,
+  type ForwardedRef,
+  forwardRef,
+  useContext,
+  useRef,
+} from "react";
+import type {
   AriaCheckboxGroupProps,
   AriaCheckboxProps,
   HoverEvents,
-  mergeProps,
+  CheckboxGroupState,
+  VisuallyHidden,
+  RACValidation,
+  RenderProps,
+  SlotProps,
+  ContextValue,
+  forwardRefType,
+} from "types";
+import {
   useCheckbox,
   useCheckboxGroup,
   useCheckboxGroupItem,
   useFocusRing,
   useHover,
-  VisuallyHidden,
-} from "react-aria";
-import {
-  CheckboxGroupState,
   useCheckboxGroupState,
   useToggleState,
-} from "react-stately";
-import {
-  ContextValue,
-  forwardRefType,
-  Provider,
-  RACValidation,
-  RenderProps,
-  SlotProps,
   useContextProps,
   useRenderProps,
   useSlot,
-} from "./utils";
-import { FieldErrorContext } from "./FieldError";
-import { filterDOMProps } from "@react-aria/utils";
-import { LabelContext } from "./Label";
-import React, {
-  createContext,
-  ForwardedRef,
-  forwardRef,
-  useContext,
-  useRef,
-} from "react";
-import { TextContext } from "./Text";
+} from "hooks";
+import { Provider, mergeProps, filterDOMProps } from "utilities";
+import { FieldErrorContext } from "./field-error";
+import { LabelContext } from "./label";
+import { TextContext } from "./text";
 
 export interface CheckboxGroupProps
   extends Omit<
