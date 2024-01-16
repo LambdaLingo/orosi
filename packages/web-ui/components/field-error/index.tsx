@@ -7,7 +7,7 @@ import {
 } from "react";
 import { useRenderChildren } from "hooks";
 import type { ValidationResult, RenderChildren } from "types";
-import { Text } from "./text";
+import { Text } from "../text";
 
 export const FieldErrorContext = createContext<ValidationResult | null>(null);
 
