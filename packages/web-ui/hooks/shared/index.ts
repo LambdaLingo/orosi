@@ -7,3 +7,7 @@ export * from "./use-render-children";
 export * from "./use-slotted-context";
 export * from "./use-sync-ref";
 export * from "./use-controlled-state";
+export * from "./use-labels";
+export * from "./use-value-effect";
+export * from "./use-id";
+export * from "./use-slot";

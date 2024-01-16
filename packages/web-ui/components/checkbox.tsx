@@ -11,7 +11,7 @@ import type {
   HoverEvents,
   CheckboxGroupState,
   RACValidation,
-  RenderProps,
+  RenderChildren,
   SlotProps,
   ContextValue,
   ForwardRefType,
@@ -25,14 +25,15 @@ import {
   useCheckboxGroupState,
   useToggleState,
   useContextProps,
-  useRenderProps,
+  useRenderChildren,
   useSlot,
 } from "hooks";
-import { Provider, mergeProps, filterDOMProps } from "utilities";
+import { mergeProps, filterDOMProps } from "utilities";
 import { FieldErrorContext } from "./field-error";
 import { LabelContext } from "./label";
 import { TextContext } from "./text";
 import { VisuallyHidden } from "./visually-hidden";
+import { Provider } from "./provider";
 
 export type CheckboxGroupProps = Omit<
   AriaCheckboxGroupProps,
@@ -44,7 +45,7 @@ export type CheckboxGroupProps = Omit<
   | "validationBehavior"
 > &
   RACValidation &
-  RenderProps<CheckboxGroupRenderProps> &
+  RenderChildren<CheckboxGroupRenderProps> &
   SlotProps;
 export type CheckboxProps = Omit<
   AriaCheckboxProps,
@@ -52,7 +53,7 @@ export type CheckboxProps = Omit<
 > &
   HoverEvents &
   RACValidation &
-  RenderProps<CheckboxRenderProps> &
+  RenderChildren<CheckboxRenderProps> &
   SlotProps;
 
 export type CheckboxGroupRenderProps = {
@@ -145,12 +146,12 @@ function CheckboxGroup(
   ref: ForwardedRef<HTMLDivElement>
 ) {
   [props, ref] = useContextProps(props, ref, CheckboxGroupContext);
-  let state = useCheckboxGroupState({
+  const state = useCheckboxGroupState({
     ...props,
     validationBehavior: props.validationBehavior ?? "native",
   });
-  let [labelRef, label] = useSlot();
-  let {
+  const [labelRef, label] = useSlot();
+  const {
     groupProps,
     labelProps,
     descriptionProps,
@@ -165,7 +166,7 @@ function CheckboxGroup(
     state
   );
 
-  let renderProps = useRenderProps({
+  const RenderChildren = useRenderChildren({
     ...props,
     values: {
       isDisabled: state.isDisabled,
@@ -174,13 +175,12 @@ function CheckboxGroup(
       isInvalid: state.isInvalid,
       state,
     },
-    defaultClassName: "react-aria-CheckboxGroup",
   });
 
   return (
     <div
       {...groupProps}
-      {...renderProps}
+      {...RenderChildren}
       ref={ref}
       slot={props.slot || undefined}
       data-readonly={state.isReadOnly || undefined}
@@ -204,7 +204,7 @@ function CheckboxGroup(
           [FieldErrorContext, validation],
         ]}
       >
-        {renderProps.children}
+        {RenderChildren.children}
       </Provider>
     </div>
   );
@@ -215,9 +215,9 @@ export const CheckboxContext =
 
 function Checkbox(props: CheckboxProps, ref: ForwardedRef<HTMLLabelElement>) {
   [props, ref] = useContextProps(props, ref, CheckboxContext);
-  let inputRef = useRef<HTMLInputElement>(null);
-  let groupState = useContext(CheckboxGroupStateContext);
-  let {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const groupState = useContext(CheckboxGroupStateContext);
+  const {
     labelProps,
     inputProps,
     isSelected,
@@ -253,18 +253,17 @@ function Checkbox(props: CheckboxProps, ref: ForwardedRef<HTMLLabelElement>) {
         useToggleState(props),
         inputRef
       );
-  let { isFocused, isFocusVisible, focusProps } = useFocusRing();
-  let isInteractionDisabled = isDisabled || isReadOnly;
+  const { isFocused, isFocusVisible, focusProps } = useFocusRing();
+  const isInteractionDisabled = isDisabled || isReadOnly;
 
-  let { hoverProps, isHovered } = useHover({
+  const { hoverProps, isHovered } = useHover({
     ...props,
     isDisabled: isInteractionDisabled,
   });
 
-  let renderProps = useRenderProps({
+  const RenderChildren = useRenderChildren({
     // TODO: should data attrs go on the label or on the <input>? useCheckbox passes them to the input...
     ...props,
-    defaultClassName: "react-aria-Checkbox",
     values: {
       isSelected,
       isIndeterminate: props.isIndeterminate || false,
@@ -279,12 +278,12 @@ function Checkbox(props: CheckboxProps, ref: ForwardedRef<HTMLLabelElement>) {
     },
   });
 
-  let DOMProps = filterDOMProps(props);
+  const DOMProps = filterDOMProps(props);
   delete DOMProps.id;
 
   return (
     <label
-      {...mergeProps(DOMProps, labelProps, hoverProps, renderProps)}
+      {...mergeProps(DOMProps, labelProps, hoverProps, RenderChildren)}
       ref={ref}
       slot={props.slot || undefined}
       data-selected={isSelected || undefined}
@@ -301,7 +300,7 @@ function Checkbox(props: CheckboxProps, ref: ForwardedRef<HTMLLabelElement>) {
       <VisuallyHidden elementType="span">
         <input {...inputProps} {...focusProps} ref={inputRef} />
       </VisuallyHidden>
-      {renderProps.children}
+      {RenderChildren.children}
     </label>
   );
 }
