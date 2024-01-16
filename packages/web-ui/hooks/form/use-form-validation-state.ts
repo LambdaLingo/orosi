@@ -1,13 +1,6 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { FormValidationContext } from "store";
 import type {
-  ValidationErrors,
   ValidationFunction,
   ValidationResult,
   Validation,
@@ -39,8 +32,6 @@ export const DEFAULT_VALIDATION_RESULT: ValidationResult = {
   validationDetails: VALID_VALIDITY_STATE,
   validationErrors: [],
 };
-
-export const FormValidationContext = createContext<ValidationErrors>({});
 
 export const privateValidationStateProp = "__formValidationState" + Date.now();
 

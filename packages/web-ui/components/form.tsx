@@ -3,16 +3,14 @@ import {
   type ReactElement,
   type PropsWithChildren,
   forwardRef,
-  createContext,
 } from "react";
-import type { FormProps as SharedFormProps, ValidationErrors } from "types";
+import { FormValidationContext } from "store";
+import type { FormProps } from "types";
 
-export type FormProps = PropsWithChildren<SharedFormProps>;
-
-export const FormValidationContext = createContext<ValidationErrors>({});
+export type FormLocalProps = PropsWithChildren<FormProps>;
 
 function Form(
-  props: FormProps,
+  props: FormLocalProps,
   ref: ForwardedRef<HTMLFormElement>
 ): ReactElement {
   const { validationErrors, children, ...domProps } = props;
@@ -31,7 +29,7 @@ Form.displayName = "Form";
  * with support for providing field validation errors.
  */
 const _Form = forwardRef(Form) as (
-  props: FormProps,
+  props: FormLocalProps,
   ref: ForwardedRef<HTMLFormElement>
 ) => ReactElement;
 export { _Form as Form };
