@@ -7,7 +7,14 @@ import {
   LabelContext,
   TextContext,
 } from "store";
-import { AriaNumberFieldProps, useLocale, useNumberField } from "react-aria";
+import {
+  AriaNumberFieldProps,
+  useLocale,
+  useNumberField,
+  useContextProps,
+  useRenderProps,
+  useSlot,
+} from "hooks";
 
 import {
   ContextValue,
@@ -17,9 +24,6 @@ import {
   removeDataAttributes,
   RenderProps,
   SlotProps,
-  useContextProps,
-  useRenderProps,
-  useSlot,
 } from "./utils";
 import { filterDOMProps } from "@react-aria/utils";
 import { InputDOMProps } from "@react-types/shared";

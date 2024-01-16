@@ -5,3 +5,4 @@ export * from "./field-error";
 export * from "./label";
 export * from "./text";
 export * from "./group";
+export * from "./input";

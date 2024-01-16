@@ -1,9 +1,10 @@
 import {
-  createContext,
+  forwardRef,
   type ForwardedRef,
   type InputHTMLAttributes,
+  type ReactElement,
 } from "react";
-import type { HoverEvents, ContextValue, RenderChildren } from "types";
+import type { ForwardRefType, HoverEvents, RenderChildren } from "types";
 import {
   useContextProps,
   useRenderChildren,
@@ -11,6 +12,7 @@ import {
   useHover,
 } from "hooks";
 import { mergeProps } from "utilities";
+import { InputContext } from "store";
 
 export type InputRenderProps = {
   /**
@@ -47,17 +49,16 @@ export type InputProps = Omit<
   HoverEvents &
   RenderChildren<InputRenderProps>;
 
-export const InputContext = createContext<
-  ContextValue<InputProps, HTMLInputElement>
->({});
-
 const filterHoverProps = (props: InputProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let { onHoverStart, onHoverChange, onHoverEnd, ...otherProps } = props;
+  const { onHoverStart, onHoverChange, onHoverEnd, ...otherProps } = props;
   return otherProps;
 };
 
-function Input(props: InputProps, ref: ForwardedRef<HTMLInputElement>) {
+function Input(
+  props: InputProps,
+  ref: ForwardedRef<HTMLInputElement>
+): ReactElement {
   [props, ref] = useContextProps(props, ref, InputContext);
 
   const { hoverProps, isHovered } = useHover(props);
@@ -83,12 +84,12 @@ function Input(props: InputProps, ref: ForwardedRef<HTMLInputElement>) {
     <input
       {...mergeProps(filterHoverProps(props), focusProps, hoverProps)}
       {...renderChildren}
-      ref={ref}
-      data-focused={isFocused || undefined}
       data-disabled={props.disabled || undefined}
-      data-hovered={isHovered || undefined}
       data-focus-visible={isFocusVisible || undefined}
+      data-focused={isFocused || undefined}
+      data-hovered={isHovered || undefined}
       data-invalid={isInvalid || undefined}
+      ref={ref}
     />
   );
 }
@@ -96,5 +97,5 @@ function Input(props: InputProps, ref: ForwardedRef<HTMLInputElement>) {
 /**
  * An input allows a user to input text.
  */
-const _Input = /*#__PURE__*/ createHideableComponent(Input);
+const _Input = /*#__PURE__*/ (forwardRef as ForwardRefType)(Input);
 export { _Input as Input };
