@@ -1,20 +1,17 @@
 import {
   createContext,
   type ForwardedRef,
+  type ReactElement,
   forwardRef,
   useContext,
   useRef,
 } from "react";
 import type {
-  AriaCheckboxGroupProps,
-  AriaCheckboxProps,
-  HoverEvents,
   CheckboxGroupState,
-  RACValidation,
-  RenderChildren,
-  SlotProps,
   ContextValue,
   ForwardRefType,
+  CheckboxGroupLocalProps,
+  CheckboxLocalProps,
 } from "types";
 import {
   useCheckbox,
@@ -35,117 +32,20 @@ import { TextContext } from "./text";
 import { VisuallyHidden } from "./visually-hidden";
 import { Provider } from "./provider";
 
-export type CheckboxGroupProps = Omit<
-  AriaCheckboxGroupProps,
-  | "children"
-  | "label"
-  | "description"
-  | "errorMessage"
-  | "validationState"
-  | "validationBehavior"
-> &
-  RACValidation &
-  RenderChildren<CheckboxGroupRenderProps> &
-  SlotProps;
-export type CheckboxProps = Omit<
-  AriaCheckboxProps,
-  "children" | "validationState" | "validationBehavior"
-> &
-  HoverEvents &
-  RACValidation &
-  RenderChildren<CheckboxRenderProps> &
-  SlotProps;
-
-export type CheckboxGroupRenderProps = {
-  /**
-   * Whether the checkbox group is disabled.
-   * @selector [data-disabled]
-   */
-  isDisabled: boolean;
-  /**
-   * Whether the checkbox group is read only.
-   * @selector [data-readonly]
-   */
-  isReadOnly: boolean;
-  /**
-   * Whether the checkbox group is required.
-   * @selector [data-required]
-   */
-  isRequired: boolean;
-  /**
-   * Whether the checkbox group is invalid.
-   * @selector [data-invalid]
-   */
-  isInvalid: boolean;
-  /**
-   * State of the checkbox group.
-   */
-  state: CheckboxGroupState;
-};
-
-export type CheckboxRenderProps = {
-  /**
-   * Whether the checkbox is selected.
-   * @selector [data-selected]
-   */
-  isSelected: boolean;
-  /**
-   * Whether the checkbox is indeterminate.
-   * @selector [data-indeterminate]
-   */
-  isIndeterminate: boolean;
-  /**
-   * Whether the checkbox is currently hovered with a mouse.
-   * @selector [data-hovered]
-   */
-  isHovered: boolean;
-  /**
-   * Whether the checkbox is currently in a pressed state.
-   * @selector [data-pressed]
-   */
-  isPressed: boolean;
-  /**
-   * Whether the checkbox is focused, either via a mouse or keyboard.
-   * @selector [data-focused]
-   */
-  isFocused: boolean;
-  /**
-   * Whether the checkbox is keyboard focused.
-   * @selector [data-focus-visible]
-   */
-  isFocusVisible: boolean;
-  /**
-   * Whether the checkbox is disabled.
-   * @selector [data-disabled]
-   */
-  isDisabled: boolean;
-  /**
-   * Whether the checkbox is read only.
-   * @selector [data-readonly]
-   */
-  isReadOnly: boolean;
-  /**
-   * Whether the checkbox invalid.
-   * @selector [data-invalid]
-   */
-  isInvalid: boolean;
-  /**
-   * Whether the checkbox is required.
-   * @selector [data-required]
-   */
-  isRequired: boolean;
-};
-
 export const CheckboxGroupContext =
-  createContext<ContextValue<CheckboxGroupProps, HTMLDivElement>>(null);
+  createContext<ContextValue<CheckboxGroupLocalProps, HTMLDivElement>>(null);
 export const CheckboxGroupStateContext =
   createContext<CheckboxGroupState | null>(null);
 
 function CheckboxGroup(
-  props: CheckboxGroupProps,
-  ref: ForwardedRef<HTMLDivElement>
-) {
-  [props, ref] = useContextProps(props, ref, CheckboxGroupContext);
+  localprops: CheckboxGroupLocalProps,
+  localref: ForwardedRef<HTMLDivElement>
+): ReactElement {
+  const [props, ref] = useContextProps(
+    localprops,
+    localref,
+    CheckboxGroupContext
+  );
   const state = useCheckboxGroupState({
     ...props,
     validationBehavior: props.validationBehavior ?? "native",
@@ -181,12 +81,12 @@ function CheckboxGroup(
     <div
       {...groupProps}
       {...RenderChildren}
-      ref={ref}
-      slot={props.slot || undefined}
+      data-disabled={props.isDisabled || undefined}
+      data-invalid={state.isInvalid || undefined}
       data-readonly={state.isReadOnly || undefined}
       data-required={props.isRequired || undefined}
-      data-invalid={state.isInvalid || undefined}
-      data-disabled={props.isDisabled || undefined}
+      ref={ref}
+      slot={props.slot || undefined}
     >
       <Provider
         values={[
@@ -211,10 +111,13 @@ function CheckboxGroup(
 }
 
 export const CheckboxContext =
-  createContext<ContextValue<CheckboxProps, HTMLLabelElement>>(null);
+  createContext<ContextValue<CheckboxLocalProps, HTMLLabelElement>>(null);
 
-function Checkbox(props: CheckboxProps, ref: ForwardedRef<HTMLLabelElement>) {
-  [props, ref] = useContextProps(props, ref, CheckboxContext);
+function Checkbox(
+  localprops: CheckboxLocalProps,
+  localref: ForwardedRef<HTMLLabelElement>
+): ReactElement {
+  const [props, ref] = useContextProps(localprops, localref, CheckboxContext);
   const inputRef = useRef<HTMLInputElement>(null);
   const groupState = useContext(CheckboxGroupStateContext);
   const {
@@ -248,8 +151,8 @@ function Checkbox(props: CheckboxProps, ref: ForwardedRef<HTMLLabelElement>) {
           children:
             typeof props.children === "function" ? true : props.children,
           validationBehavior: props.validationBehavior ?? "native",
-          // eslint-disable-next-line react-hooks/rules-of-hooks
         },
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         useToggleState(props),
         inputRef
       );
@@ -284,18 +187,18 @@ function Checkbox(props: CheckboxProps, ref: ForwardedRef<HTMLLabelElement>) {
   return (
     <label
       {...mergeProps(DOMProps, labelProps, hoverProps, RenderChildren)}
+      data-disabled={isDisabled || undefined}
+      data-focus-visible={isFocusVisible || undefined}
+      data-focused={isFocused || undefined}
+      data-hovered={isHovered || undefined}
+      data-indeterminate={props.isIndeterminate || undefined}
+      data-invalid={isInvalid || undefined}
+      data-pressed={isPressed || undefined}
+      data-readonly={isReadOnly || undefined}
+      data-required={props.isRequired || undefined}
+      data-selected={isSelected || undefined}
       ref={ref}
       slot={props.slot || undefined}
-      data-selected={isSelected || undefined}
-      data-indeterminate={props.isIndeterminate || undefined}
-      data-pressed={isPressed || undefined}
-      data-hovered={isHovered || undefined}
-      data-focused={isFocused || undefined}
-      data-focus-visible={isFocusVisible || undefined}
-      data-disabled={isDisabled || undefined}
-      data-readonly={isReadOnly || undefined}
-      data-invalid={isInvalid || undefined}
-      data-required={props.isRequired || undefined}
     >
       <VisuallyHidden elementType="span">
         <input {...inputProps} {...focusProps} ref={inputRef} />

@@ -5,9 +5,13 @@ import type {
   DOMProps,
   FormValidationState,
   HelpTextProps,
+  HoverEvents,
   InputBase,
   InputDOMProps,
   LabelableProps,
+  RACValidation,
+  RenderChildren,
+  SlotProps,
   ToggleProps,
   Validation,
   ValidationState,
@@ -83,3 +87,104 @@ export type CheckboxGroupState = {
   /** Sets whether one of the checkboxes is invalid. */
   setInvalid: (value: string, validation: ValidationResult) => void;
 } & FormValidationState;
+
+export type CheckboxGroupLocalProps = Omit<
+  AriaCheckboxGroupProps,
+  | "children"
+  | "label"
+  | "description"
+  | "errorMessage"
+  | "validationState"
+  | "validationBehavior"
+> &
+  RACValidation &
+  RenderChildren<CheckboxGroupRenderProps> &
+  SlotProps;
+export type CheckboxLocalProps = Omit<
+  AriaCheckboxProps,
+  "children" | "validationState" | "validationBehavior"
+> &
+  HoverEvents &
+  RACValidation &
+  RenderChildren<CheckboxRenderProps> &
+  SlotProps;
+
+export type CheckboxGroupRenderProps = {
+  /**
+   * Whether the checkbox group is disabled.
+   * @selector [data-disabled]
+   */
+  isDisabled: boolean;
+  /**
+   * Whether the checkbox group is read only.
+   * @selector [data-readonly]
+   */
+  isReadOnly: boolean;
+  /**
+   * Whether the checkbox group is required.
+   * @selector [data-required]
+   */
+  isRequired: boolean;
+  /**
+   * Whether the checkbox group is invalid.
+   * @selector [data-invalid]
+   */
+  isInvalid: boolean;
+  /**
+   * State of the checkbox group.
+   */
+  state: CheckboxGroupState;
+};
+
+export type CheckboxRenderProps = {
+  /**
+   * Whether the checkbox is selected.
+   * @selector [data-selected]
+   */
+  isSelected: boolean;
+  /**
+   * Whether the checkbox is indeterminate.
+   * @selector [data-indeterminate]
+   */
+  isIndeterminate: boolean;
+  /**
+   * Whether the checkbox is currently hovered with a mouse.
+   * @selector [data-hovered]
+   */
+  isHovered: boolean;
+  /**
+   * Whether the checkbox is currently in a pressed state.
+   * @selector [data-pressed]
+   */
+  isPressed: boolean;
+  /**
+   * Whether the checkbox is focused, either via a mouse or keyboard.
+   * @selector [data-focused]
+   */
+  isFocused: boolean;
+  /**
+   * Whether the checkbox is keyboard focused.
+   * @selector [data-focus-visible]
+   */
+  isFocusVisible: boolean;
+  /**
+   * Whether the checkbox is disabled.
+   * @selector [data-disabled]
+   */
+  isDisabled: boolean;
+  /**
+   * Whether the checkbox is read only.
+   * @selector [data-readonly]
+   */
+  isReadOnly: boolean;
+  /**
+   * Whether the checkbox invalid.
+   * @selector [data-invalid]
+   */
+  isInvalid: boolean;
+  /**
+   * Whether the checkbox is required.
+   * @selector [data-required]
+   */
+  isRequired: boolean;
+};
