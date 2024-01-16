@@ -13,6 +13,7 @@ import type {
   CheckboxGroupLocalProps,
   CheckboxLocalProps,
 } from "types";
+import { FieldErrorContext, LabelContext, TextContext } from "store";
 import {
   useCheckbox,
   useCheckboxGroup,
@@ -26,9 +27,6 @@ import {
   useSlot,
 } from "hooks";
 import { mergeProps, filterDOMProps } from "utilities";
-import { FieldErrorContext } from "../field-error";
-import { LabelContext } from "../label";
-import { TextContext } from "../text";
 import { VisuallyHidden } from "../visually-hidden";
 import { Provider } from "../provider";
 

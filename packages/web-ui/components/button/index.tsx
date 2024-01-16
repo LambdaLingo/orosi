@@ -1,34 +1,8 @@
-import {
-  type ForwardedRef,
-  type ReactElement,
-  createContext,
-  forwardRef,
-} from "react";
+import { type ForwardedRef, type ReactElement, forwardRef } from "react";
 import { useContextProps, useButton, useRenderChildren } from "hooks";
 import { filterDOMProps } from "utilities";
-import type {
-  ButtonContextValue,
-  ButtonProps,
-  ButtonUIStates,
-  ContextValue,
-} from "types";
-
-const additionalButtonHTMLAttributes = new Set([
-  "form",
-  "formAction",
-  "formEncType",
-  "formMethod",
-  "formNoValidate",
-  "formTarget",
-  "name",
-  "value",
-  "preventFocusOnPress",
-  "preventScrollOnPress",
-]);
-
-export const ButtonContext = createContext<
-  ContextValue<ButtonContextValue, HTMLButtonElement>
->({});
+import type { ButtonContextValue, ButtonProps, ButtonUIStates } from "types";
+import { ButtonContext, additionalButtonHTMLAttributes } from "store";
 
 function Button(
   { type = "button", ...localprops }: ButtonProps,

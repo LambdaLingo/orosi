@@ -1,25 +1,16 @@
 import type {
-  ContextValue,
   PolymorphicComponentPropWithRef,
   PolymorphicRef,
   SlotProps,
 } from "types";
 import { useContextProps } from "hooks";
-import {
-  type ForwardedRef,
-  type ReactElement,
-  createContext,
-  forwardRef,
-} from "react";
+import { type ForwardedRef, type ReactElement, forwardRef } from "react";
+import { TextContext } from "store/text";
 
 export type TextProps = PolymorphicComponentPropWithRef<
   "span" | "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6",
   SlotProps
 >;
-
-export const TextContext = createContext<ContextValue<TextProps, HTMLElement>>(
-  {}
-);
 
 function Text(
   localprops: TextProps,

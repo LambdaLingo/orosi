@@ -1,15 +1,13 @@
 import {
   type ForwardedRef,
   type ReactElement,
-  createContext,
   forwardRef,
   useContext,
 } from "react";
+import { FieldErrorContext } from "store";
 import { useRenderChildren } from "hooks";
 import type { ValidationResult, RenderChildren } from "types";
-import { Text } from "../text";
-
-export const FieldErrorContext = createContext<ValidationResult | null>(null);
+import { Text } from "components/text";
 
 export type FieldErrorRenderProps = ValidationResult;
 export type FieldErrorProps = RenderChildren<FieldErrorRenderProps>;

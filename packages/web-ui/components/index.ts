@@ -5,3 +5,6 @@ export * from "./text";
 export * from "./field-error";
 export * from "./label";
 export * from "./visually-hidden";
+export * from "./group";
+export * from "./number-field";
+export * from "./input";

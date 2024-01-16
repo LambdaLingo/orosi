@@ -1,20 +1,16 @@
-import { createContext, forwardRef, type ReactElement } from "react";
+import { forwardRef, type ReactElement } from "react";
 import type {
-  ContextValue,
   PolymorphicComponentPropWithRef,
   PolymorphicRef,
   SlotProps,
 } from "types";
+import { LabelContext } from "store";
 import { useContextProps } from "hooks";
 
 export type LabelProps = PolymorphicComponentPropWithRef<
   "label" | "span",
   SlotProps
 >;
-
-export const LabelContext = createContext<
-  ContextValue<LabelProps, HTMLLabelElement>
->({});
 
 function Label(
   localprops: LabelProps,
