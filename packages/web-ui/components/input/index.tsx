@@ -51,7 +51,7 @@ export const InputContext = createContext<
   ContextValue<InputProps, HTMLInputElement>
 >({});
 
-let filterHoverProps = (props: InputProps) => {
+const filterHoverProps = (props: InputProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let { onHoverStart, onHoverChange, onHoverEnd, ...otherProps } = props;
   return otherProps;
@@ -60,14 +60,15 @@ let filterHoverProps = (props: InputProps) => {
 function Input(props: InputProps, ref: ForwardedRef<HTMLInputElement>) {
   [props, ref] = useContextProps(props, ref, InputContext);
 
-  let { hoverProps, isHovered } = useHover(props);
-  let { isFocused, isFocusVisible, focusProps } = useFocusRing({
+  const { hoverProps, isHovered } = useHover(props);
+  const { isFocused, isFocusVisible, focusProps } = useFocusRing({
     isTextInput: true,
     autoFocus: props.autoFocus,
   });
 
-  let isInvalid = !!props["aria-invalid"] && props["aria-invalid"] !== "false";
-  let renderChildren = useRenderChildren({
+  const isInvalid =
+    !!props["aria-invalid"] && props["aria-invalid"] !== "false";
+  const renderChildren = useRenderChildren({
     ...props,
     values: {
       isHovered,
