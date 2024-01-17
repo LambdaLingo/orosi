@@ -1,4 +1,14 @@
 import { type ForwardedRef, createContext, forwardRef, useRef } from "react";
+import type {
+  AriaNumberFieldProps,
+  NumberFieldState,
+  SlotProps,
+  ContextValue,
+  ForwardRefType,
+  RACValidation,
+  RenderChildren,
+  InputDOMProps,
+} from "types";
 import {
   ButtonContext,
   FieldErrorContext,
@@ -8,26 +18,15 @@ import {
   TextContext,
 } from "store";
 import {
-  AriaNumberFieldProps,
   useLocale,
   useNumberField,
+  useNumberFieldState,
   useContextProps,
-  useRenderProps,
+  useRenderChildren,
   useSlot,
 } from "hooks";
-
-import {
-  ContextValue,
-  forwardRefType,
-  Provider,
-  RACValidation,
-  removeDataAttributes,
-  RenderProps,
-  SlotProps,
-} from "./utils";
-import { filterDOMProps } from "@react-aria/utils";
-import { InputDOMProps } from "@react-types/shared";
-import { NumberFieldState, useNumberFieldState } from "react-stately";
+import { removeDataAttributes, filterDOMProps } from "utilities";
+import { Provider } from "components/provider";
 
 export interface NumberFieldRenderProps {
   /**
@@ -58,7 +57,7 @@ export interface NumberFieldProps
     >,
     RACValidation,
     InputDOMProps,
-    RenderProps<NumberFieldRenderProps>,
+    RenderChildren<NumberFieldRenderProps>,
     SlotProps {}
 
 export const NumberFieldContext =
@@ -100,7 +99,7 @@ function NumberField(
     inputRef
   );
 
-  let renderProps = useRenderProps({
+  let RenderChildren = useRenderChildren({
     ...props,
     values: {
       state,
@@ -143,7 +142,7 @@ function NumberField(
     >
       <div
         {...DOMProps}
-        {...renderProps}
+        {...RenderChildren}
         ref={ref}
         slot={props.slot || undefined}
         data-disabled={props.isDisabled || undefined}
@@ -163,5 +162,5 @@ function NumberField(
 /**
  * A number field allows a user to enter a number, and increment or decrement the value using stepper buttons.
  */
-const _NumberField = /*#__PURE__*/ (forwardRef as forwardRefType)(NumberField);
+const _NumberField = /*#__PURE__*/ (forwardRef as ForwardRefType)(NumberField);
 export { _NumberField as NumberField };

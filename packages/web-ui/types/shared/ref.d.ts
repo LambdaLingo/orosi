@@ -1,4 +1,4 @@
-import type React, { ForwardedRef } from "react";
+import type React, { ForwardedRef, Ref } from "react";
 
 /**
  * Override forwardRef types so generics work.
@@ -15,3 +15,18 @@ declare function forwardRef<T, P = {}>(
 export type ForwardRefType = typeof forwardRef;
 
 export type WithRef<T, E> = T & { ref?: ForwardedRef<E> };
+export type DOMRefValue<T extends HTMLElement = HTMLElement> = {
+  UNSAFE_getDOMNode: () => T;
+};
+
+export type FocusableRefValue<
+  T extends HTMLElement = HTMLElement,
+  D extends HTMLElement = T,
+> = {
+  focus: () => void;
+} & DOMRefValue<D>;
+
+export type DOMRef<T extends HTMLElement = HTMLElement> = Ref<DOMRefValue<T>>;
+export type FocusableRef<T extends HTMLElement = HTMLElement> = Ref<
+  FocusableRefValue<T>
+>;

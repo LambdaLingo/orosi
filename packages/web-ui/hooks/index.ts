@@ -7,4 +7,7 @@ export * from "./visually-hidden";
 export * from "./form";
 export * from "./toggle";
 export * from "./checkbox";
-export * from "./label/use-field";
+export * from "./label";
+export * from "./text-field";
+export * from "./number-field";
+export * from "./i18n";

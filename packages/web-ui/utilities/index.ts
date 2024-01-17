@@ -14,3 +14,5 @@ export * from "./platform";
 export * from "./run-after-transition";
 export * from "./text-selection";
 export * from "./utils";
+export * from "./number";
+export * from "./is-rtl";

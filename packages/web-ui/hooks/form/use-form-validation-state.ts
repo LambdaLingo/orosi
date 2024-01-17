@@ -1,39 +1,17 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { FormValidationContext } from "store";
+import {
+  CUSTOM_VALIDITY_STATE,
+  VALID_VALIDITY_STATE,
+  DEFAULT_VALIDATION_RESULT,
+  FormValidationContext,
+  privateValidationStateProp,
+} from "store";
 import type {
   ValidationFunction,
   ValidationResult,
   Validation,
   FormValidationState,
 } from "types";
-
-export const VALID_VALIDITY_STATE: ValidityState = {
-  badInput: false,
-  customError: false,
-  patternMismatch: false,
-  rangeOverflow: false,
-  rangeUnderflow: false,
-  stepMismatch: false,
-  tooLong: false,
-  tooShort: false,
-  typeMismatch: false,
-  valueMissing: false,
-  valid: true,
-};
-
-const CUSTOM_VALIDITY_STATE: ValidityState = {
-  ...VALID_VALIDITY_STATE,
-  customError: true,
-  valid: false,
-};
-
-export const DEFAULT_VALIDATION_RESULT: ValidationResult = {
-  isInvalid: false,
-  validationDetails: VALID_VALIDITY_STATE,
-  validationErrors: [],
-};
-
-export const privateValidationStateProp = "__formValidationState" + Date.now();
 
 type FormValidationProps<T> = {
   builtinValidation?: ValidationResult;

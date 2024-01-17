@@ -11,3 +11,4 @@ export * from "./use-labels";
 export * from "./use-value-effect";
 export * from "./use-id";
 export * from "./use-slot";
+export * from "./use-event";

@@ -5,3 +5,5 @@ export * from "./checkbox";
 export * from "./visually-hidden";
 export * from "./toggle";
 export * from "./provider";
+export * from "./number-field";
+export * from "./text-field";

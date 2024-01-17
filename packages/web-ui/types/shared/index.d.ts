@@ -7,3 +7,4 @@ export * from "./ref";
 export * from "./input";
 export * from "./labelable";
 export * from "./orientation";
+export * from "./locale";
