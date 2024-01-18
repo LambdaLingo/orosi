@@ -12,3 +12,4 @@ export * from "./text-field";
 export * from "./number-field";
 export * from "./i18n";
 export * from "./radio";
+export * from "./search-field";

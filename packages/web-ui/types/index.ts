@@ -9,3 +9,4 @@ export * from "./number-field";
 export * from "./text-field";
 export * from "./radio";
 export * from "./focus";
+export * from "./search-field";
