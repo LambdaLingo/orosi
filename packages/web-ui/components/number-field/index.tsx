@@ -28,7 +28,7 @@ import {
 import { removeDataAttributes, filterDOMProps } from "utilities";
 import { Provider } from "components/provider";
 
-export interface NumberFieldRenderProps {
+export type NumberFieldRenderProps = {
   /**
    * Whether the number field is disabled.
    * @selector [data-disabled]
@@ -43,9 +43,9 @@ export interface NumberFieldRenderProps {
    * State of the number field.
    */
   state: NumberFieldState;
-}
+};
 
-export type NumberFieldProps = Omit<
+export type LocalNumberFieldProps = Omit<
   AriaNumberFieldProps,
   | "label"
   | "placeholder"
@@ -60,13 +60,13 @@ export type NumberFieldProps = Omit<
   SlotProps;
 
 export const NumberFieldContext =
-  createContext<ContextValue<NumberFieldProps, HTMLDivElement>>(null);
+  createContext<ContextValue<LocalNumberFieldProps, HTMLDivElement>>(null);
 export const NumberFieldStateContext = createContext<NumberFieldState | null>(
   null
 );
 
 function NumberField(
-  props: NumberFieldProps,
+  props: LocalNumberFieldProps,
   ref: ForwardedRef<HTMLDivElement>
 ) {
   [props, ref] = useContextProps(props, ref, NumberFieldContext);

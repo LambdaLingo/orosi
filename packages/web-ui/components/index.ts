@@ -8,3 +8,4 @@ export * from "./visually-hidden";
 export * from "./group";
 export * from "./number-field";
 export * from "./input";
+export * from "./provider";
