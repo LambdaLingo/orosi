@@ -7,3 +7,4 @@ export * from "./text";
 export * from "./group";
 export * from "./input";
 export * from "./i18n";
+export * from "./radio";

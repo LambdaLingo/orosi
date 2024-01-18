@@ -11,3 +11,4 @@ export * from "./label";
 export * from "./text-field";
 export * from "./number-field";
 export * from "./i18n";
+export * from "./radio";

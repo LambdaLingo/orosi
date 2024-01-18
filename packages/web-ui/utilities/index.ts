@@ -17,3 +17,4 @@ export * from "./utils";
 export * from "./number";
 export * from "./is-rtl";
 export * from "./remove-data-attributes";
+export * from "./get-focusable-tree-walker";
