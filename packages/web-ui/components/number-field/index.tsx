@@ -45,20 +45,19 @@ export interface NumberFieldRenderProps {
   state: NumberFieldState;
 }
 
-export interface NumberFieldProps
-  extends Omit<
-      AriaNumberFieldProps,
-      | "label"
-      | "placeholder"
-      | "description"
-      | "errorMessage"
-      | "validationState"
-      | "validationBehavior"
-    >,
-    RACValidation,
-    InputDOMProps,
-    RenderChildren<NumberFieldRenderProps>,
-    SlotProps {}
+export type NumberFieldProps = Omit<
+  AriaNumberFieldProps,
+  | "label"
+  | "placeholder"
+  | "description"
+  | "errorMessage"
+  | "validationState"
+  | "validationBehavior"
+> &
+  RACValidation &
+  InputDOMProps &
+  RenderChildren<NumberFieldRenderProps> &
+  SlotProps;
 
 export const NumberFieldContext =
   createContext<ContextValue<NumberFieldProps, HTMLDivElement>>(null);
@@ -80,7 +79,7 @@ function NumberField(
 
   let inputRef = useRef<HTMLInputElement>(null);
   let [labelRef, label] = useSlot();
-  let {
+  const {
     labelProps,
     groupProps,
     inputProps,
@@ -106,7 +105,6 @@ function NumberField(
       isDisabled: props.isDisabled || false,
       isInvalid: validation.isInvalid || false,
     },
-    defaultClassName: "react-aria-NumberField",
   });
 
   let DOMProps = filterDOMProps(props);

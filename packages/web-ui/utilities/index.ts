@@ -16,3 +16,4 @@ export * from "./text-selection";
 export * from "./utils";
 export * from "./number";
 export * from "./is-rtl";
+export * from "./remove-data-attributes";
