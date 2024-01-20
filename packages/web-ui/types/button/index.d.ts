@@ -108,3 +108,18 @@ export type ButtonProps = ButtonDOMProps &
 export type ButtonContextValue = ButtonProps & {
   isPressed?: boolean;
 };
+
+export type ButtonPropsWithoutChildren = Omit<ButtonProps, "children">;
+
+export type ButtonResult<T> = {
+  /** Props for the button element. */
+  buttonProps: T;
+  /** Whether the button is currently pressed. */
+  isPressed: boolean;
+  /** Whether the button is currently hovered. */
+  isHovered: boolean;
+  /** Whether the button is currently focused. */
+  isFocused: boolean;
+  /** Whether the button is currently focused and the focus is visible. */
+  isFocusVisible: boolean;
+};

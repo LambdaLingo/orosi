@@ -8,3 +8,5 @@ export * from "./input";
 export * from "./labelable";
 export * from "./orientation";
 export * from "./locale";
+export * from "./press";
+export * from "./interaction";

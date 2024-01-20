@@ -10,3 +10,4 @@ export * from "./number-field";
 export * from "./input";
 export * from "./provider";
 export * from "./radio";
+export * from "./input";

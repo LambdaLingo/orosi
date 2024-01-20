@@ -2,22 +2,8 @@ import type { ButtonHTMLAttributes, RefObject } from "react";
 import { usePress, useHover } from "hooks/interactions";
 import { useFocusable, useFocusRing } from "hooks/focus";
 import { filterDOMProps, mergeProps } from "utilities";
-import type { ButtonProps } from "types";
+import type { ButtonPropsWithoutChildren, ButtonResult } from "types";
 
-export type ButtonPropsWithoutChildren = Omit<ButtonProps, "children">;
-
-export type ButtonResult<T> = {
-  /** Props for the button element. */
-  buttonProps: T;
-  /** Whether the button is currently pressed. */
-  isPressed: boolean;
-  /** Whether the button is currently hovered. */
-  isHovered: boolean;
-  /** Whether the button is currently focused. */
-  isFocused: boolean;
-  /** Whether the button is currently focused and the focus is visible. */
-  isFocusVisible: boolean;
-};
 /**
  * Provides the behavior and accessibility implementation for a button component. Handles mouse, keyboard, and touch interactions,
  * focus behavior, and ARIA props for both native button elements and custom element types.
