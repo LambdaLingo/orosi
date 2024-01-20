@@ -20,7 +20,7 @@ export type ToggleButtonResult = Omit<
 export function useToggleButton(
   props: AriaToggleButtonOptions<ElementType>,
   state: ToggleState,
-  ref: RefObject<any>
+  ref: RefObject<HTMLButtonElement>
 ): ToggleButtonResult {
   const { isSelected } = state;
   const { isPressed, buttonProps } = useButton(
