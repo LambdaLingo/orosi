@@ -5,3 +5,4 @@ export * from "./use-hover";
 export * from "./use-keyboard";
 export * from "./use-press";
 export * from "./use-scroll-wheel";
+export * from "./use-move";

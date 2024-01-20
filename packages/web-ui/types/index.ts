@@ -10,3 +10,4 @@ export * from "./text-field";
 export * from "./radio";
 export * from "./focus";
 export * from "./search-field";
+export * from "./slider";

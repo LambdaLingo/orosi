@@ -95,7 +95,6 @@ function Slider<T extends number | number[]>(
       isDisabled: state.isDisabled,
       state,
     },
-    defaultClassName: "react-aria-Slider",
   });
 
   let DOMProps = filterDOMProps(props);
@@ -205,7 +204,6 @@ function SliderTrack(
   });
   let RenderChildren = useRenderChildren({
     ...props,
-    defaultClassName: "react-aria-SliderTrack",
     values: {
       orientation: state.orientation,
       isDisabled: state.isDisabled,
@@ -301,7 +299,6 @@ function SliderThumb(
 
   let RenderChildren = useRenderChildren({
     ...props,
-    defaultClassName: "react-aria-SliderThumb",
     values: {
       state,
       isHovered,

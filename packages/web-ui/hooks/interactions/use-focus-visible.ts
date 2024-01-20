@@ -12,17 +12,17 @@ type HandlerEvent =
   | null;
 type Handler = (modality: Modality, e: HandlerEvent) => void;
 export type FocusVisibleHandler = (isFocusVisible: boolean) => void;
-export interface FocusVisibleProps {
+export type FocusVisibleProps = {
   /** Whether the element is a text input. */
   isTextInput?: boolean;
   /** Whether the element will be auto focused. */
   autoFocus?: boolean;
-}
+};
 
-export interface FocusVisibleResult {
+export type FocusVisibleResult = {
   /** Whether keyboard focus is visible globally. */
   isFocusVisible: boolean;
-}
+};
 
 let currentModality: null | Modality = null;
 const changeHandlers = new Set<Handler>();

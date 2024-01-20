@@ -21,3 +21,4 @@ export * from "./get-focusable-tree-walker";
 export * from "./is-element-visible";
 export * from "./is-element-in-scope";
 export * from "./get-cached-dictionary";
+export * from "./get-slider-thumb-id";
