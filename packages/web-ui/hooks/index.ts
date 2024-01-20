@@ -14,3 +14,4 @@ export * from "./i18n";
 export * from "./radio";
 export * from "./search-field";
 export * from "./slider";
+export * from "./switch";
