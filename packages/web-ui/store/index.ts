@@ -10,3 +10,4 @@ export * from "./i18n";
 export * from "./radio";
 export * from "./slider";
 export * from "./interaction";
+export * from "./toggle-button";

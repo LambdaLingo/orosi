@@ -162,7 +162,7 @@ export type LinkDOMProps = {
 };
 
 /** Any focusable element, including both HTML and SVG elements. */
-export type FocusableElement = {} & Element & HTMLOrSVGElement;
+export type FocusableElement = Element & HTMLOrSVGElement;
 
 /** All DOM attributes supported across both HTML and SVG elements. */
 export type DOMAttributes<T = FocusableElement> = {

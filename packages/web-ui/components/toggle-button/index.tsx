@@ -1,13 +1,5 @@
-import { type ForwardedRef, createContext, forwardRef } from "react";
-import type {
-  AriaToggleButtonProps,
-  ButtonUIStates,
-  ContextValue,
-  ForwardRefType,
-  RenderChildren,
-  SlotProps,
-  ToggleState,
-} from "types";
+import { type ForwardedRef, type ReactElement, forwardRef } from "react";
+import type { ForwardRefType, ToggleButtonProps } from "types";
 import {
   useFocusRing,
   useHover,
@@ -17,35 +9,17 @@ import {
   useToggleState,
 } from "hooks";
 import { mergeProps } from "utilities";
-
-export type ToggleButtonRenderProps = {
-  /**
-   * Whether the button is currently selected.
-   * @selector [data-selected]
-   */
-  isSelected: boolean;
-  /**
-   * State of the toggle button.
-   */
-  state: ToggleState;
-} & ButtonUIStates;
-
-export type ToggleButtonProps = Omit<
-  AriaToggleButtonProps,
-  "children" | "elementType"
-> &
-  SlotProps &
-  RenderChildren<ToggleButtonRenderProps>;
-
-export const ToggleButtonContext = createContext<
-  ContextValue<ToggleButtonProps, HTMLButtonElement>
->({});
+import { ToggleButtonContext } from "store";
 
 function ToggleButton(
-  props: ToggleButtonProps,
-  ref: ForwardedRef<HTMLButtonElement>
-) {
-  [props, ref] = useContextProps(props, ref, ToggleButtonContext);
+  localprops: ToggleButtonProps,
+  localref: ForwardedRef<HTMLButtonElement>
+): ReactElement {
+  const [props, ref] = useContextProps(
+    localprops,
+    localref,
+    ToggleButtonContext
+  );
   const state = useToggleState(props);
   const { buttonProps, isPressed } = useToggleButton(props, state, ref);
   const { focusProps, isFocused, isFocusVisible } = useFocusRing(props);
@@ -85,5 +59,8 @@ function ToggleButton(
  */
 const _ToggleButton = /*#__PURE__*/ (forwardRef as ForwardRefType)(
   ToggleButton
-);
+) as (
+  props: ToggleButtonProps,
+  ref: ForwardedRef<HTMLButtonElement>
+) => ReactElement;
 export { _ToggleButton as ToggleButton };
