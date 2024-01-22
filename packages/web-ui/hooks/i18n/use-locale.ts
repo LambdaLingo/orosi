@@ -1,6 +1,7 @@
 import { useContext } from "react";
+import type { Locale } from "types";
 import { I18nContext } from "store";
-import { type Locale, useDefaultLocale } from "./use-default-locale";
+import { useDefaultLocale } from "./use-default-locale";
 
 /**
  * Returns the current locale and layout direction.

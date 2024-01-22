@@ -1,5 +1,4 @@
 export * from "./chain";
-export * from "./context";
 export * from "./create-event-handler";
 export * from "./filter-dom-props";
 export * from "./focus-safely";
@@ -22,3 +21,4 @@ export * from "./is-element-visible";
 export * from "./is-element-in-scope";
 export * from "./get-cached-dictionary";
 export * from "./get-slider-thumb-id";
+export * from "./i18n";

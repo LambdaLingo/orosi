@@ -1,4 +1,4 @@
-let formatterCache = new Map<string, Intl.NumberFormat>();
+const formatterCache = new Map<string, Intl.NumberFormat>();
 
 let supportsSignDisplay = false;
 try {
@@ -24,7 +24,7 @@ try {
 // Polyfill for units since Safari doesn't support them yet. See https://bugs.webkit.org/show_bug.cgi?id=215438.
 // Currently only polyfilling the unit degree in narrow format for ColorSlider in our supported locales.
 // Values were determined by switching to each locale manually in Chrome.
-const UNITS = {
+const UNITS: Record<string, Record<string, any>> = {
   degree: {
     narrow: {
       default: "°",
@@ -37,14 +37,14 @@ const UNITS = {
   },
 };
 
-export interface NumberFormatOptions extends Intl.NumberFormatOptions {
+export type NumberFormatOptions = {
   /** Overrides default numbering system for the current locale. */
   numberingSystem?: string;
-}
+} & Intl.NumberFormatOptions;
 
-interface NumberRangeFormatPart extends Intl.NumberFormatPart {
+type NumberRangeFormatPart = {
   source: "startRange" | "endRange" | "shared";
-}
+} & Intl.NumberFormatPart;
 
 /**
  * A wrapper around Intl.NumberFormat providing additional options, polyfills, and caching for performance.
@@ -72,11 +72,11 @@ export class NumberFormatter implements Intl.NumberFormat {
     }
 
     if (this.options.style === "unit" && !supportsUnit) {
-      let { unit, unitDisplay = "short", locale } = this.resolvedOptions();
+      const { unit, unitDisplay = "short", locale } = this.resolvedOptions();
       if (!unit) {
         return res;
       }
-      let values = UNITS[unit]?.[unitDisplay];
+      const values = UNITS[unit]?.[unitDisplay];
       res += values[locale] || values.default;
     }
 
@@ -118,8 +118,8 @@ export class NumberFormatter implements Intl.NumberFormat {
       throw new RangeError("End date must be >= start date");
     }
 
-    let startParts = this.numberFormatter.formatToParts(start);
-    let endParts = this.numberFormatter.formatToParts(end);
+    const startParts = this.numberFormatter.formatToParts(start);
+    const endParts = this.numberFormatter.formatToParts(end);
     return [
       ...startParts.map(
         (p) => ({ ...p, source: "startRange" }) as NumberRangeFormatPart
@@ -155,7 +155,7 @@ function getCachedNumberFormatter(
   locale: string,
   options: NumberFormatOptions = {}
 ): Intl.NumberFormat {
-  let { numberingSystem } = options;
+  const { numberingSystem } = options;
   if (numberingSystem && locale.includes("-nu-")) {
     if (!locale.includes("-u-")) {
       locale += "-u-";
@@ -164,7 +164,7 @@ function getCachedNumberFormatter(
   }
 
   if (options.style === "unit" && !supportsUnit) {
-    let { unit, unitDisplay = "short" } = options;
+    const { unit, unitDisplay = "short" } = options;
     if (!unit) {
       throw new Error('unit option must be provided with style: "unit"');
     }
@@ -176,7 +176,7 @@ function getCachedNumberFormatter(
     options = { ...options, style: "decimal" };
   }
 
-  let cacheKey =
+  const cacheKey =
     locale +
     (options
       ? Object.entries(options)
@@ -187,7 +187,7 @@ function getCachedNumberFormatter(
     return formatterCache.get(cacheKey)!;
   }
 
-  let numberFormatter = new Intl.NumberFormat(locale, options);
+  const numberFormatter = new Intl.NumberFormat(locale, options);
   formatterCache.set(cacheKey, numberFormatter);
   return numberFormatter;
 }
@@ -197,40 +197,38 @@ export function numberFormatSignDisplayPolyfill(
   numberFormat: Intl.NumberFormat,
   signDisplay: string,
   num: number
-) {
+): ReturnType<Intl.NumberFormat["format"]> {
   if (signDisplay === "auto") {
     return numberFormat.format(num);
   } else if (signDisplay === "never") {
     return numberFormat.format(Math.abs(num));
-  } else {
-    let needsPositiveSign = false;
-    if (signDisplay === "always") {
-      needsPositiveSign = num > 0 || Object.is(num, 0);
-    } else if (signDisplay === "exceptZero") {
-      if (Object.is(num, -0) || Object.is(num, 0)) {
-        num = Math.abs(num);
-      } else {
-        needsPositiveSign = num > 0;
-      }
-    }
-
-    if (needsPositiveSign) {
-      let negative = numberFormat.format(-num);
-      let noSign = numberFormat.format(num);
-      // ignore RTL/LTR marker character
-      let minus = negative.replace(noSign, "").replace(/\u200e|\u061C/, "");
-      if ([...minus].length !== 1) {
-        console.warn(
-          "@react-aria/i18n polyfill for NumberFormat signDisplay: Unsupported case"
-        );
-      }
-      let positive = negative
-        .replace(noSign, "!!!")
-        .replace(minus, "+")
-        .replace("!!!", noSign);
-      return positive;
+  }
+  let needsPositiveSign = false;
+  if (signDisplay === "always") {
+    needsPositiveSign = num > 0 || Object.is(num, 0);
+  } else if (signDisplay === "exceptZero") {
+    if (Object.is(num, -0) || Object.is(num, 0)) {
+      num = Math.abs(num);
     } else {
-      return numberFormat.format(num);
+      needsPositiveSign = num > 0;
     }
   }
+
+  if (needsPositiveSign) {
+    const negative = numberFormat.format(-num);
+    const noSign = numberFormat.format(num);
+    // ignore RTL/LTR marker character
+    const minus = negative.replace(noSign, "").replace(/\u200e|\u061C/, "");
+    if ([...minus].length !== 1) {
+      console.warn(
+        "@react-aria/i18n polyfill for NumberFormat signDisplay: Unsupported case"
+      );
+    }
+    const positive = negative
+      .replace(noSign, "!!!")
+      .replace(minus, "+")
+      .replace("!!!", noSign);
+    return positive;
+  }
+  return numberFormat.format(num);
 }

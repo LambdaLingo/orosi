@@ -1,6 +1,5 @@
 import { useMemo } from "react";
-import { NumberFormatter } from "intl";
-import type { NumberFormatOptions } from "intl";
+import { NumberFormatter, type NumberFormatOptions } from "utilities";
 import { useLocale } from "./use-locale";
 
 /**

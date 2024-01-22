@@ -1,6 +1,9 @@
-import { LocalizedStringDictionary } from "intl";
-import type { LocalizedString, LocalizedStrings } from "intl";
-import { getCachedDictionary } from "utilities";
+import {
+  LocalizedStringDictionary,
+  type LocalizedString,
+  type LocalizedStrings,
+  getCachedDictionary,
+} from "utilities";
 
 /**
  * Returns a cached LocalizedStringDictionary for the given strings.

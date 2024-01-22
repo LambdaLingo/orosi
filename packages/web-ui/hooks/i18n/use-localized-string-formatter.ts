@@ -1,6 +1,9 @@
 import { useMemo } from "react";
-import type { LocalizedString, LocalizedStrings } from "intl";
-import { LocalizedStringFormatter } from "intl";
+import {
+  type LocalizedString,
+  type LocalizedStrings,
+  LocalizedStringFormatter,
+} from "utilities";
 import { useLocale } from "./use-locale";
 import { useLocalizedStringDictionary } from "./use-localized-string-dictionary";
 

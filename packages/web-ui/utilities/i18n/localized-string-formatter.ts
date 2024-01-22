@@ -7,6 +7,7 @@ export type LocalizedString =
       args: Variables,
       formatter?: LocalizedStringFormatter<any, any>
     ) => string);
+
 type InternalString = string | (() => string);
 
 const pluralRulesCache = new Map<string, Intl.PluralRules>();

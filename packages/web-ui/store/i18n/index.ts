@@ -1,4 +1,4 @@
-import type { Locale } from "hooks";
+import type { Locale } from "types";
 import { createContext } from "react";
 
 export const I18nContext = createContext<Locale | null>(null);

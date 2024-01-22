@@ -70,14 +70,14 @@ function getNumberParserImpl(
   value: string
 ) {
   // First try the default numbering system for the provided locale
-  let defaultParser = getCachedNumberParser(locale, options);
+  const defaultParser = getCachedNumberParser(locale, options);
 
   // If that doesn't match, and the locale doesn't include a hard coded numbering system,
   // try each of the other supported numbering systems until we find one that matches.
   if (!locale.includes("-nu-") && !defaultParser.isValidPartialNumber(value)) {
-    for (let numberingSystem of NUMBERING_SYSTEMS) {
+    for (const numberingSystem of NUMBERING_SYSTEMS) {
       if (numberingSystem !== defaultParser.options.numberingSystem) {
-        let parser = getCachedNumberParser(
+        const parser = getCachedNumberParser(
           locale +
             (locale.includes("-u-") ? "-nu-" : "-u-nu-") +
             numberingSystem,
@@ -97,7 +97,7 @@ function getCachedNumberParser(
   locale: string,
   options: Intl.NumberFormatOptions
 ) {
-  let cacheKey =
+  const cacheKey =
     locale +
     (options
       ? Object.entries(options)
@@ -168,7 +168,7 @@ class NumberParserImpl {
 
     if (this.options.style === "percent") {
       // javascript is bad at dividing by 100 and maintaining the same significant figures, so perform it on the string before parsing
-      let isNegative = fullySanitizedValue.indexOf("-");
+      const isNegative = fullySanitizedValue.indexOf("-");
       fullySanitizedValue = fullySanitizedValue.replace("-", "");
       let index = fullySanitizedValue.indexOf(".");
       if (index === -1) {
@@ -196,7 +196,7 @@ class NumberParserImpl {
 
     if (this.options.style === "percent") {
       // extra step for rounding percents to what our formatter would output
-      let options = {
+      const options = {
         ...this.options,
         style: "decimal",
         minimumFractionDigits: Math.min(
@@ -326,17 +326,19 @@ function getSymbols(
   originalOptions: Intl.NumberFormatOptions
 ): Symbols {
   // formatter needs access to all decimal places in order to generate the correct literal strings for the plural set
-  let symbolFormatter = new Intl.NumberFormat(locale, {
+  const symbolFormatter = new Intl.NumberFormat(locale, {
     ...intlOptions,
     minimumSignificantDigits: 1,
     maximumSignificantDigits: 21,
   });
   // Note: some locale's don't add a group symbol until there is a ten thousands place
-  let allParts = symbolFormatter.formatToParts(-10000.111);
-  let posAllParts = symbolFormatter.formatToParts(10000.111);
-  let pluralParts = pluralNumbers.map((n) => symbolFormatter.formatToParts(n));
+  const allParts = symbolFormatter.formatToParts(-10000.111);
+  const posAllParts = symbolFormatter.formatToParts(10000.111);
+  const pluralParts = pluralNumbers.map((n) =>
+    symbolFormatter.formatToParts(n)
+  );
 
-  let minusSign = allParts.find((p) => p.type === "minusSign")?.value ?? "-";
+  const minusSign = allParts.find((p) => p.type === "minusSign")?.value ?? "-";
   let plusSign = posAllParts.find((p) => p.type === "plusSign")?.value;
 
   // Safari does not support the signDisplay option, but our number parser polyfills it.
@@ -352,43 +354,43 @@ function getSymbols(
 
   // If maximumSignificantDigits is 1 (the minimum) then we won't get decimal characters out of the above formatters
   // Percent also defaults to 0 fractionDigits, so we need to make a new one that isn't percent to get an accurate decimal
-  let decimalParts = new Intl.NumberFormat(locale, {
+  const decimalParts = new Intl.NumberFormat(locale, {
     ...intlOptions,
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).formatToParts(0.001);
 
-  let decimal = decimalParts.find((p) => p.type === "decimal")?.value;
-  let group = allParts.find((p) => p.type === "group")?.value;
+  const decimal = decimalParts.find((p) => p.type === "decimal")?.value;
+  const group = allParts.find((p) => p.type === "group")?.value;
 
   // this set is also for a regex, it's all literals that might be in the string we want to eventually parse that
   // don't contribute to the numerical value
-  let allPartsLiterals = allParts
+  const allPartsLiterals = allParts
     .filter((p) => !nonLiteralParts.has(p.type))
     .map((p) => escapeRegex(p.value));
-  let pluralPartsLiterals = pluralParts.flatMap((p) =>
+  const pluralPartsLiterals = pluralParts.flatMap((p) =>
     p
       .filter((p) => !nonLiteralParts.has(p.type))
       .map((p) => escapeRegex(p.value))
   );
-  let sortedLiterals = [
+  const sortedLiterals = [
     ...new Set([...allPartsLiterals, ...pluralPartsLiterals]),
   ].sort((a, b) => b.length - a.length);
 
-  let literals =
+  const literals =
     sortedLiterals.length === 0
       ? new RegExp("[\\p{White_Space}]", "gu")
       : new RegExp(`${sortedLiterals.join("|")}|[\\p{White_Space}]`, "gu");
 
   // These are for replacing non-latn characters with the latn equivalent
-  let numerals = [
+  const numerals = [
     ...new Intl.NumberFormat(intlOptions.locale, { useGrouping: false }).format(
       9876543210
     ),
   ].reverse();
-  let indexes = new Map(numerals.map((d, i) => [d, i]));
-  let numeral = new RegExp(`[${numerals.join("")}]`, "g");
-  let index = (d) => String(indexes.get(d));
+  const indexes = new Map(numerals.map((d, i) => [d, i]));
+  const numeral = new RegExp(`[${numerals.join("")}]`, "g");
+  const index = (d: string) => String(indexes.get(d));
 
   return { minusSign, plusSign, decimal, group, literals, numeral, index };
 }
