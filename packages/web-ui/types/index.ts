@@ -13,3 +13,4 @@ export * from "./search-field";
 export * from "./slider";
 export * from "./switch";
 export * from "./toggle-button";
+export * from "./i18n";

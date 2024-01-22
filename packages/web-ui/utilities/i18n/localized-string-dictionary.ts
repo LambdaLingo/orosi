@@ -1,15 +1,16 @@
 import type { LocalizedString } from "./localized-string-formatter";
 
-export type LocalizedStrings<K extends string, T extends LocalizedString> = {
-  [lang: string]: Record<K, T>;
-};
+export type LocalizedStrings<
+  K extends string,
+  T extends LocalizedString,
+> = Record<string, Record<K, T>>;
 
 const localeSymbol = Symbol.for("react-aria.i18n.locale");
 const stringsSymbol = Symbol.for("react-aria.i18n.strings");
 let cachedGlobalStrings:
-  | { [packageName: string]: LocalizedStringDictionary<any, any> }
+  | Record<string, LocalizedStringDictionary<any, any>>
   | null
-  | undefined = undefined;
+  | undefined;
 
 /**
  * Stores a mapping of localized strings. Can be used to find the
@@ -22,10 +23,7 @@ export class LocalizedStringDictionary<
   private strings: LocalizedStrings<K, T>;
   private defaultLocale: string;
 
-  constructor(
-    messages: LocalizedStrings<K, T>,
-    defaultLocale: string = "en-US"
-  ) {
+  constructor(messages: LocalizedStrings<K, T>, defaultLocale = "en-US") {
     // Clone messages so we don't modify the original object.
     this.strings = { ...messages };
     this.defaultLocale = defaultLocale;
@@ -33,8 +31,8 @@ export class LocalizedStringDictionary<
 
   /** Returns a localized string for the given key and locale. */
   getStringForLocale(key: K, locale: string): T {
-    let strings = this.getStringsForLocale(locale);
-    let string = strings[key];
+    const strings = this.getStringsForLocale(locale);
+    const string = strings[key];
     if (!string) {
       throw new Error(`Could not find intl message ${key} in ${locale} locale`);
     }
@@ -60,16 +58,19 @@ export class LocalizedStringDictionary<
     if (typeof window === "undefined") {
       return null;
     }
-
-    let locale = window[localeSymbol];
+    //@ts-expect-error -- TODO: Check if this is still needed.
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- can be undefined
+    const locale = window[localeSymbol];
     if (cachedGlobalStrings === undefined) {
-      let globalStrings = window[stringsSymbol];
+      //@ts-expect-error -- TODO: Check if this is still needed.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- can be undefined
+      const globalStrings = window[stringsSymbol];
       if (!globalStrings) {
         return null;
       }
 
       cachedGlobalStrings = {};
-      for (let pkg in globalStrings) {
+      for (const pkg in globalStrings) {
         cachedGlobalStrings[pkg] = new LocalizedStringDictionary(
           { [locale]: globalStrings[pkg] },
           locale
@@ -77,7 +78,7 @@ export class LocalizedStringDictionary<
       }
     }
 
-    let dictionary = cachedGlobalStrings?.[packageName];
+    const dictionary = cachedGlobalStrings?.[packageName];
     if (!dictionary) {
       throw new Error(
         `Strings for package "${packageName}" were not included by LocalizedStringProvider. Please add it to the list passed to createLocalizedStringDictionary.`
@@ -92,7 +93,7 @@ function getStringsForLocale<K extends string, T extends LocalizedString>(
   locale: string,
   strings: LocalizedStrings<K, T>,
   defaultLocale = "en-US"
-) {
+): Record<K, T> {
   // If there is an exact match, use it.
   if (strings[locale]) {
     return strings[locale];
@@ -103,13 +104,13 @@ function getStringsForLocale<K extends string, T extends LocalizedString>(
   // an fr-FR (France) set of strings, use that.
   // This could be replaced with Intl.LocaleMatcher once it is supported.
   // https://github.com/tc39/proposal-intl-localematcher
-  let language = getLanguage(locale);
+  const language = getLanguage(locale);
   if (strings[language]) {
     return strings[language];
   }
 
-  for (let key in strings) {
-    if (key.startsWith(language + "-")) {
+  for (const key in strings) {
+    if (key.startsWith(`${language}-`)) {
       return strings[key];
     }
   }
@@ -118,10 +119,8 @@ function getStringsForLocale<K extends string, T extends LocalizedString>(
   return strings[defaultLocale];
 }
 
-function getLanguage(locale: string) {
-  // @ts-ignore
+function getLanguage(locale: string): string {
   if (Intl.Locale) {
-    // @ts-ignore
     return new Intl.Locale(locale).language;
   }
 

@@ -1,15 +1,7 @@
 import { useEffect, useState } from "react";
-import type { Direction } from "types";
+import type { Locale } from "types";
 import { useIsSSR } from "hooks";
 import { isRTL } from "utilities";
-
-export type Locale = {
-  /** The [BCP47](https://www.ietf.org/rfc/bcp/bcp47.txt) language code for the locale. */
-  locale: string;
-  /** The writing direction for the locale. */
-  direction: Direction;
-};
-
 // Locale passed from server by PackageLocalizationProvider.
 const localeSymbol = Symbol.for("react-aria.i18n.locale");
 
@@ -17,15 +9,11 @@ const localeSymbol = Symbol.for("react-aria.i18n.locale");
  * Gets the locale setting of the browser.
  */
 export function getDefaultLocale(): Locale {
-  let locale =
-    (typeof window !== "undefined" && window[localeSymbol]) ||
-    // @ts-ignore
-    (typeof navigator !== "undefined" &&
-      (navigator.language || navigator.userLanguage)) ||
-    "en-US";
+  //@ts-expect-error -- TODO: Check if this is still needed.
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/no-unsafe-assignment -- can be undefined
+  let locale: string = window?.[localeSymbol] ?? navigator?.language ?? "en-US";
 
   try {
-    // @ts-ignore
     Intl.DateTimeFormat.supportedLocalesOf([locale]);
   } catch (_err) {
     locale = "en-US";
@@ -37,11 +25,11 @@ export function getDefaultLocale(): Locale {
 }
 
 let currentLocale = getDefaultLocale();
-let listeners = new Set<(locale: Locale) => void>();
+const listeners = new Set<(locale: Locale) => void>();
 
-function updateLocale() {
+function updateLocale(): void {
   currentLocale = getDefaultLocale();
-  for (let listener of listeners) {
+  for (const listener of listeners) {
     listener(currentLocale);
   }
 }
@@ -50,8 +38,8 @@ function updateLocale() {
  * Returns the current browser/system language, and updates when it changes.
  */
 export function useDefaultLocale(): Locale {
-  let isSSR = useIsSSR();
-  let [defaultLocale, setDefaultLocale] = useState(currentLocale);
+  const isSSR = useIsSSR();
+  const [defaultLocale, setDefaultLocale] = useState(currentLocale);
 
   useEffect(() => {
     if (listeners.size === 0) {
