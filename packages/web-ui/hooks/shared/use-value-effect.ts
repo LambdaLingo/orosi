@@ -12,27 +12,29 @@ export function useValueEffect<S>(
   defaultValue: S | (() => S)
 ): [S, Dispatch<SetValueAction<S>>] {
   const [value, setValue] = useState(defaultValue);
-  const effect = useRef(null);
+  const effect = useRef<Generator<any, void, unknown> | null>(null);
 
   // Store the function in a ref so we can always access the current version
   // which has the proper `value` in scope.
   const nextRef = useEffectEvent(() => {
     // Run the generator to the next yield.
-    let newValue = effect.current.next();
+    if (effect.current) {
+      const newValue = effect.current.next();
 
-    // If the generator is done, reset the effect.
-    if (newValue.done) {
-      effect.current = null;
-      return;
-    }
+      // If the generator is done, reset the effect.
+      if (newValue.done) {
+        effect.current = null;
+        return;
+      }
 
-    // If the value is the same as the current value,
-    // then continue to the next yield. Otherwise,
-    // set the value in state and wait for the next layout effect.
-    if (value === newValue.value) {
-      nextRef();
-    } else {
-      setValue(newValue.value);
+      // If the value is the same as the current value,
+      // then continue to the next yield. Otherwise,
+      // set the value in state and wait for the next layout effect.
+      if (value === newValue.value) {
+        nextRef();
+      } else {
+        setValue(newValue.value);
+      }
     }
   });
 
@@ -43,7 +45,7 @@ export function useValueEffect<S>(
     }
   });
 
-  const queue = useEffectEvent((fn) => {
+  const queue = useEffectEvent((fn: SetValueAction<S>) => {
     effect.current = fn(value);
     nextRef();
   });
