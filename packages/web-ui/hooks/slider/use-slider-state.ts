@@ -37,32 +37,32 @@ export function useSliderState<T extends number | number[]>(
   }, [step, maxValue, minValue]);
 
   const restrictValues = useCallback(
-    (values: number[]) =>
+    (values: number[] | undefined) =>
       values?.map((val, idx) => {
-        let min = idx === 0 ? minValue : val[idx - 1];
-        let max = idx === values.length - 1 ? maxValue : val[idx + 1];
+        const min = idx === 0 ? minValue : values[idx - 1];
+        const max = idx === values.length - 1 ? maxValue : values[idx + 1];
         return snapValueToStep(val, min, max, step);
       }),
     [minValue, maxValue, step]
   );
 
-  const value = useMemo(
+  const value: number[] | undefined = useMemo(
     () => restrictValues(convertValue(props.value)),
-    [props.value]
+    [props.value, restrictValues]
   );
   const defaultValue = useMemo(
     () => restrictValues(convertValue(props.defaultValue) ?? [minValue]),
-    [props.defaultValue, minValue]
+    [restrictValues, props.defaultValue, minValue]
   );
   const onChange = createOnChange(
     props.value,
     props.defaultValue,
-    props.onChange
+    props.onChange as ((value: number | number[]) => void) | undefined
   );
   const onChangeEnd = createOnChange(
     props.value,
     props.defaultValue,
-    props.onChangeEnd
+    props.onChangeEnd as ((value: number | number[]) => void) | undefined
   );
 
   const [values, setValuesState] = useControlledState<number[]>(
@@ -70,7 +70,7 @@ export function useSliderState<T extends number | number[]>(
     defaultValue,
     onChange
   );
-  const [isDraggings, setDraggingsState] = useState<boolean[]>(
+  const [isDraggings, setIsDraggings] = useState<boolean[]>(
     new Array(values.length).fill(false)
   );
   const isEditablesRef = useRef<boolean[]>(new Array(values.length).fill(true));
@@ -87,29 +87,29 @@ export function useSliderState<T extends number | number[]>(
 
   const setDraggings = (draggings: boolean[]) => {
     isDraggingsRef.current = draggings;
-    setDraggingsState(draggings);
+    setIsDraggings(draggings);
   };
 
-  function getValuePercent(value: number) {
+  function getValuePercent(value: number): number {
     return (value - minValue) / (maxValue - minValue);
   }
 
-  function getThumbMinValue(index: number) {
+  function getThumbMinValue(index: number): number {
     return index === 0 ? minValue : values[index - 1];
   }
-  function getThumbMaxValue(index: number) {
+  function getThumbMaxValue(index: number): number {
     return index === values.length - 1 ? maxValue : values[index + 1];
   }
 
-  function isThumbEditable(index: number) {
+  function isThumbEditable(index: number): boolean {
     return isEditablesRef.current[index];
   }
 
-  function setThumbEditable(index: number, editable: boolean) {
+  function setThumbEditable(index: number, editable: boolean): void {
     isEditablesRef.current[index] = editable;
   }
 
-  function updateValue(index: number, value: number) {
+  function updateValue(index: number, value: number): void {
     if (isDisabled || !isThumbEditable(index)) {
       return;
     }
@@ -122,7 +122,7 @@ export function useSliderState<T extends number | number[]>(
     setValues(newValues);
   }
 
-  function updateDragging(index: number, dragging: boolean) {
+  function updateDragging(index: number, dragging: boolean): void {
     if (isDisabled || !isThumbEditable(index)) {
       return;
     }
@@ -141,24 +141,24 @@ export function useSliderState<T extends number | number[]>(
     }
   }
 
-  function getFormattedValue(value: number) {
+  function getFormattedValue(value: number): string {
     return formatter.format(value);
   }
 
-  function setThumbPercent(index: number, percent: number) {
+  function setThumbPercent(index: number, percent: number): void {
     updateValue(index, getPercentValue(percent));
   }
 
-  function getRoundedValue(value: number) {
+  function getRoundedValue(value: number): number {
     return Math.round((value - minValue) / step) * step + minValue;
   }
 
-  function getPercentValue(percent: number) {
+  function getPercentValue(percent: number): number {
     const val = percent * (maxValue - minValue) + minValue;
     return clamp(getRoundedValue(val), minValue, maxValue);
   }
 
-  function incrementThumb(index: number, stepSize: number = 1) {
+  function incrementThumb(index: number, stepSize: number = 1): void {
     const s = Math.max(stepSize, step);
     updateValue(
       index,
@@ -166,7 +166,7 @@ export function useSliderState<T extends number | number[]>(
     );
   }
 
-  function decrementThumb(index: number, stepSize: number = 1) {
+  function decrementThumb(index: number, stepSize = 1): void {
     const s = Math.max(stepSize, step);
     updateValue(
       index,
@@ -175,7 +175,7 @@ export function useSliderState<T extends number | number[]>(
   }
 
   return {
-    values: values,
+    values,
     getThumbValue: (index: number) => values[index],
     setThumbValue: updateValue,
     setThumbPercent,
@@ -201,7 +201,7 @@ export function useSliderState<T extends number | number[]>(
   };
 }
 
-function replaceIndex<T>(array: T[], index: number, value: T) {
+function replaceIndex<T>(array: T[], index: number, value: T): T[] {
   if (array[index] === value) {
     return array;
   }
@@ -209,15 +209,21 @@ function replaceIndex<T>(array: T[], index: number, value: T) {
   return [...array.slice(0, index), value, ...array.slice(index + 1)];
 }
 
-function convertValue(value: number | number[]) {
-  if (value == null) {
+function convertValue(
+  value: number | number[] | undefined | null
+): number[] | undefined {
+  if (value === null || value === undefined) {
     return undefined;
   }
 
   return Array.isArray(value) ? value : [value];
 }
 
-function createOnChange(value, defaultValue, onChange) {
+function createOnChange(
+  value?: number | number[],
+  defaultValue?: number | number[],
+  onChange?: (value: number | number[]) => void
+) {
   return (newValue: number[]) => {
     if (typeof value === "number" || typeof defaultValue === "number") {
       onChange?.(newValue[0]);
