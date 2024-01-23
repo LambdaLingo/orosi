@@ -29,7 +29,7 @@ export function useRadioGroup(
   props: AriaRadioGroupProps,
   state: RadioGroupState
 ): RadioGroupAria {
-  let {
+  const {
     name,
     isReadOnly,
     isRequired,
@@ -37,11 +37,11 @@ export function useRadioGroup(
     orientation = "vertical",
     validationBehavior = "aria",
   } = props;
-  let { direction } = useLocale();
+  const { direction } = useLocale();
 
-  let { isInvalid, validationErrors, validationDetails } =
+  const { isInvalid, validationErrors, validationDetails } =
     state.displayValidation;
-  let { labelProps, fieldProps, descriptionProps, errorMessageProps } =
+  const { labelProps, fieldProps, descriptionProps, errorMessageProps } =
     useField({
       ...props,
       // Radio group is not an HTML input element so it
@@ -51,13 +51,13 @@ export function useRadioGroup(
       errorMessage: props.errorMessage || validationErrors,
     });
 
-  let domProps = filterDOMProps(props, { labelable: true });
+  const domProps = filterDOMProps(props, { labelable: true });
 
   // When the radio group loses focus, reset the focusable radio to null if
   // there is no selection. This allows tabbing into the group from either
   // direction to go to the first or last radio.
-  let { focusWithinProps } = useFocusWithin({
-    onBlurWithin(e) {
+  const { focusWithinProps } = useFocusWithin({
+    onBlurWithin(e: React.FocusEvent) {
       props.onBlur?.(e);
       if (!state.selectedValue) {
         state.setLastFocusedValue(null);
@@ -67,7 +67,7 @@ export function useRadioGroup(
     onFocusWithinChange: props.onFocusChange,
   });
 
-  let onKeyDown = (e) => {
+  const onKeyDown = (e: React.KeyboardEvent): void => {
     let nextDir;
     switch (e.key) {
       case "ArrowRight":
@@ -94,29 +94,33 @@ export function useRadioGroup(
         return;
     }
     e.preventDefault();
-    let walker = getFocusableTreeWalker(e.currentTarget, { from: e.target });
-    let nextElem;
-    if (nextDir === "next") {
-      nextElem = walker.nextNode();
-      if (!nextElem) {
-        walker.currentNode = e.currentTarget;
-        nextElem = walker.firstChild();
+    if (e.currentTarget instanceof Element) {
+      const walker = getFocusableTreeWalker(e.currentTarget, {
+        from: e.target as Element,
+      });
+      let nextElem;
+      if (nextDir === "next") {
+        nextElem = walker.nextNode();
+        if (!nextElem) {
+          walker.currentNode = e.currentTarget;
+          nextElem = walker.firstChild();
+        }
+      } else {
+        nextElem = walker.previousNode();
+        if (!nextElem) {
+          walker.currentNode = e.currentTarget;
+          nextElem = walker.lastChild();
+        }
       }
-    } else {
-      nextElem = walker.previousNode();
-      if (!nextElem) {
-        walker.currentNode = e.currentTarget;
-        nextElem = walker.lastChild();
+      if (nextElem instanceof HTMLInputElement) {
+        // Call focus on nextElem so that keyboard navigation scrolls the radio into view
+        nextElem.focus();
+        state.setSelectedValue(nextElem.value);
       }
-    }
-    if (nextElem) {
-      // Call focus on nextElem so that keyboard navigation scrolls the radio into view
-      nextElem.focus();
-      state.setSelectedValue(nextElem.value);
     }
   };
 
-  let groupName = useId(name);
+  const groupName = useId(name);
   radioGroupData.set(state, {
     name: groupName,
     descriptionId: descriptionProps.id,
