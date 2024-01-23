@@ -38,8 +38,8 @@ export function useLabel(props: LabelAriaProps): LabelAria {
     labelElementType = "label",
   } = props;
 
-  id = useId(id);
-  let labelId = useId();
+  id = useId();
+  const labelId = useId();
   let labelProps = {};
   if (label) {
     ariaLabelledby = ariaLabelledby ? `${labelId} ${ariaLabelledby}` : labelId;
@@ -53,7 +53,7 @@ export function useLabel(props: LabelAriaProps): LabelAria {
     );
   }
 
-  let fieldProps = useLabels({
+  const fieldProps = useLabels({
     id,
     "aria-label": ariaLabel,
     "aria-labelledby": ariaLabelledby,

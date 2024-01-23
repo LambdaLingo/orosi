@@ -21,3 +21,4 @@ export * from "./is-element-in-scope";
 export * from "./get-cached-dictionary";
 export * from "./get-slider-thumb-id";
 export * from "./i18n";
+export * from "./Live-announcer";
