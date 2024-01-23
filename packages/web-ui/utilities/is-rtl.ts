@@ -1,23 +1,23 @@
-// https://en.wikipedia.org/wiki/Right-to-left
-
 import { RTL_LANGS, RTL_SCRIPTS } from "store";
 
 /**
  * Determines if a locale is read right to left using [Intl.Locale]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale}.
  */
-export function isRTL(localeString: string) {
-  // If the Intl.Locale API is available, use it to get the locale's text direction.
-  // @ts-ignore
+export function isRTL(localeString: string): boolean {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- If the Intl.Locale API is available, use it to get the locale's text direction.
   if (Intl.Locale) {
-    let locale = new Intl.Locale(localeString).maximize();
+    const locale = new Intl.Locale(localeString).maximize();
 
     // Use the text info object to get the direction if possible.
-    // @ts-ignore - this was implemented as a property by some browsers before it was standardized as a function.
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale/getTextInfo
-    let textInfo =
-      typeof locale.getTextInfo === "function"
-        ? locale.getTextInfo()
-        : locale.textInfo;
+    const textInfo: { direction: string } | undefined =
+      // @ts-expect-error - this was implemented as a property by some browsers before it was standardized as a function.
+      typeof (locale.getTextInfo as () => { direction: string }) === "function"
+        ? // @ts-expect-error - this was implemented as a property by some browsers before it was standardized as a function.
+          (locale.getTextInfo as () => { direction: string })()
+        : // @ts-expect-error - this was implemented as a property by some browsers before it was standardized as a function.
+          (locale.textInfo as { direction: string });
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- If the text info object exists, use it to get the direction.
     if (textInfo) {
       return textInfo.direction === "rtl";
     }

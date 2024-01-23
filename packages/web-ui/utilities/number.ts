@@ -1,24 +1,20 @@
 /**
  * Takes a value and forces it to the closest min/max if it's outside. Also forces it to the closest valid step.
  */
-export function clamp(
-  value: number,
-  min: number = -Infinity,
-  max: number = Infinity
-): number {
-  let newValue = Math.min(Math.max(value, min), max);
+export function clamp(value: number, min = -Infinity, max = Infinity): number {
+  const newValue = Math.min(Math.max(value, min), max);
   return newValue;
 }
 
 export function snapValueToStep(
   value: number,
-  min: number | undefined,
-  max: number | undefined,
+  minNumber: number | undefined,
+  maxNumber: number | undefined,
   step: number
 ): number {
-  min = Number(min);
-  max = Number(max);
-  let remainder = (value - (isNaN(min) ? 0 : min)) % step;
+  const min = Number(minNumber);
+  const max = Number(maxNumber);
+  const remainder = (value - (isNaN(min) ? 0 : min)) % step;
   let snappedValue =
     Math.abs(remainder) * 2 >= step
       ? value + Math.sign(remainder) * (step - Math.abs(remainder))
@@ -35,12 +31,12 @@ export function snapValueToStep(
   }
 
   // correct floating point behavior by rounding to step precision
-  let string = step.toString();
-  let index = string.indexOf(".");
-  let precision = index >= 0 ? string.length - index : 0;
+  const string = step.toString();
+  const index = string.indexOf(".");
+  const precision = index >= 0 ? string.length - index : 0;
 
   if (precision > 0) {
-    let pow = Math.pow(10, precision);
+    const pow = Math.pow(10, precision);
     snappedValue = Math.round(snappedValue * pow) / pow;
   }
 
@@ -51,7 +47,7 @@ export function snapValueToStep(
 export function toFixedNumber(
   value: number,
   digits: number,
-  base: number = 10
+  base = 10
 ): number {
   const pow = Math.pow(base, digits);
 

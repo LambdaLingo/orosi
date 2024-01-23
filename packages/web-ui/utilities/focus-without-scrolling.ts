@@ -9,28 +9,28 @@ import type { FocusableElement } from "../types/shared/dom";
 // NOTICE file in the root directory of this source tree.
 // See https://github.com/calvellido/focus-options-polyfill
 
-interface ScrollableElement {
+type ScrollableElement = {
   element: HTMLElement;
   scrollTop: number;
   scrollLeft: number;
-}
+};
 
-export function focusWithoutScrolling(element: FocusableElement) {
+export function focusWithoutScrolling(element: FocusableElement): void {
   if (supportsPreventScroll()) {
     element.focus({ preventScroll: true });
   } else {
-    let scrollableElements = getScrollableElements(element);
+    const scrollableElements = getScrollableElements(element);
     element.focus();
     restoreScrollPosition(scrollableElements);
   }
 }
 
 let supportsPreventScrollCached: boolean | null = null;
-function supportsPreventScroll() {
-  if (supportsPreventScrollCached == null) {
+function supportsPreventScroll(): boolean {
+  if (supportsPreventScrollCached === null) {
     supportsPreventScrollCached = false;
     try {
-      var focusElem = document.createElement("div");
+      const focusElem = document.createElement("div");
       focusElem.focus({
         get preventScroll() {
           supportsPreventScrollCached = true;
@@ -46,9 +46,9 @@ function supportsPreventScroll() {
 }
 
 function getScrollableElements(element: FocusableElement): ScrollableElement[] {
-  var parent = element.parentNode;
-  var scrollableElements: ScrollableElement[] = [];
-  var rootScrollingElement =
+  let parent = element.parentNode;
+  const scrollableElements: ScrollableElement[] = [];
+  const rootScrollingElement =
     document.scrollingElement || document.documentElement;
 
   while (parent instanceof HTMLElement && parent !== rootScrollingElement) {
@@ -76,8 +76,8 @@ function getScrollableElements(element: FocusableElement): ScrollableElement[] {
   return scrollableElements;
 }
 
-function restoreScrollPosition(scrollableElements: ScrollableElement[]) {
-  for (let { element, scrollTop, scrollLeft } of scrollableElements) {
+function restoreScrollPosition(scrollableElements: ScrollableElement[]): void {
+  for (const { element, scrollTop, scrollLeft } of scrollableElements) {
     element.scrollTop = scrollTop;
     element.scrollLeft = scrollLeft;
   }

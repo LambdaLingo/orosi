@@ -1,7 +1,7 @@
 import type { FocusEvent as ReactFocusEvent } from "react";
 import { useCallback, useRef } from "react";
-import { useLayoutEffect } from "../hooks/shared/use-layout-effect";
-import { useEffectEvent } from "../hooks/shared/use-effect-event";
+import { useLayoutEffect } from "../shared/use-layout-effect";
+import { useEffectEvent } from "../shared/use-effect-event";
 
 export class SyntheticFocusEvent<Target = Element>
   implements ReactFocusEvent<Target>
@@ -50,19 +50,19 @@ export class SyntheticFocusEvent<Target = Element>
     return false;
   }
 
-  persist() {}
+  persist(): void {}
 }
 
 export function useSyntheticBlurEvent<Target = Element>(
   onBlur: (e: ReactFocusEvent<Target>) => void
-) {
-  let stateRef = useRef({
+): (e: ReactFocusEvent<Target>) => void {
+  const stateRef = useRef({
     isFocused: false,
     observer: null as MutationObserver | null,
   });
 
   // Clean up MutationObserver on unmount. See below.
-  // eslint-disable-next-line arrow-body-style
+
   useLayoutEffect(() => {
     const state = stateRef.current;
     return () => {
@@ -73,7 +73,7 @@ export function useSyntheticBlurEvent<Target = Element>(
     };
   }, []);
 
-  let dispatchBlur = useEffectEvent((e: SyntheticFocusEvent<Target>) => {
+  const dispatchBlur = useEffectEvent((e: SyntheticFocusEvent<Target>) => {
     onBlur?.(e);
   });
 
@@ -92,8 +92,10 @@ export function useSyntheticBlurEvent<Target = Element>(
       ) {
         stateRef.current.isFocused = true;
 
-        let target = e.target;
-        let onBlurHandler: EventListenerOrEventListenerObject | null = (e) => {
+        const target = e.target;
+        const onBlurHandler: EventListenerOrEventListenerObject | null = (
+          e
+        ) => {
           stateRef.current.isFocused = false;
 
           if (target.disabled) {
@@ -113,7 +115,7 @@ export function useSyntheticBlurEvent<Target = Element>(
         stateRef.current.observer = new MutationObserver(() => {
           if (stateRef.current.isFocused && target.disabled) {
             stateRef.current.observer?.disconnect();
-            let relatedTargetEl =
+            const relatedTargetEl =
               target === document.activeElement ? null : document.activeElement;
             target.dispatchEvent(
               new FocusEvent("blur", { relatedTarget: relatedTargetEl })

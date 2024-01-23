@@ -15,7 +15,7 @@ export function getFocusableTreeWalker(
   root: Element,
   opts?: FocusManagerOptions,
   scope?: Element[]
-) {
+): TreeWalker {
   const selector = opts?.tabbable
     ? TABBABLE_ELEMENT_SELECTOR
     : FOCUSABLE_ELEMENT_SELECTOR;

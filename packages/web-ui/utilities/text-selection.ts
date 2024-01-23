@@ -20,12 +20,11 @@ type State = "default" | "disabled" | "restoring";
 // rather than at the document level so we just need to apply/remove user-select: none for each pressed element individually
 let state: State = "default";
 let savedUserSelect = "";
-let modifiedElementMap = new WeakMap<Element, string>();
+const modifiedElementMap = new WeakMap<Element, string>();
 
-export function disableTextSelection(target?: Element) {
+export function disableTextSelection(target?: Element): void {
   if (isIOS()) {
     if (state === "default") {
-      // eslint-disable-next-line no-restricted-globals
       const documentObject = getOwnerDocument(target);
       savedUserSelect = documentObject.documentElement.style.webkitUserSelect;
       documentObject.documentElement.style.webkitUserSelect = "none";
@@ -40,7 +39,7 @@ export function disableTextSelection(target?: Element) {
   }
 }
 
-export function restoreTextSelection(target?: Element) {
+export function restoreTextSelection(target?: Element): void {
   if (isIOS()) {
     // If the state is already default, there's nothing to do.
     // If it is restoring, then there's no need to queue a second restore.
@@ -58,7 +57,6 @@ export function restoreTextSelection(target?: Element) {
       runAfterTransition(() => {
         // Avoid race conditions
         if (state === "restoring") {
-          // eslint-disable-next-line no-restricted-globals
           const documentObject = getOwnerDocument(target);
           if (
             documentObject.documentElement.style.webkitUserSelect === "none"
@@ -76,7 +74,7 @@ export function restoreTextSelection(target?: Element) {
     // If not iOS, restore the target's original user-select if any
     // Ignore state since it doesn't apply for non iOS
     if (target && modifiedElementMap.has(target)) {
-      let targetOldUserSelect = modifiedElementMap.get(target) as string;
+      const targetOldUserSelect = modifiedElementMap.get(target)!;
 
       if (target.style.userSelect === "none") {
         target.style.userSelect = targetOldUserSelect;

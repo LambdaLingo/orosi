@@ -40,11 +40,14 @@ const propRe = /(?:data-.*)/;
  * @param opts - Props to override.
  */
 export function filterDOMProps(
-  props: DOMProps & AriaLabelingProps & LinkDOMProps,
+  props: DOMProps & AriaLabelingProps & LinkDOMProps & Record<string, unknown>,
   opts: Options = {}
 ): DOMProps & AriaLabelingProps & LinkDOMProps {
   const { labelable, isLink, propNames } = opts;
-  const filteredProps: DOMProps & AriaLabelingProps & LinkDOMProps = {};
+  const filteredProps: DOMProps &
+    AriaLabelingProps &
+    LinkDOMProps &
+    Record<string, unknown> = {};
 
   for (const prop in props) {
     if (

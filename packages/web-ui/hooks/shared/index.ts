@@ -12,3 +12,4 @@ export * from "./use-value-effect";
 export * from "./use-id";
 export * from "./use-slot";
 export * from "./use-event";
+export * from "../interactions/use-synthetic-blur-event";

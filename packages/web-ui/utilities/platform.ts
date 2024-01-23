@@ -5,34 +5,34 @@
 /// <reference types="user-agent-data-types" />
 
 console.log(window.navigator.userAgentData); // no type error!
-function testUserAgent(re: RegExp) {
-  if (typeof window === "undefined" || window.navigator == null) {
+function testUserAgent(re: RegExp): boolean {
+  if (window?.navigator == null) {
     return false;
   }
   return (
-    window.navigator["userAgentData"]?.brands.some(
+    window.navigator.userAgentData?.brands.some(
       (brand: { brand: string; version: string }) => re.test(brand.brand)
     ) || re.test(window.navigator.userAgent)
   );
 }
 
-function testPlatform(re: RegExp) {
-  return typeof window !== "undefined" && window.navigator != null
+function testPlatform(re: RegExp): boolean {
+  return window?.navigator != null
     ? re.test(
-        window.navigator["userAgentData"]?.platform || window.navigator.platform
+        window.navigator.userAgentData?.platform || window.navigator.platform
       )
     : false;
 }
 
-export function isMac() {
+export function isMac(): boolean {
   return testPlatform(/^Mac/i);
 }
 
-export function isIPhone() {
+export function isIPhone(): boolean {
   return testPlatform(/^iPhone/i);
 }
 
-export function isIPad() {
+export function isIPad(): boolean {
   return (
     testPlatform(/^iPad/i) ||
     // iPadOS 13 lies and says it's a Mac, but we can distinguish by detecting touch support.
@@ -40,26 +40,26 @@ export function isIPad() {
   );
 }
 
-export function isIOS() {
+export function isIOS(): boolean {
   return isIPhone() || isIPad();
 }
 
-export function isAppleDevice() {
+export function isAppleDevice(): boolean {
   return isMac() || isIOS();
 }
 
-export function isWebKit() {
+export function isWebKit(): boolean {
   return testUserAgent(/AppleWebKit/i) && !isChrome();
 }
 
-export function isChrome() {
+export function isChrome(): boolean {
   return testUserAgent(/Chrome/i);
 }
 
-export function isAndroid() {
+export function isAndroid(): boolean {
   return testUserAgent(/Android/i);
 }
 
-export function isFirefox() {
+export function isFirefox(): boolean {
   return testUserAgent(/Firefox/i);
 }

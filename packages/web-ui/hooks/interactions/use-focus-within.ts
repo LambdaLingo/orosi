@@ -6,7 +6,7 @@
 import type { FocusEvent } from "react";
 import { useCallback, useRef } from "react";
 import type { DOMAttributes } from "../../types/shared/dom";
-import { useSyntheticBlurEvent } from "../../utilities/utils";
+import { useSyntheticBlurEvent } from "./use-synthetic-blur-event";
 
 export interface FocusWithinProps {
   /** Whether the focus within events should be disabled. */

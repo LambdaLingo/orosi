@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
-import { type Locale, useDefaultLocale } from "hooks";
+import { useDefaultLocale } from "hooks";
 import { I18nContext } from "store";
 import { isRTL } from "utilities";
+import type { Locale } from "types";
 
 export type I18nProviderProps = {
   /** Contents that should have the locale applied. */

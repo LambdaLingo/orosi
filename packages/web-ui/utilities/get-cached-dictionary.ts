@@ -1,11 +1,18 @@
-import type { LocalizedString, LocalizedStrings } from "intl";
-import { LocalizedStringDictionary } from "intl";
+import {
+  type LocalizedString,
+  type LocalizedStrings,
+  LocalizedStringDictionary,
+} from "./i18n";
 
-const cache = new WeakMap();
 export function getCachedDictionary<
   K extends string,
   T extends LocalizedString,
 >(strings: LocalizedStrings<K, T>): LocalizedStringDictionary<K, T> {
+  const cache = new WeakMap<
+    LocalizedStrings<K, T>,
+    LocalizedStringDictionary<K, T>
+  >();
+
   let dictionary = cache.get(strings);
   if (!dictionary) {
     dictionary = new LocalizedStringDictionary(strings);

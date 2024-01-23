@@ -1,32 +1,32 @@
-import type { ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { createContext, useContext, useMemo } from "react";
 import type { LinkDOMProps } from "../types/shared/dom";
 import { isFirefox, isIPad, isMac, isWebKit } from "./platform";
 import { focusWithoutScrolling } from "./focus-without-scrolling";
 
-interface Router {
+type Router = {
   isNative: boolean;
   open: (target: Element, modifiers: Modifiers) => void;
-}
+};
 
 const RouterContext = createContext<Router>({
   isNative: true,
   open: openSyntheticLink,
 });
 
-interface RouterProviderProps {
+type RouterProviderProps = {
   navigate: (path: string) => void;
   children: ReactNode;
-}
+};
 
 /**
  * A RouterProvider accepts a `navigate` function from a framework or client side router,
  * and provides it to all nested React Aria links to enable client side navigation.
  */
-export function RouterProvider(props: RouterProviderProps) {
-  let { children, navigate } = props;
+export function RouterProvider(props: RouterProviderProps): ReactElement {
+  const { children, navigate } = props;
 
-  let ctx = useMemo(
+  const ctx = useMemo(
     () => ({
       isNative: false,
       open: (target: Element, modifiers: Modifiers) => {
@@ -51,19 +51,19 @@ export function useRouter(): Router {
   return useContext(RouterContext);
 }
 
-interface Modifiers {
+type Modifiers = {
   metaKey?: boolean;
   ctrlKey?: boolean;
   altKey?: boolean;
   shiftKey?: boolean;
-}
+};
 
 export function shouldClientNavigate(
   link: HTMLAnchorElement,
   modifiers: Modifiers
-) {
+): boolean {
   // Use getAttribute here instead of link.target. Firefox will default link.target to "_parent" when inside an iframe.
-  let target = link.getAttribute("target");
+  const target = link.getAttribute("target");
   return (
     (!target || target === "_self") &&
     link.origin === location.origin &&
@@ -79,7 +79,7 @@ export function openLink(
   target: HTMLAnchorElement,
   modifiers: Modifiers,
   setOpening = true
-) {
+): void {
   let { metaKey, ctrlKey, altKey, shiftKey } = modifiers;
 
   // Firefox does not recognize keyboard events as a user action by default, and the popup blocker
@@ -100,10 +100,10 @@ export function openLink(
 
   // WebKit does not support firing click events with modifier keys, but does support keyboard events.
   // https://github.com/WebKit/WebKit/blob/c03d0ac6e6db178f90923a0a63080b5ca210d25f/Source/WebCore/html/HTMLAnchorElement.cpp#L184
-  let event =
+  const event =
     isWebKit() && isMac() && !isIPad() && process.env.NODE_ENV !== "test"
       ? new KeyboardEvent("keydown", {
-          // @ts-ignore - keyIdentifier is a non-standard property, but it's what webkit expects
+          // @ts-expect-error - keyIdentifier is a non-standard property, but it's what webkit expects
           keyIdentifier: "Enter",
           metaKey,
           ctrlKey,
@@ -129,7 +129,7 @@ export function openLink(
 function getSyntheticLink(
   target: Element,
   open: (link: HTMLAnchorElement) => void
-) {
+): void {
   if (target instanceof HTMLAnchorElement) {
     open(target);
   } else if (target.hasAttribute("data-href")) {

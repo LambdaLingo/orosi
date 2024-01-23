@@ -3,12 +3,12 @@ const transitionsByElement = new Map<EventTarget, Set<string>>();
 // A list of callbacks to call once there are no transitioning elements.
 const transitionCallbacks = new Set<() => void>();
 
-function setupGlobalEvents() {
+function setupGlobalEvents(): void {
   if (typeof window === "undefined") {
     return;
   }
 
-  const onTransitionStart = (e: TransitionEvent) => {
+  const onTransitionStart = (e: TransitionEvent): void => {
     // Add the transitioning property to the list for this element.
     let transitions = transitionsByElement.get(e.target!);
     if (!transitions) {
@@ -29,9 +29,9 @@ function setupGlobalEvents() {
     transitions.add(e.propertyName);
   };
 
-  const onTransitionEnd = (e: TransitionEvent) => {
+  const onTransitionEnd = (e: TransitionEvent): void => {
     // Remove property from list of transitioning properties.
-    let properties = transitionsByElement.get(e.target!);
+    const properties = transitionsByElement.get(e.target!);
     if (!properties) {
       return;
     }
@@ -50,7 +50,7 @@ function setupGlobalEvents() {
 
     // If no transitioning elements, call all of the queued callbacks.
     if (transitionsByElement.size === 0) {
-      for (let cb of transitionCallbacks) {
+      for (const cb of transitionCallbacks) {
         cb();
       }
 
@@ -70,7 +70,7 @@ if (typeof document !== "undefined") {
   }
 }
 
-export function runAfterTransition(fn: () => void) {
+export function runAfterTransition(fn: () => void): void {
   // Wait one frame to see if an animation starts, e.g. a transition on mount.
   requestAnimationFrame(() => {
     // If no transitions are running, call the function immediately.

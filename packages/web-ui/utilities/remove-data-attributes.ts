@@ -3,7 +3,7 @@
  * @param props
  */
 export function removeDataAttributes<T>(props: T): T {
-  const prefix = /^(data-.*)$/;
+  const prefix = /^(?:data-.*)$/;
   const filteredProps = {} as T;
 
   for (const prop in props) {
