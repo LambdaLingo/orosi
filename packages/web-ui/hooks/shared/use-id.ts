@@ -18,11 +18,11 @@ const idsUpdaterMap: Map<string, (v: string) => void> = new Map();
  */
 export function useId(defaultId?: string): string {
   const [value, setValue] = useState(defaultId);
-  const nextId = useRef(null);
+  const nextId = useRef<string | null>(null);
 
   const res = useSSRSafeId(value);
 
-  const updateValue = useCallback((val) => {
+  const updateValue = useCallback((val: string) => {
     nextId.current = val;
   }, []);
 
@@ -55,7 +55,7 @@ export function useId(defaultId?: string): string {
  * if we can use it in places such as labelledby.
  * @param depArray - When to recalculate if the id is in the DOM.
  */
-export function useSlotId(depArray: ReadonlyArray<any> = []): string {
+export function useSlotId(depArray: readonly any[] = []): string {
   const id = useId();
   const [resolvedId, setResolvedId] = useValueEffect(id);
   const updateId = useCallback(() => {
