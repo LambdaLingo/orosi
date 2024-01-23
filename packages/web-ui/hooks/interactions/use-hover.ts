@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { HoverEvents } from "../../types/shared/events";
-import type { DOMAttributes } from "../../types/shared/dom";
-import type { IsDisabledProp } from "../../types/shared/component";
+import type { HoverEvents, DOMAttributes, IsDisabledProp } from "types";
 
 export type HoverProps = HoverEvents & IsDisabledProp;
 
@@ -17,7 +15,7 @@ export type HoverResult = {
 let globalIgnoreEmulatedMouseEvents = false;
 let hoverCount = 0;
 
-function setGlobalIgnoreEmulatedMouseEvents() {
+function setGlobalIgnoreEmulatedMouseEvents(): void {
   globalIgnoreEmulatedMouseEvents = true;
 
   // Clear globalIgnoreEmulatedMouseEvents after a short timeout. iOS fires onPointerEnter
@@ -29,13 +27,13 @@ function setGlobalIgnoreEmulatedMouseEvents() {
   }, 50);
 }
 
-function handleGlobalPointerEvent(e: { pointerType: string }) {
+function handleGlobalPointerEvent(e: { pointerType: string }): void {
   if (e.pointerType === "touch") {
     setGlobalIgnoreEmulatedMouseEvents();
   }
 }
 
-function setupGlobalTouchEvents() {
+function setupGlobalTouchEvents(): undefined | (() => void) {
   if (typeof document === "undefined") {
     return;
   }

@@ -83,15 +83,15 @@ export function useMove(props: MoveEvents): MoveResult {
   );
 
   const moveProps = useMemo(() => {
-    let moveProps: DOMAttributes = {};
+    const moveProps: DOMAttributes = {};
 
-    let start = () => {
+    const start = (): void => {
       disableTextSelection();
       state.current.didMove = false;
     };
 
     if (typeof PointerEvent === "undefined") {
-      let onMouseMove = (e: MouseEvent) => {
+      const onMouseMove = (e: MouseEvent): void => {
         if (e.button === 0) {
           move(
             e,
@@ -102,7 +102,7 @@ export function useMove(props: MoveEvents): MoveResult {
           state.current.lastPosition = { pageX: e.pageX, pageY: e.pageY };
         }
       };
-      let onMouseUp = (e: MouseEvent) => {
+      const onMouseUp = (e: MouseEvent): void => {
         if (e.button === 0) {
           end(e, "mouse");
           removeGlobalListener(window, "mousemove", onMouseMove, false);
@@ -120,12 +120,12 @@ export function useMove(props: MoveEvents): MoveResult {
         }
       };
 
-      let onTouchMove = (e: TouchEvent) => {
-        let touch = [...e.changedTouches].findIndex(
+      const onTouchMove = (e: TouchEvent): void => {
+        const touch = Array.from(e.changedTouches).findIndex(
           ({ identifier }) => identifier === state.current.id
         );
         if (touch >= 0) {
-          let { pageX, pageY } = e.changedTouches[touch];
+          const { pageX, pageY } = e.changedTouches[touch];
           move(
             e,
             "touch",
@@ -135,8 +135,8 @@ export function useMove(props: MoveEvents): MoveResult {
           state.current.lastPosition = { pageX, pageY };
         }
       };
-      let onTouchEnd = (e: TouchEvent) => {
-        let touch = [...e.changedTouches].findIndex(
+      const onTouchEnd = (e: TouchEvent): void => {
+        const touch = Array.from(e.changedTouches).findIndex(
           ({ identifier }) => identifier === state.current.id
         );
         if (touch >= 0) {
@@ -148,11 +148,11 @@ export function useMove(props: MoveEvents): MoveResult {
         }
       };
       moveProps.onTouchStart = (e: React.TouchEvent) => {
-        if (e.changedTouches.length === 0 || state.current.id != null) {
+        if (e.changedTouches.length === 0 || state.current.id !== null) {
           return;
         }
 
-        let { pageX, pageY, identifier } = e.changedTouches[0];
+        const { pageX, pageY, identifier } = e.changedTouches[0];
         start();
         e.stopPropagation();
         e.preventDefault();
@@ -163,9 +163,9 @@ export function useMove(props: MoveEvents): MoveResult {
         addGlobalListener(window, "touchcancel", onTouchEnd, false);
       };
     } else {
-      let onPointerMove = (e: PointerEvent) => {
+      const onPointerMove = (e: PointerEvent): void => {
         if (e.pointerId === state.current.id) {
-          let pointerType = (e.pointerType || "mouse") as PointerType;
+          const pointerType = (e.pointerType || "mouse") as PointerType;
 
           // Problems with PointerEvent#movementX/movementY:
           // 1. it is always 0 on macOS Safari.
@@ -180,9 +180,9 @@ export function useMove(props: MoveEvents): MoveResult {
         }
       };
 
-      let onPointerUp = (e: PointerEvent) => {
+      const onPointerUp = (e: PointerEvent): void => {
         if (e.pointerId === state.current.id) {
-          let pointerType = (e.pointerType || "mouse") as PointerType;
+          const pointerType = (e.pointerType || "mouse") as PointerType;
           end(e, pointerType);
           state.current.id = null;
           removeGlobalListener(window, "pointermove", onPointerMove, false);
@@ -192,7 +192,7 @@ export function useMove(props: MoveEvents): MoveResult {
       };
 
       moveProps.onPointerDown = (e: React.PointerEvent) => {
-        if (e.button === 0 && state.current.id == null) {
+        if (e.button === 0 && state.current.id === null) {
           start();
           e.stopPropagation();
           e.preventDefault();
@@ -205,11 +205,11 @@ export function useMove(props: MoveEvents): MoveResult {
       };
     }
 
-    let triggerKeyboardMove = (
+    const triggerKeyboardMove = (
       e: EventBase,
       deltaX: number,
       deltaY: number
-    ) => {
+    ): void => {
       start();
       move(e, "keyboard", deltaX, deltaY);
       end(e, "keyboard");

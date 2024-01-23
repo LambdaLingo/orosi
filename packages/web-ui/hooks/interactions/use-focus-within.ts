@@ -3,12 +3,11 @@
 // NOTICE file in the root directory of this source tree.
 // See https://github.com/facebook/react/tree/cc7c1aece46a6b69b41958d731e0fd27c94bfc6c/packages/react-interactions
 
-import type { FocusEvent } from "react";
-import { useCallback, useRef } from "react";
-import type { DOMAttributes } from "../../types/shared/dom";
+import { type FocusEvent, useCallback, useRef } from "react";
+import type { DOMAttributes } from "types";
 import { useSyntheticBlurEvent } from "./use-synthetic-blur-event";
 
-export interface FocusWithinProps {
+export type FocusWithinProps = {
   /** Whether the focus within events should be disabled. */
   isDisabled?: boolean;
   /** Handler that is called when the target element or a descendant receives focus. */
@@ -17,12 +16,12 @@ export interface FocusWithinProps {
   onBlurWithin?: (e: FocusEvent) => void;
   /** Handler that is called when the the focus within state changes. */
   onFocusWithinChange?: (isFocusWithin: boolean) => void;
-}
+};
 
-export interface FocusWithinResult {
+export type FocusWithinResult = {
   /** Props to spread onto the target element. */
   focusWithinProps: DOMAttributes;
-}
+};
 
 /**
  * Handles focus events for the target and its descendants.

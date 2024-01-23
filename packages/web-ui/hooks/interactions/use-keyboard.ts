@@ -1,17 +1,16 @@
 import type { KeyboardEvent } from "react";
-import type { DOMAttributes } from "../../types/shared/dom";
-import type { KeyboardEvents } from "../../types/shared/events";
-import { createEventHandler } from "../../utilities/create-event-handler";
+import type { DOMAttributes, KeyboardEvents } from "types";
+import { createEventHandler } from "utilities";
 
-export interface KeyboardProps extends KeyboardEvents {
+export type KeyboardProps = {
   /** Whether the keyboard events should be disabled. */
   isDisabled?: boolean;
-}
+} & KeyboardEvents;
 
-export interface KeyboardResult {
+export type KeyboardResult = {
   /** Props to spread onto the target element. */
   keyboardProps: DOMAttributes;
-}
+};
 
 /**
  * Handles keyboard interactions for a focusable element.

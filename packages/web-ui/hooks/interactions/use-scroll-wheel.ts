@@ -14,7 +14,7 @@ export function useScrollWheel(
 ): void {
   const { onScroll, isDisabled } = props;
   const onScrollHandler = useCallback(
-    (e) => {
+    (e: WheelEvent) => {
       // If the ctrlKey is pressed, this is a zoom event, do nothing.
       if (e.ctrlKey) {
         return;

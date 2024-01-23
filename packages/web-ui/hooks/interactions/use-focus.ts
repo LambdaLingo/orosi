@@ -3,22 +3,19 @@
 // NOTICE file in the root directory of this source tree.
 // See https://github.com/facebook/react/tree/cc7c1aece46a6b69b41958d731e0fd27c94bfc6c/packages/react-interactions
 
-import type { FocusEvent } from "react";
-import { useCallback } from "react";
-import type { DOMAttributes, FocusableElement } from "../../types/shared/dom";
+import { type FocusEvent, useCallback } from "react";
+import type { FocusEvents, DOMAttributes, FocusableElement } from "types";
 import { useSyntheticBlurEvent } from "./use-synthetic-blur-event";
-import type { FocusEvents } from "../../types/shared/events";
 
-export interface FocusProps<Target = FocusableElement>
-  extends FocusEvents<Target> {
+export type FocusProps<Target = FocusableElement> = {
   /** Whether the focus events should be disabled. */
   isDisabled?: boolean;
-}
+} & FocusEvents<Target>;
 
-export interface FocusResult<Target = FocusableElement> {
+export type FocusResult<Target = FocusableElement> = {
   /** Props to spread onto the target element. */
   focusProps: DOMAttributes<Target>;
-}
+};
 
 /**
  * Handles focus events for the immediate target.

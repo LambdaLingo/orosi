@@ -103,11 +103,11 @@ class PressEvent implements IPressEvent {
     this.altKey = originalEvent.altKey;
   }
 
-  continuePropagation() {
+  continuePropagation(): void {
     this.#shouldStopPropagation = false;
   }
 
-  get shouldStopPropagation() {
+  get shouldStopPropagation(): boolean {
     return this.#shouldStopPropagation;
   }
 }
@@ -131,7 +131,6 @@ export function usePress(props: PressHookProps): PressResult {
     preventFocusOnPress,
     shouldCancelOnPointerExit,
     allowTextSelectionOnPress,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     ref: _, // Removing `ref` from `domProps` because TypeScript is dumb
     ...domProps
   } = usePressResponderContext(props);
@@ -234,7 +233,7 @@ export function usePress(props: PressHookProps): PressResult {
   const cancel = useEffectEvent((e: EventBase) => {
     const state = ref.current;
     if (state.isPressed && state.target) {
-      if (state.isOverTarget && state.pointerType != null) {
+      if (state.isOverTarget && state.pointerType !== null) {
         triggerPressEnd(createEvent(state.target, e), state.pointerType, false);
       }
       state.isPressed = false;
@@ -358,7 +357,7 @@ export function usePress(props: PressHookProps): PressResult {
       },
     };
 
-    const onKeyUp = (e: PressKeyboardEvent) => {
+    const onKeyUp = (e: PressKeyboardEvent): void => {
       if (
         state.isPressed &&
         state.target &&
@@ -512,20 +511,20 @@ export function usePress(props: PressHookProps): PressResult {
       // Safari on iOS < 13.2 does not implement pointerenter/pointerleave events correctly.
       // Use pointer move events instead to implement our own hit testing.
       // See https://bugs.webkit.org/show_bug.cgi?id=199803
-      const onPointerMove = (e: PointerEvent) => {
+      const onPointerMove = (e: PointerEvent): void => {
         if (e.pointerId !== state.activePointerId) {
           return;
         }
 
         if (state.target && isOverTarget(e, state.target)) {
-          if (!state.isOverTarget && state.pointerType != null) {
+          if (!state.isOverTarget && state.pointerType !== null) {
             state.isOverTarget = true;
             triggerPressStart(createEvent(state.target, e), state.pointerType);
           }
         } else if (
           state.target &&
           state.isOverTarget &&
-          state.pointerType != null
+          state.pointerType !== null
         ) {
           state.isOverTarget = false;
           triggerPressEnd(
@@ -537,16 +536,16 @@ export function usePress(props: PressHookProps): PressResult {
         }
       };
 
-      const onPointerUp = (e: PointerEvent) => {
+      const onPointerUp = (e: PointerEvent): void => {
         if (
           e.pointerId === state.activePointerId &&
           state.isPressed &&
           e.button === 0 &&
           state.target
         ) {
-          if (isOverTarget(e, state.target) && state.pointerType != null) {
+          if (isOverTarget(e, state.target) && state.pointerType !== null) {
             triggerPressEnd(createEvent(state.target, e), state.pointerType);
-          } else if (state.isOverTarget && state.pointerType != null) {
+          } else if (state.isOverTarget && state.pointerType !== null) {
             triggerPressEnd(
               createEvent(state.target, e),
               state.pointerType,
@@ -565,7 +564,7 @@ export function usePress(props: PressHookProps): PressResult {
         }
       };
 
-      const onPointerCancel = (e: PointerEvent) => {
+      const onPointerCancel = (e: PointerEvent): void => {
         cancel(e);
       };
 
@@ -626,7 +625,7 @@ export function usePress(props: PressHookProps): PressResult {
         if (
           state.isPressed &&
           !state.ignoreEmulatedMouseEvents &&
-          state.pointerType != null
+          state.pointerType !== null
         ) {
           state.isOverTarget = true;
           shouldStopPropagation = triggerPressStart(e, state.pointerType);
@@ -646,7 +645,7 @@ export function usePress(props: PressHookProps): PressResult {
         if (
           state.isPressed &&
           !state.ignoreEmulatedMouseEvents &&
-          state.pointerType != null
+          state.pointerType !== null
         ) {
           state.isOverTarget = false;
           shouldStopPropagation = triggerPressEnd(e, state.pointerType, false);
@@ -668,7 +667,7 @@ export function usePress(props: PressHookProps): PressResult {
         }
       };
 
-      const onMouseUp = (e: MouseEvent) => {
+      const onMouseUp = (e: MouseEvent): void => {
         // Only handle left clicks
         if (e.button !== 0) {
           return;
@@ -685,13 +684,13 @@ export function usePress(props: PressHookProps): PressResult {
         if (
           state.target &&
           isOverTarget(e, state.target) &&
-          state.pointerType != null
+          state.pointerType !== null
         ) {
           triggerPressEnd(createEvent(state.target, e), state.pointerType);
         } else if (
           state.target &&
           state.isOverTarget &&
-          state.pointerType != null
+          state.pointerType !== null
         ) {
           triggerPressEnd(
             createEvent(state.target, e),
@@ -755,11 +754,11 @@ export function usePress(props: PressHookProps): PressResult {
         const touch = getTouchById(e.nativeEvent, state.activePointerId);
         let shouldStopPropagation = true;
         if (touch && isOverTarget(touch, e.currentTarget)) {
-          if (!state.isOverTarget && state.pointerType != null) {
+          if (!state.isOverTarget && state.pointerType !== null) {
             state.isOverTarget = true;
             shouldStopPropagation = triggerPressStart(e, state.pointerType);
           }
-        } else if (state.isOverTarget && state.pointerType != null) {
+        } else if (state.isOverTarget && state.pointerType !== null) {
           state.isOverTarget = false;
           shouldStopPropagation = triggerPressEnd(e, state.pointerType, false);
           cancelOnPointerExit(e);
@@ -785,11 +784,11 @@ export function usePress(props: PressHookProps): PressResult {
         if (
           touch &&
           isOverTarget(touch, e.currentTarget) &&
-          state.pointerType != null
+          state.pointerType !== null
         ) {
           triggerPressUp(e, state.pointerType);
           shouldStopPropagation = triggerPressEnd(e, state.pointerType);
-        } else if (state.isOverTarget && state.pointerType != null) {
+        } else if (state.isOverTarget && state.pointerType !== null) {
           shouldStopPropagation = triggerPressEnd(e, state.pointerType, false);
         }
 
@@ -818,7 +817,7 @@ export function usePress(props: PressHookProps): PressResult {
         }
       };
 
-      const onScroll = (e: Event) => {
+      const onScroll = (e: Event): void => {
         if (state.isPressed && (e.target as Element).contains(state.target)) {
           cancel({
             currentTarget: state.target,
@@ -854,12 +853,12 @@ export function usePress(props: PressHookProps): PressResult {
   ]);
 
   // Remove user-select: none in case component unmounts immediately after pressStart
-  // eslint-disable-next-line arrow-body-style
+
   useEffect(() => {
+    const currentRef = ref.current;
     return () => {
       if (!allowTextSelectionOnPress) {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        restoreTextSelection(ref.current.target ?? undefined);
+        restoreTextSelection(currentRef.target ?? undefined);
       }
     };
   }, [allowTextSelectionOnPress]);
@@ -915,8 +914,7 @@ function getTouchById(
   pointerId: null | number
 ): null | Touch {
   const changedTouches = event.changedTouches;
-  for (let i = 0; i < changedTouches.length; i++) {
-    const touch = changedTouches[i];
+  for (const touch of Array.from(changedTouches)) {
     if (touch.identifier === pointerId) {
       return touch;
     }
@@ -972,7 +970,7 @@ function getPointClientRect(point: EventPoint): Rect {
   };
 }
 
-function areRectanglesOverlapping(a: Rect, b: Rect) {
+function areRectanglesOverlapping(a: Rect, b: Rect): boolean {
   // check if they cannot overlap on x axis
   if (a.left > b.right || b.left > a.right) {
     return false;
@@ -984,18 +982,18 @@ function areRectanglesOverlapping(a: Rect, b: Rect) {
   return true;
 }
 
-function isOverTarget(point: EventPoint, target: Element) {
+function isOverTarget(point: EventPoint, target: Element): boolean {
   const rect = target.getBoundingClientRect();
   const pointRect = getPointClientRect(point);
   return areRectanglesOverlapping(rect, pointRect);
 }
 
-function shouldPreventDefault(target: Element) {
+function shouldPreventDefault(target: Element): boolean {
   // We cannot prevent default if the target is a draggable element.
   return !(target instanceof HTMLElement) || !target.hasAttribute("draggable");
 }
 
-function shouldPreventDefaultKeyboard(target: Element, key: string) {
+function shouldPreventDefaultKeyboard(target: Element, key: string): boolean {
   if (target instanceof HTMLInputElement) {
     return !isValidInputKey(target, key);
   }
@@ -1023,7 +1021,7 @@ const nonTextInputTypes = new Set([
   "reset",
 ]);
 
-function isValidInputKey(target: HTMLInputElement, key: string) {
+function isValidInputKey(target: HTMLInputElement, key: string): boolean {
   // Only space should toggle checkboxes and radios, not enter.
   return target.type === "checkbox" || target.type === "radio"
     ? key === " "

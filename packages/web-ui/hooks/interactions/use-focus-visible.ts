@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { isMac } from "../../utilities/platform";
-import { isVirtualClick } from "../../utilities/is-virtual-click";
-import { useIsSSR } from "../ssr/ssr-provider";
+import { isVirtualClick, isMac } from "utilities";
+import { useIsSSR } from "hooks/ssr";
 
 export type Modality = "keyboard" | "pointer" | "virtual";
 type HandlerEvent =
