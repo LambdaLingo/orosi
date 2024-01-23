@@ -3,7 +3,7 @@ import { useFormValidationState } from "hooks/form";
 import { useControlledState } from "hooks/shared";
 import { useMemo, useState } from "react";
 
-let instance = Math.round(Math.random() * 10000000000);
+const instance = Math.round(Math.random() * 10000000000);
 let i = 0;
 
 /**
@@ -12,35 +12,35 @@ let i = 0;
  */
 export function useRadioGroupState(props: RadioGroupProps): RadioGroupState {
   // Preserved here for backward compatibility. React Aria now generates the name instead of stately.
-  let name = useMemo(
+  const name = useMemo(
     () => props.name || `radio-group-${instance}-${++i}`,
     [props.name]
   );
-  let [selectedValue, setSelected] = useControlledState(
+  const [selectedValue, setSelected] = useControlledState(
     props.value,
     props.defaultValue ?? null,
     props.onChange
   );
-  let [lastFocusedValue, setLastFocusedValue] = useState<string | null>(null);
+  const [lastFocusedValue, setLastFocusedValue] = useState<string | null>(null);
 
-  let validation = useFormValidationState({
+  const validation = useFormValidationState({
     ...props,
     value: selectedValue,
   });
 
-  let setSelectedValue = (value) => {
+  const setSelectedValue = (value: string | null): void => {
     if (!props.isReadOnly && !props.isDisabled) {
       setSelected(value);
       validation.commitValidation();
     }
   };
 
-  let isInvalid = validation.displayValidation.isInvalid;
+  const isInvalid = validation.displayValidation.isInvalid;
 
   return {
     ...validation,
     name,
-    selectedValue: selectedValue,
+    selectedValue,
     setSelectedValue,
     lastFocusedValue,
     setLastFocusedValue,
