@@ -5,7 +5,7 @@ export function useFormReset<T>(
   ref: RefObject<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   initialValue: T,
   onReset: (value: T) => void
-) {
+): void {
   const resetValue = useRef(initialValue);
   const handleReset = useEffectEvent(() => {
     if (onReset) {

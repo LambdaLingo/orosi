@@ -48,7 +48,7 @@ export function useFormValidation<T>(
     }
 
     // Auto focus the first invalid input in a form, unless the error already had its default prevented.
-    let form = ref?.current?.form;
+    const form = ref?.current?.form;
     if (
       !e.defaultPrevented &&
       ref &&
@@ -91,7 +91,7 @@ export function useFormValidation<T>(
   }, [ref, onInvalid, onChange, onReset, validationBehavior]);
 }
 
-function getValidity(input: ValidatableElement) {
+function getValidity(input: ValidatableElement): ValidityState {
   // The native ValidityState object is live, meaning each property is a getter that returns the current state.
   // We need to create a snapshot of the validity state at the time this function is called to avoid unpredictable React renders.
   const validity = input.validity;
@@ -121,8 +121,7 @@ function getNativeValidity(input: ValidatableElement): ValidationResult {
 function getFirstInvalidInput(
   form: HTMLFormElement
 ): ValidatableElement | null {
-  for (let i = 0; i < form.elements.length; i++) {
-    const element = form.elements[i] as ValidatableElement;
+  for (const element of Array.from(form.elements) as ValidatableElement[]) {
     if (!element.validity.valid) {
       return element;
     }

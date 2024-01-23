@@ -17,6 +17,7 @@ type FormValidationProps<T> = {
   builtinValidation?: ValidationResult;
   name?: string | string[];
   value: T;
+  [key: string]: unknown;
 } & Validation<T>;
 
 export function useFormValidationState<T>(

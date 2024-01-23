@@ -19,7 +19,7 @@ export function useCheckboxGroupState(
     props.defaultValue || [],
     props.onChange
   );
-  const isRequired = !!props.isRequired && selectedValues.length === 0;
+  const isRequired = Boolean(props.isRequired) && selectedValues.length === 0;
 
   const invalidValues = useRef(new Map<string, ValidationResult>());
   const validation = useFormValidationState({

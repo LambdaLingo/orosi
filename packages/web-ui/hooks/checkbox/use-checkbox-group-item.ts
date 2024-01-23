@@ -4,12 +4,12 @@ import type {
   CheckboxGroupState,
   ValidationResult,
 } from "types";
-import { checkboxGroupData } from "store";
 import {
+  checkboxGroupData,
   DEFAULT_VALIDATION_RESULT,
   privateValidationStateProp,
-  useFormValidationState,
-} from "hooks/form";
+} from "store";
+import { useFormValidationState } from "hooks/form";
 import { useToggleState } from "hooks/toggle";
 import { type CheckboxAria, useCheckbox } from "./use-checkbox";
 

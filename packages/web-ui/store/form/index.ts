@@ -29,4 +29,4 @@ export const DEFAULT_VALIDATION_RESULT: ValidationResult = {
   validationErrors: [],
 };
 
-export const privateValidationStateProp = "__formValidationState" + Date.now();
+export const privateValidationStateProp = `__formValidationState${Date.now()}`;

@@ -12,7 +12,6 @@ export * from "./open-link";
 export * from "./platform";
 export * from "./run-after-transition";
 export * from "./text-selection";
-export * from "../hooks/interactions/use-synthetic-blur-event";
 export * from "./number";
 export * from "./is-rtl";
 export * from "./remove-data-attributes";
