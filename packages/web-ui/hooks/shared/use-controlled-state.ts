@@ -15,12 +15,12 @@ export function useControlledState<T, C = T>(
   defaultValue: T,
   onChange?: (v: C, ...args: any[]) => void
 ): [T, (value: T) => void] {
-  let [stateValue, setStateValue] = useState(value || defaultValue);
+  const [stateValue, setStateValue] = useState(value || defaultValue);
 
-  let isControlledRef = useRef(value !== undefined);
-  let isControlled = value !== undefined;
+  const isControlledRef = useRef(value !== undefined);
+  const isControlled = value !== undefined;
   useEffect(() => {
-    let wasControlled = isControlledRef.current;
+    const wasControlled = isControlledRef.current;
     if (wasControlled !== isControlled) {
       console.warn(
         `WARN: A component changed from ${wasControlled ? "controlled" : "uncontrolled"} to ${isControlled ? "controlled" : "uncontrolled"}.`
@@ -30,9 +30,9 @@ export function useControlledState<T, C = T>(
   }, [isControlled]);
 
   let currentValue = isControlled ? value : stateValue;
-  let setValue = useCallback(
+  const setValue = useCallback(
     (value, ...args) => {
-      let onChangeCaller = (value, ...onChangeArgs) => {
+      const onChangeCaller = (value, ...onChangeArgs) => {
         if (onChange) {
           if (!Object.is(currentValue, value)) {
             onChange(value, ...onChangeArgs);

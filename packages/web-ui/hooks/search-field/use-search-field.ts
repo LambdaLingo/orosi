@@ -9,11 +9,12 @@ import type {
   ButtonProps,
   DOMAttributes,
   ValidationResult,
+  KeyboardEvent,
 } from "types";
 import { useTextField, useLocalizedStringFormatter } from "hooks";
-import {} from "intl";
 import { chain } from "utilities";
-import intlMessages from "intl/languages";
+// @ts-ignore
+import intlMessages from "store/i18n/builtin-strings/*.json";
 
 export type SearchFieldAria = {
   /** Props for the text field's visible label element (if any). */
@@ -39,11 +40,11 @@ export function useSearchField(
   state: SearchFieldState,
   inputRef: RefObject<HTMLInputElement>
 ): SearchFieldAria {
-  let stringFormatter = useLocalizedStringFormatter(
+  const stringFormatter = useLocalizedStringFormatter(
     intlMessages,
     "@react-aria/searchfield"
   );
-  let {
+  const {
     isDisabled,
     isReadOnly,
     onSubmit = () => {},
@@ -51,7 +52,7 @@ export function useSearchField(
     type = "search",
   } = props;
 
-  let onKeyDown = (e) => {
+  const onKeyDown = (e: KeyboardEvent): void => {
     const key = e.key;
 
     if (key === "Enter") {
@@ -78,7 +79,7 @@ export function useSearchField(
     }
   };
 
-  let onClearButtonClick = () => {
+  const onClearButtonClick = (): void => {
     state.setValue("");
 
     if (onClear) {
@@ -86,13 +87,13 @@ export function useSearchField(
     }
   };
 
-  let onPressStart = () => {
+  const onPressStart = (): void => {
     // this is in PressStart for mobile so that touching the clear button doesn't remove focus from
     // the input and close the keyboard
     inputRef.current?.focus();
   };
 
-  let {
+  const {
     labelProps,
     inputProps,
     descriptionProps,
@@ -121,7 +122,6 @@ export function useSearchField(
     clearButtonProps: {
       "aria-label": stringFormatter.format("Clear search"),
       excludeFromTabOrder: true,
-      // @ts-ignore
       preventFocusOnPress: true,
       isDisabled: isDisabled || isReadOnly,
       onPress: onClearButtonClick,

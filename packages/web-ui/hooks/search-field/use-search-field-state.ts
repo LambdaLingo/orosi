@@ -25,10 +25,9 @@ export function useSearchFieldState(props: SearchFieldProps): SearchFieldState {
   };
 }
 
-function toString(val) {
-  if (val == null) {
+function toString(val: unknown): string | undefined {
+  if (val === null || val === undefined) {
     return;
   }
-
   return val.toString();
 }
