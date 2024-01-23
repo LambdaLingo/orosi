@@ -36,7 +36,7 @@ const FOCUS_VISIBLE_INPUT_KEYS: Record<string, boolean> = {
   Escape: true,
 };
 
-function triggerChangeHandlers(modality: Modality, e: HandlerEvent) {
+function triggerChangeHandlers(modality: Modality, e: HandlerEvent): void {
   for (const handler of changeHandlers) {
     handler(modality, e);
   }
@@ -45,7 +45,7 @@ function triggerChangeHandlers(modality: Modality, e: HandlerEvent) {
 /**
  * Helper function to determine if a KeyboardEvent is unmodified and could make keyboard focus styles visible.
  */
-function isValidKey(e: KeyboardEvent) {
+function isValidKey(e: KeyboardEvent): boolean {
   // Control and Shift keys trigger when navigating back to the tab with keyboard.
   return !(
     e.metaKey ||
@@ -57,7 +57,7 @@ function isValidKey(e: KeyboardEvent) {
   );
 }
 
-function handleKeyboardEvent(e: KeyboardEvent) {
+function handleKeyboardEvent(e: KeyboardEvent): void {
   hasEventBeforeFocus = true;
   if (isValidKey(e)) {
     currentModality = "keyboard";
@@ -65,7 +65,7 @@ function handleKeyboardEvent(e: KeyboardEvent) {
   }
 }
 
-function handlePointerEvent(e: PointerEvent | MouseEvent) {
+function handlePointerEvent(e: PointerEvent | MouseEvent): void {
   currentModality = "pointer";
   if (e.type === "mousedown" || e.type === "pointerdown") {
     hasEventBeforeFocus = true;
@@ -73,14 +73,14 @@ function handlePointerEvent(e: PointerEvent | MouseEvent) {
   }
 }
 
-function handleClickEvent(e: MouseEvent) {
+function handleClickEvent(e: MouseEvent): void {
   if (isVirtualClick(e)) {
     hasEventBeforeFocus = true;
     currentModality = "virtual";
   }
 }
 
-function handleFocusEvent(e: FocusEvent) {
+function handleFocusEvent(e: FocusEvent): void {
   // Firefox fires two extra focus events when the user first clicks into an iframe:
   // first on the window, then on the document. We ignore these events so they don't
   // cause keyboard focus rings to appear.
@@ -99,7 +99,7 @@ function handleFocusEvent(e: FocusEvent) {
   hasBlurredWindowRecently = false;
 }
 
-function handleWindowBlur() {
+function handleWindowBlur(): void {
   // When the window is blurred, reset state. This is necessary when tabbing out of the window,
   // for example, since a subsequent focus event won't be fired.
   hasEventBeforeFocus = false;
@@ -109,7 +109,7 @@ function handleWindowBlur() {
 /**
  * Setup global event listeners to control when keyboard focus style should be visible.
  */
-function setupGlobalFocusEvents() {
+function setupGlobalFocusEvents(): void {
   if (typeof window === "undefined" || hasSetupGlobalListeners) {
     return;
   }
@@ -119,12 +119,11 @@ function setupGlobalFocusEvents() {
   // a preceding user event (e.g. screen reader focus). Overriding the focus
   // method on HTMLElement.prototype is a bit hacky, but works.
   const focus = HTMLElement.prototype.focus;
-  HTMLElement.prototype.focus = function () {
+  HTMLElement.prototype.focus = (
+    ...args: [options?: FocusOptions | undefined]
+  ) => {
     hasEventBeforeFocus = true;
-    focus.apply(
-      this,
-      arguments as unknown as [options?: FocusOptions | undefined]
-    );
+    focus.apply(document.activeElement, args);
   };
 
   document.addEventListener("keydown", handleKeyboardEvent, true);
@@ -168,7 +167,7 @@ export function getInteractionModality(): Modality | null {
   return currentModality;
 }
 
-export function setInteractionModality(modality: Modality) {
+export function setInteractionModality(modality: Modality): void {
   currentModality = modality;
   triggerChangeHandlers(modality, null);
 }
@@ -181,7 +180,7 @@ export function useInteractionModality(): Modality | null {
 
   const [modality, setModality] = useState(currentModality);
   useEffect(() => {
-    const handler = () => {
+    const handler = (): void => {
       setModality(currentModality);
     };
 
@@ -214,7 +213,7 @@ function isKeyboardFocusEvent(
   isTextInput: boolean,
   modality: Modality,
   e: HandlerEvent
-) {
+): boolean {
   isTextInput =
     isTextInput ||
     (e?.target instanceof HTMLInputElement &&
@@ -236,12 +235,12 @@ export function useFocusVisible(
   props: FocusVisibleProps = {}
 ): FocusVisibleResult {
   const { isTextInput, autoFocus } = props;
-  const [isFocusVisibleState, setFocusVisible] = useState(
+  const [isFocusVisibleState, setIsFocusVisibleState] = useState(
     autoFocus || isFocusVisible()
   );
   useFocusVisibleListener(
     (isFocusVisible) => {
-      setFocusVisible(isFocusVisible);
+      setIsFocusVisibleState(isFocusVisible);
     },
     [isTextInput],
     { isTextInput }
@@ -255,14 +254,14 @@ export function useFocusVisible(
  */
 export function useFocusVisibleListener(
   fn: FocusVisibleHandler,
-  deps: ReadonlyArray<any>,
+  deps: readonly any[],
   opts?: { isTextInput?: boolean }
 ): void {
   setupGlobalFocusEvents();
 
   useEffect(() => {
-    const handler = (modality: Modality, e: HandlerEvent) => {
-      if (!isKeyboardFocusEvent(!!opts?.isTextInput, modality, e)) {
+    const handler = (modality: Modality, e: HandlerEvent): void => {
+      if (!isKeyboardFocusEvent(Boolean(opts?.isTextInput), modality, e)) {
         return;
       }
       fn(isFocusVisible());
