@@ -33,7 +33,7 @@ export function useRadio(
   state: RadioGroupState,
   ref: RefObject<HTMLInputElement>
 ): RadioAria {
-  let {
+  const {
     value,
     children,
     "aria-label": ariaLabel,
@@ -42,49 +42,51 @@ export function useRadio(
 
   const isDisabled = props.isDisabled || state.isDisabled;
 
-  let hasChildren = children != null;
-  let hasAriaLabel = ariaLabel != null || ariaLabelledby != null;
+  const hasChildren = children !== null;
+  const hasAriaLabel = ariaLabel !== null || ariaLabelledby !== null;
   if (!hasChildren && !hasAriaLabel) {
     console.warn(
       "If you do not provide children, you must specify an aria-label for accessibility"
     );
   }
 
-  let checked = state.selectedValue === value;
+  const checked = state.selectedValue === value;
 
-  let onChange = (e) => {
+  const onChange = (e: React.ChangeEvent): void => {
     e.stopPropagation();
     state.setSelectedValue(value);
   };
 
-  let { pressProps, isPressed } = usePress({
+  const { pressProps, isPressed } = usePress({
     isDisabled,
   });
 
   // iOS does not toggle radios if you drag off and back onto the label, so handle it ourselves.
-  let { pressProps: labelProps, isPressed: isLabelPressed } = usePress({
+  const { pressProps: labelProps, isPressed: isLabelPressed } = usePress({
     isDisabled,
     onPress() {
       state.setSelectedValue(value);
     },
   });
 
-  let { focusableProps } = useFocusable(
+  const { focusableProps } = useFocusable(
     mergeProps(props, {
-      onFocus: () => state.setLastFocusedValue(value),
+      onFocus: () => {
+        state.setLastFocusedValue(value);
+      },
     }),
     ref
   );
-  let interactions = mergeProps(pressProps, focusableProps);
-  let domProps = filterDOMProps(props, { labelable: true });
+  const interactions = mergeProps(pressProps, focusableProps);
+  const domProps = filterDOMProps(props, { labelable: true });
   let tabIndex: number | undefined = -1;
-  if (state.selectedValue != null) {
+  if (state.selectedValue !== null) {
     if (state.selectedValue === value) {
       tabIndex = 0;
     }
   } else if (
     state.lastFocusedValue === value ||
-    state.lastFocusedValue == null
+    state.lastFocusedValue === null
   ) {
     tabIndex = 0;
   }
@@ -92,13 +94,17 @@ export function useRadio(
     tabIndex = undefined;
   }
 
-  let { name, descriptionId, errorMessageId, validationBehavior } =
+  const { name, descriptionId, errorMessageId, validationBehavior } =
     radioGroupData.get(state)!;
   useFormReset(ref, state.selectedValue, state.setSelectedValue);
   useFormValidation({ validationBehavior }, state, ref);
 
   return {
-    labelProps: mergeProps(labelProps, { onClick: (e) => e.preventDefault() }),
+    labelProps: mergeProps(labelProps, {
+      onClick: (e: React.MouseEvent): void => {
+        e.preventDefault();
+      },
+    }),
     inputProps: mergeProps(domProps, {
       ...interactions,
       type: "radio",
