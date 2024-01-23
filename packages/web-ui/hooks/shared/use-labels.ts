@@ -14,7 +14,7 @@ export function useLabels(
 
   // If there is both an aria-label and aria-labelledby,
   // combine them by pointing to the element itself.
-  id = useId(id);
+  id = useId();
   if (labelledBy && label) {
     const ids = new Set([id, ...labelledBy.trim().split(/\s+/)]);
     labelledBy = [...ids].join(" ");
