@@ -35,7 +35,8 @@ import {
   isIPhone,
   mergeProps,
 } from "utilities";
-import intlMessages from "intl/languages";
+// @ts-ignore
+import intlMessages from "store/i18n/builtin-strings/*.json";
 
 export type NumberFieldAria = {
   /** Props for the label element. */
@@ -101,32 +102,32 @@ export function useNumberField(
     "@react-aria/numberfield"
   );
 
-  let inputId = useId(id);
-  let { focusProps } = useFocus({
+  const inputId = useId(id);
+  const { focusProps } = useFocus({
     onBlur() {
       // Set input value to normalized valid value
       commit();
     },
   });
 
-  let numberFormatter = useNumberFormatter(formatOptions);
-  let intlOptions = useMemo(
+  const numberFormatter = useNumberFormatter(formatOptions);
+  const intlOptions = useMemo(
     () => numberFormatter.resolvedOptions(),
     [numberFormatter]
   );
 
   // Replace negative textValue formatted using currencySign: 'accounting'
   // with a textValue that can be announced using a minus sign.
-  let textValueFormatter = useNumberFormatter({
+  const textValueFormatter = useNumberFormatter({
     ...formatOptions,
     currencySign: undefined,
   });
-  let textValue = useMemo(
+  const textValue = useMemo(
     () => (isNaN(numberValue) ? "" : textValueFormatter.format(numberValue)),
     [textValueFormatter, numberValue]
   );
 
-  let {
+  const {
     spinButtonProps,
     incrementButtonProps: incButtonProps,
     decrementButtonProps: decButtonProps,
@@ -144,14 +145,14 @@ export function useNumberField(
     textValue,
   });
 
-  let [focusWithin, setFocusWithin] = useState(false);
-  let { focusWithinProps } = useFocusWithin({
+  const [focusWithin, setFocusWithin] = useState(false);
+  const { focusWithinProps } = useFocusWithin({
     isDisabled,
     onFocusWithinChange: setFocusWithin,
   });
 
-  let onWheel = useCallback(
-    (e) => {
+  const onWheel = useCallback(
+    (e: { deltaY: number; deltaX: number }) => {
       // if on a trackpad, users can scroll in both X and Y at once, check the magnitude of the change
       // if it's mostly in the X direction, then just return, the user probably doesn't mean to inc/dec
       // this isn't perfect, events come in fast with small deltas and a part of the scroll may give a false indication
@@ -168,7 +169,7 @@ export function useNumberField(
     [decrement, increment]
   );
   // If the input isn't supposed to receive input, disable scrolling.
-  let scrollingDisabled = isDisabled || isReadOnly || !focusWithin;
+  const scrollingDisabled = isDisabled || isReadOnly || !focusWithin;
   useScrollWheel(
     { onScroll: onWheel, isDisabled: scrollingDisabled },
     inputRef
@@ -178,8 +179,8 @@ export function useNumberField(
   // Browsers and operating systems are quite inconsistent about what keys are available, however.
   // We choose between numeric and decimal based on whether we allow negative and fractional numbers,
   // and based on testing on various devices to determine what keys are available in each inputMode.
-  let hasDecimals = intlOptions.maximumFractionDigits > 0;
-  let hasNegative =
+  const hasDecimals = intlOptions.maximumFractionDigits > 0;
+  const hasNegative =
     state.minValue === undefined || isNaN(state.minValue) || state.minValue < 0;
   let inputMode: TextInputDOMProps["inputMode"] = "numeric";
   if (isIPhone()) {
@@ -201,15 +202,15 @@ export function useNumberField(
     }
   }
 
-  let onChange = (value) => {
+  const onChange = (value: string): void => {
     if (state.validate(value)) {
       state.setInputValue(value);
     }
   };
 
-  let domProps = filterDOMProps(props);
-  let onKeyDownEnter = useCallback(
-    (e) => {
+  const domProps = filterDOMProps(props);
+  const onKeyDownEnter = useCallback(
+    (e: { key: string; continuePropagation: () => void }) => {
       if (e.key === "Enter") {
         commit();
         commitValidation();
@@ -220,9 +221,9 @@ export function useNumberField(
     [commit, commitValidation]
   );
 
-  let { isInvalid, validationErrors, validationDetails } =
+  const { isInvalid, validationErrors, validationDetails } =
     state.displayValidation;
-  let {
+  const {
     labelProps,
     inputProps: textFieldProps,
     descriptionProps,
@@ -265,7 +266,7 @@ export function useNumberField(
 
   useFormReset(inputRef, state.numberValue, state.setNumberValue);
 
-  let inputProps: InputHTMLAttributes<HTMLInputElement> = mergeProps(
+  const inputProps: InputHTMLAttributes<HTMLInputElement> = mergeProps(
     spinButtonProps,
     focusProps,
     textFieldProps,
@@ -289,7 +290,10 @@ export function useNumberField(
     inputProps["aria-required"] = undefined;
   }
 
-  let onButtonPressStart = (e) => {
+  const onButtonPressStart = (e: {
+    pointerType: string;
+    target: { focus: () => void };
+  }): void => {
     // If focus is already on the input, keep it there so we don't hide the
     // software keyboard when tapping the increment/decrement buttons.
     if (document.activeElement === inputRef.current) {
@@ -316,18 +320,18 @@ export function useNumberField(
   // (1) and (2) could possibly be combined and both use aria-labelledby. However, placing the label in
   // the aria-label string rather than using aria-labelledby gives more flexibility to translators to change
   // the order or add additional words around the label if needed.
-  let fieldLabel =
+  const fieldLabel =
     props["aria-label"] || (typeof props.label === "string" ? props.label : "");
   let ariaLabelledby: string | undefined;
   if (!fieldLabel) {
     ariaLabelledby =
-      props.label != null ? labelProps.id : props["aria-labelledby"];
+      props.label !== null ? labelProps.id : props["aria-labelledby"];
   }
 
-  let incrementId = useId();
-  let decrementId = useId();
+  const incrementId = useId();
+  const decrementId = useId();
 
-  let incrementButtonProps: ButtonProps = mergeProps(incButtonProps, {
+  const incrementButtonProps: ButtonProps = mergeProps(incButtonProps, {
     "aria-label":
       incrementAriaLabel ||
       stringFormatter.format("increase", { fieldLabel }).trim(),
@@ -344,7 +348,7 @@ export function useNumberField(
     onPressStart: onButtonPressStart,
   });
 
-  let decrementButtonProps: ButtonProps = mergeProps(decButtonProps, {
+  const decrementButtonProps: ButtonProps = mergeProps(decButtonProps, {
     "aria-label":
       decrementAriaLabel ||
       stringFormatter.format("decrease", { fieldLabel }).trim(),
