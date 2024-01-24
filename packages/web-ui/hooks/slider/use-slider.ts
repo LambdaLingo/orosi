@@ -44,9 +44,9 @@ export function useSlider<T extends number | number[]>(
   state: SliderState,
   trackRef: RefObject<Element>
 ): SliderAria {
-  let { labelProps, fieldProps } = useLabel(props);
+  const { labelProps, fieldProps } = useLabel(props);
 
-  let isVertical = props.orientation === "vertical";
+  const isVertical = props.orientation === "vertical";
 
   // Attach id of the label to the state so it can be accessed by useSliderThumb.
   sliderData.set(state, {
@@ -55,9 +55,9 @@ export function useSlider<T extends number | number[]>(
     "aria-details": props["aria-details"],
   });
 
-  let { direction } = useLocale();
+  const { direction } = useLocale();
 
-  let { addGlobalListener, removeGlobalListener } = useGlobalListeners();
+  const { addGlobalListener, removeGlobalListener } = useGlobalListeners();
 
   // When the user clicks or drags the track, we want the motion to set and drag the
   // closest thumb.  Hence we also need to install useMove() on the track element.
@@ -66,56 +66,57 @@ export function useSlider<T extends number | number[]>(
   const realTimeTrackDraggingIndex = useRef<number | null>(null);
 
   const reverseX = direction === "rtl";
-  const currentPosition = useRef<number>(null);
+  const currentPosition = useRef<number | null>(null);
   const { moveProps } = useMove({
     onMoveStart() {
       currentPosition.current = null;
     },
     onMove({ deltaX, deltaY }) {
-      let { height, width } = trackRef.current.getBoundingClientRect();
-      let size = isVertical ? height : width;
+      if (trackRef.current) {
+        const { height, width } = trackRef.current.getBoundingClientRect();
+        const size = isVertical ? height : width;
+        if (currentPosition.current === null) {
+          currentPosition.current =
+            state.getThumbPercent(realTimeTrackDraggingIndex.current!) * size;
+        }
 
-      if (currentPosition.current == null) {
-        currentPosition.current =
-          state.getThumbPercent(realTimeTrackDraggingIndex.current) * size;
-      }
+        let delta = isVertical ? deltaY : deltaX;
+        if (isVertical || reverseX) {
+          delta = -delta;
+        }
 
-      let delta = isVertical ? deltaY : deltaX;
-      if (isVertical || reverseX) {
-        delta = -delta;
-      }
+        currentPosition.current += delta;
 
-      currentPosition.current += delta;
-
-      if (realTimeTrackDraggingIndex.current != null && trackRef.current) {
-        const percent = clamp(currentPosition.current / size, 0, 1);
-        state.setThumbPercent(realTimeTrackDraggingIndex.current, percent);
+        if (realTimeTrackDraggingIndex.current !== null) {
+          const percent = clamp(currentPosition.current / size, 0, 1);
+          state.setThumbPercent(realTimeTrackDraggingIndex.current, percent);
+        }
       }
     },
     onMoveEnd() {
-      if (realTimeTrackDraggingIndex.current != null) {
+      if (realTimeTrackDraggingIndex.current !== null) {
         state.setThumbDragging(realTimeTrackDraggingIndex.current, false);
         realTimeTrackDraggingIndex.current = null;
       }
     },
   });
 
-  let currentPointer = useRef<number | null | undefined>(undefined);
-  let onDownTrack = (
+  const currentPointer = useRef<number | null | undefined>(undefined);
+  const onDownTrack = (
     e: React.UIEvent,
-    id: number,
+    id: number | undefined,
     clientX: number,
     clientY: number
-  ) => {
+  ): void => {
     // We only trigger track-dragging if the user clicks on the track itself and nothing is currently being dragged.
     if (
       trackRef.current &&
       !props.isDisabled &&
       state.values.every((_, i) => !state.isThumbDragging(i))
     ) {
-      let { height, width, top, left } =
+      const { height, width, top, left } =
         trackRef.current.getBoundingClientRect();
-      let size = isVertical ? height : width;
+      const size = isVertical ? height : width;
       // Find the closest thumb
       const trackPosition = isVertical ? top : left;
       const clickPosition = isVertical ? clientY : clientX;
@@ -124,11 +125,11 @@ export function useSlider<T extends number | number[]>(
       if (direction === "rtl" || isVertical) {
         percent = 1 - percent;
       }
-      let value = state.getPercentValue(percent);
+      const value = state.getPercentValue(percent);
 
       // to find the closet thumb we split the array based on the first thumb position to the "right/end" of the click.
       let closestThumb;
-      let split = state.values.findIndex((v) => value - v < 0);
+      const split = state.values.findIndex((v) => value - v < 0);
       if (split === 0) {
         // If the index is zero then the closetThumb is the first one
         closestThumb = split;
@@ -136,8 +137,8 @@ export function useSlider<T extends number | number[]>(
         // If no index is found they've clicked past all the thumbs
         closestThumb = state.values.length - 1;
       } else {
-        let lastLeft = state.values[split - 1];
-        let firstRight = state.values[split];
+        const lastLeft = state.values[split - 1];
+        const firstRight = state.values[split];
         // Pick the last left/start thumb, unless they are stacked on top of each other, then pick the right/end one
         if (Math.abs(lastLeft - value) < Math.abs(firstRight - value)) {
           closestThumb = split - 1;
@@ -167,10 +168,17 @@ export function useSlider<T extends number | number[]>(
     }
   };
 
-  let onUpTrack = (e) => {
-    let id = e.pointerId ?? e.changedTouches?.[0].identifier;
+  const onUpTrack = (e: MouseEvent | TouchEvent | PointerEvent): void => {
+    let id: number | undefined;
+    if ("pointerId" in e) {
+      // e is a PointerEvent
+      id = e.pointerId;
+    } else if ("changedTouches" in e) {
+      // e is a TouchEvent
+      id = e.changedTouches[0].identifier;
+    }
     if (id === currentPointer.current) {
-      if (realTimeTrackDraggingIndex.current != null) {
+      if (realTimeTrackDraggingIndex.current !== null) {
         state.setThumbDragging(realTimeTrackDraggingIndex.current, false);
         realTimeTrackDraggingIndex.current = null;
       }

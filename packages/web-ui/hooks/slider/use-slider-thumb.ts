@@ -155,33 +155,32 @@ export function useSliderThumb(
         step,
         pageSize,
       } = state;
-      if (!trackRef.current) {
-        return;
-      }
-      const { width, height } = trackRef.current.getBoundingClientRect();
-      const size = isVertical ? height : width;
+      if (trackRef.current) {
+        const { width, height } = trackRef.current.getBoundingClientRect();
+        const size = isVertical ? height : width;
 
-      if (currentPosition.current === null) {
-        currentPosition.current = getThumbPercent(index) * size;
-      }
-      if (pointerType === "keyboard") {
-        if (
-          (deltaX > 0 && reverseX) ||
-          (deltaX < 0 && !reverseX) ||
-          deltaY > 0
-        ) {
-          decrementThumb(index, shiftKey ? pageSize : step);
+        if (currentPosition.current === null) {
+          currentPosition.current = getThumbPercent(index) * size;
+        }
+        if (pointerType === "keyboard") {
+          if (
+            (deltaX > 0 && reverseX) ||
+            (deltaX < 0 && !reverseX) ||
+            deltaY > 0
+          ) {
+            decrementThumb(index, shiftKey ? pageSize : step);
+          } else {
+            incrementThumb(index, shiftKey ? pageSize : step);
+          }
         } else {
-          incrementThumb(index, shiftKey ? pageSize : step);
-        }
-      } else {
-        let delta = isVertical ? deltaY : deltaX;
-        if (isVertical || reverseX) {
-          delta = -delta;
-        }
+          let delta = isVertical ? deltaY : deltaX;
+          if (isVertical || reverseX) {
+            delta = -delta;
+          }
 
-        currentPosition.current += delta;
-        setThumbPercent(index, clamp(currentPosition.current / size, 0, 1));
+          currentPosition.current += delta;
+          setThumbPercent(index, clamp(currentPosition.current / size, 0, 1));
+        }
       }
     },
     onMoveEnd() {

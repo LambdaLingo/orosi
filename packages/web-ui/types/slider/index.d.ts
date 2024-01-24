@@ -206,7 +206,7 @@ export type AriaSliderThumbProps = SliderThumbProps &
   AriaValidationProps;
 
 export type SliderData = {
-  id: string;
+  id?: string;
   "aria-describedby"?: string;
   "aria-details"?: string;
 };
