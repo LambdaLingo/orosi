@@ -130,7 +130,7 @@ export function useTextField<
   props: AriaTextFieldOptions<T>,
   ref: TextFieldRefObject<T>
 ): TextFieldAria<T> {
-  let {
+  const {
     inputElementType = "input",
     isDisabled = false,
     isRequired = false,
@@ -138,25 +138,25 @@ export function useTextField<
     type = "text",
     validationBehavior = "aria",
   }: AriaTextFieldOptions<TextFieldIntrinsicElements> = props;
-  let [value, setValue] = useControlledState<string>(
+  const [value, setValue] = useControlledState<string>(
     props.value,
     props.defaultValue || "",
     props.onChange
   );
-  let { focusableProps } = useFocusable(props, ref);
-  let validationState = useFormValidationState({
+  const { focusableProps } = useFocusable(props, ref);
+  const validationState = useFormValidationState({
     ...props,
     value,
   });
-  let { isInvalid, validationErrors, validationDetails } =
+  const { isInvalid, validationErrors, validationDetails } =
     validationState.displayValidation;
-  let { labelProps, fieldProps, descriptionProps, errorMessageProps } =
+  const { labelProps, fieldProps, descriptionProps, errorMessageProps } =
     useField({
       ...props,
       isInvalid,
       errorMessage: props.errorMessage || validationErrors,
     });
-  let domProps = filterDOMProps(props, { labelable: true });
+  const domProps = filterDOMProps(props, { labelable: true });
 
   const inputOnlyProps = {
     type,
@@ -177,7 +177,7 @@ export function useTextField<
     if (
       ref.current instanceof getOwnerWindow(ref.current).HTMLTextAreaElement
     ) {
-      let input = ref.current;
+      const input = ref.current;
       Object.defineProperty(input, "defaultValue", {
         get: () => input.value,
         set: () => {},
@@ -190,7 +190,7 @@ export function useTextField<
     labelProps,
     inputProps: mergeProps(
       domProps,
-      inputElementType === "input" && inputOnlyProps,
+      inputElementType === "input" ? inputOnlyProps : undefined,
       {
         disabled: isDisabled,
         readOnly: isReadOnly,
