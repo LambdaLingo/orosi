@@ -46,15 +46,15 @@ export function useToggle(
     isInvalid,
   } = props;
 
-  const onChange = (e) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     // since we spread props on label, onChange will end up there as well as in here.
     // so we have to stop propagation at the lowest level that we care about
     e.stopPropagation();
     state.setSelected(e.target.checked);
   };
 
-  const hasChildren = children != null;
-  const hasAriaLabel = ariaLabel != null || ariaLabelledby != null;
+  const hasChildren = children !== null;
+  const hasAriaLabel = ariaLabel !== null || ariaLabelledby !== null;
   if (!hasChildren && !hasAriaLabel) {
     console.warn(
       "If you do not provide children, you must specify an aria-label for accessibility"
@@ -81,7 +81,11 @@ export function useToggle(
   useFormReset(ref, state.isSelected, state.setSelected);
 
   return {
-    labelProps: mergeProps(labelProps, { onClick: (e) => e.preventDefault() }),
+    labelProps: mergeProps(labelProps, {
+      onClick: (e: React.MouseEvent<HTMLElement>) => {
+        e.preventDefault();
+      },
+    }),
     inputProps: mergeProps(domProps, {
       "aria-invalid": isInvalid || validationState === "invalid" || undefined,
       "aria-errormessage": props["aria-errormessage"],
@@ -89,7 +93,7 @@ export function useToggle(
       "aria-readonly": isReadOnly || undefined,
       onChange,
       disabled: isDisabled,
-      ...(value == null ? {} : { value }),
+      ...(value === null ? {} : { value }),
       name,
       type: "checkbox",
       ...interactions,
