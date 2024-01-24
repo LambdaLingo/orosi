@@ -1,5 +1,5 @@
 import { type RefObject, useEffect, useRef } from "react";
-import type { AriaTextFieldProps } from "types";
+import type { AriaTextFieldProps, InputBase, InputDOMProps } from "types";
 import { useEffectEvent } from "hooks";
 import { mergeProps } from "utilities";
 import { type TextFieldAria, useTextField } from "./use-text-field";
@@ -9,11 +9,9 @@ type FormattedTextFieldState = {
   setInputValue: (val: string) => void;
 };
 
-function supportsNativeBeforeInputEvent() {
+function supportsNativeBeforeInputEvent(): boolean {
   return (
-    typeof window !== "undefined" &&
-    window.InputEvent &&
-    // @ts-ignore
+    window?.InputEvent &&
     typeof InputEvent.prototype.getTargetRanges === "function"
   );
 }
@@ -29,12 +27,12 @@ export function useFormattedTextField(
   // Use the native event if available so that we can prevent invalid deletions.
   // We do not attempt to polyfill this in Firefox since it would be very complicated,
   // the benefit of doing so is fairly minor, and it's going to be natively supported soon.
-  let onBeforeInputFallback = useEffectEvent((e: InputEvent) => {
-    let input = inputRef.current;
+  const onBeforeInputFallback = useEffectEvent((e: InputEvent) => {
+    const input = inputRef.current!;
 
     // Compute the next value of the input if the event is allowed to proceed.
     // See https://www.w3.org/TR/input-events-2/#interface-InputEvent-Attributes for a full list of input types.
-    let nextValue: string;
+    let nextValue: string | null = null;
     switch (e.inputType) {
       case "historyUndo":
       case "historyRedo":
@@ -45,8 +43,8 @@ export function useFormattedTextField(
       case "deleteByCut":
       case "deleteByDrag":
         nextValue =
-          input.value.slice(0, input.selectionStart) +
-          input.value.slice(input.selectionEnd);
+          input.value.slice(0, input.selectionStart!) +
+          input.value.slice(input.selectionEnd!);
         break;
       case "deleteContentForward":
         // This is potentially incorrect, since the browser may actually delete more than a single UTF-16
@@ -55,29 +53,29 @@ export function useFormattedTextField(
         // If we support additional locales in the future, this may need to change.
         nextValue =
           input.selectionEnd === input.selectionStart
-            ? input.value.slice(0, input.selectionStart) +
-              input.value.slice(input.selectionEnd + 1)
-            : input.value.slice(0, input.selectionStart) +
-              input.value.slice(input.selectionEnd);
+            ? input.value.slice(0, input.selectionStart!) +
+              input.value.slice(input.selectionEnd! + 1)
+            : input.value.slice(0, input.selectionStart!) +
+              input.value.slice(input.selectionEnd!);
         break;
       case "deleteContentBackward":
         nextValue =
           input.selectionEnd === input.selectionStart
-            ? input.value.slice(0, input.selectionStart - 1) +
-              input.value.slice(input.selectionStart)
-            : input.value.slice(0, input.selectionStart) +
-              input.value.slice(input.selectionEnd);
+            ? input.value.slice(0, input.selectionStart! - 1) +
+              input.value.slice(input.selectionStart!)
+            : input.value.slice(0, input.selectionStart!) +
+              input.value.slice(input.selectionEnd!);
         break;
       case "deleteSoftLineBackward":
       case "deleteHardLineBackward":
-        nextValue = input.value.slice(input.selectionStart);
+        nextValue = input.value.slice(input.selectionStart!);
         break;
       default:
-        if (e.data != null) {
+        if (e.data !== null) {
           nextValue =
-            input.value.slice(0, input.selectionStart) +
+            input.value.slice(0, input.selectionStart!) +
             e.data +
-            input.value.slice(input.selectionEnd);
+            input.value.slice(input.selectionEnd!);
         }
         break;
     }
@@ -85,7 +83,7 @@ export function useFormattedTextField(
     // If we did not compute a value, or the new value is invalid, prevent the event
     // so that the browser does not update the input text, move the selection, or add to
     // the undo/redo stack.
-    if (nextValue == null || !state.validate(nextValue)) {
+    if (nextValue === null || !state.validate(nextValue)) {
       e.preventDefault();
     }
   });
@@ -95,19 +93,24 @@ export function useFormattedTextField(
       return;
     }
 
-    let input = inputRef.current;
+    const input = inputRef.current!;
     input.addEventListener("beforeinput", onBeforeInputFallback, false);
     return () => {
       input.removeEventListener("beforeinput", onBeforeInputFallback, false);
     };
   }, [inputRef, onBeforeInputFallback]);
 
-  let onBeforeInput = !supportsNativeBeforeInputEvent()
-    ? (e) => {
-        let nextValue =
-          e.target.value.slice(0, e.target.selectionStart) +
+  const onBeforeInput = !supportsNativeBeforeInputEvent()
+    ? (e: InputEvent) => {
+        const nextValue =
+          (e.target as HTMLInputElement).value.slice(
+            0,
+            (e.target as HTMLInputElement).selectionStart!
+          ) +
           e.data +
-          e.target.value.slice(e.target.selectionEnd);
+          (e.target as HTMLInputElement).value.slice(
+            (e.target as HTMLInputElement).selectionEnd!
+          );
 
         if (!state.validate(nextValue)) {
           e.preventDefault();
@@ -115,7 +118,7 @@ export function useFormattedTextField(
       }
     : null;
 
-  let {
+  const {
     labelProps,
     inputProps: textFieldProps,
     descriptionProps,
@@ -123,7 +126,11 @@ export function useFormattedTextField(
     ...validation
   } = useTextField(props, inputRef);
 
-  let compositionStartState = useRef(null);
+  const compositionStartState = useRef<{
+    value: string;
+    selectionStart: number | null;
+    selectionEnd: number | null;
+  } | null>(null);
   return {
     inputProps: mergeProps(textFieldProps, {
       onBeforeInput,
@@ -140,18 +147,29 @@ export function useFormattedTextField(
         // Unfortunately, this messes up the undo/redo stack, but until insertFromComposition/deleteByComposition
         // are implemented, there is no other way to prevent composed input.
         // See https://bugs.chromium.org/p/chromium/issues/detail?id=1022204
-        let { value, selectionStart, selectionEnd } = inputRef.current;
-        compositionStartState.current = { value, selectionStart, selectionEnd };
+        if (inputRef.current !== null) {
+          const { value, selectionStart, selectionEnd } = inputRef.current;
+          compositionStartState.current = {
+            value,
+            selectionStart,
+            selectionEnd,
+          };
+        }
       },
       onCompositionEnd() {
-        if (!state.validate(inputRef.current.value)) {
-          // Restore the input value in the DOM immediately so we can synchronously update the selection position.
-          // But also update the value in React state as well so it is correct for future updates.
-          let { value, selectionStart, selectionEnd } =
-            compositionStartState.current;
-          inputRef.current.value = value;
-          inputRef.current.setSelectionRange(selectionStart, selectionEnd);
-          state.setInputValue(value);
+        if (
+          inputRef.current !== null &&
+          compositionStartState.current !== null
+        ) {
+          if (!state.validate(inputRef.current.value)) {
+            // Restore the input value in the DOM immediately so we can synchronously update the selection position.
+            // But also update the value in React state as well so it is correct for future updates.
+            const { value, selectionStart, selectionEnd } =
+              compositionStartState.current;
+            inputRef.current.value = value;
+            inputRef.current.setSelectionRange(selectionStart, selectionEnd);
+            state.setInputValue(value);
+          }
         }
       },
     }),
