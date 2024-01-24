@@ -60,7 +60,7 @@ export function useSliderThumb(
   opts: AriaSliderThumbOptions,
   state: SliderState
 ): SliderThumbAria {
-  let {
+  const {
     index = 0,
     isRequired,
     validationState,
@@ -71,17 +71,17 @@ export function useSliderThumb(
     name,
   } = opts;
 
-  let isDisabled = opts.isDisabled || state.isDisabled;
-  let isVertical = orientation === "vertical";
+  const isDisabled = opts.isDisabled || state.isDisabled;
+  const isVertical = orientation === "vertical";
 
-  let { direction } = useLocale();
-  let { addGlobalListener, removeGlobalListener } = useGlobalListeners();
+  const { direction } = useLocale();
+  const { addGlobalListener, removeGlobalListener } = useGlobalListeners();
 
-  let data = sliderData.get(state);
+  const data = sliderData.get(state);
   const { labelProps, fieldProps } = useLabel({
     ...opts,
     id: getSliderThumbId(state, index),
-    "aria-labelledby": `${data.id} ${opts["aria-labelledby"] ?? ""}`.trim(),
+    "aria-labelledby": `${data?.id} ${opts["aria-labelledby"] ?? ""}`.trim(),
   });
 
   const value = state.values[index];
@@ -100,12 +100,12 @@ export function useSliderThumb(
     }
   }, [isFocused, focusInput]);
 
-  let reverseX = direction === "rtl";
-  let currentPosition = useRef<number>(null);
+  const reverseX = direction === "rtl";
+  const currentPosition = useRef<number | null>(null);
 
-  let { keyboardProps } = useKeyboard({
+  const { keyboardProps } = useKeyboard({
     onKeyDown(e) {
-      let {
+      const {
         getThumbMaxValue,
         getThumbMinValue,
         decrementThumb,
@@ -115,7 +115,7 @@ export function useSliderThumb(
         pageSize,
       } = state;
       // these are the cases that useMove or useSlider don't handle
-      if (!/^(PageUp|PageDown|Home|End)$/.test(e.key)) {
+      if (!/^(?:PageUp|PageDown|Home|End)$/.test(e.key)) {
         e.continuePropagation();
         return;
       }
@@ -141,7 +141,7 @@ export function useSliderThumb(
     },
   });
 
-  let { moveProps } = useMove({
+  const { moveProps } = useMove({
     onMoveStart() {
       currentPosition.current = null;
       state.setThumbDragging(index, true);
@@ -155,10 +155,13 @@ export function useSliderThumb(
         step,
         pageSize,
       } = state;
-      let { width, height } = trackRef.current.getBoundingClientRect();
-      let size = isVertical ? height : width;
+      if (!trackRef.current) {
+        return;
+      }
+      const { width, height } = trackRef.current.getBoundingClientRect();
+      const size = isVertical ? height : width;
 
-      if (currentPosition.current == null) {
+      if (currentPosition.current === null) {
         currentPosition.current = getThumbPercent(index) * size;
       }
       if (pointerType === "keyboard") {
@@ -191,14 +194,18 @@ export function useSliderThumb(
 
   const { focusableProps } = useFocusable(
     mergeProps(opts, {
-      onFocus: () => state.setFocusedThumb(index),
-      onBlur: () => state.setFocusedThumb(undefined),
+      onFocus: () => {
+        state.setFocusedThumb(index);
+      },
+      onBlur: () => {
+        state.setFocusedThumb(undefined);
+      },
     }),
     inputRef
   );
 
-  let currentPointer = useRef<number | undefined>(undefined);
-  let onDown = (id?: number) => {
+  const currentPointer = useRef<number | undefined>(undefined);
+  const onDown = (id?: number): void => {
     focusInput();
     currentPointer.current = id;
     state.setThumbDragging(index, true);
@@ -208,8 +215,15 @@ export function useSliderThumb(
     addGlobalListener(window, "pointerup", onUp, false);
   };
 
-  let onUp = (e) => {
-    let id = e.pointerId ?? e.changedTouches?.[0].identifier;
+  const onUp = (e: MouseEvent | TouchEvent | PointerEvent): void => {
+    let id: number | undefined;
+    if ("pointerId" in e) {
+      // e is a PointerEvent
+      id = e.pointerId;
+    } else if ("changedTouches" in e) {
+      // e is a TouchEvent
+      id = e.changedTouches[0].identifier;
+    }
     if (id === currentPointer.current) {
       focusInput();
       state.setThumbDragging(index, false);
@@ -224,7 +238,7 @@ export function useSliderThumb(
     thumbPosition = 1 - thumbPosition;
   }
 
-  let interactions = !isDisabled
+  const interactions = !isDisabled
     ? mergeProps(keyboardProps, moveProps, {
         onMouseDown: (e: React.MouseEvent) => {
           if (e.button !== 0 || e.altKey || e.ctrlKey || e.metaKey) {
@@ -259,7 +273,7 @@ export function useSliderThumb(
       min: state.getThumbMinValue(index),
       max: state.getThumbMaxValue(index),
       step: state.step,
-      value: value,
+      value,
       name,
       disabled: isDisabled,
       "aria-orientation": orientation,
@@ -267,10 +281,10 @@ export function useSliderThumb(
       "aria-required": isRequired || undefined,
       "aria-invalid": isInvalid || validationState === "invalid" || undefined,
       "aria-errormessage": opts["aria-errormessage"],
-      "aria-describedby": [data["aria-describedby"], opts["aria-describedby"]]
+      "aria-describedby": [data?.["aria-describedby"], opts["aria-describedby"]]
         .filter(Boolean)
         .join(" "),
-      "aria-details": [data["aria-details"], opts["aria-details"]]
+      "aria-details": [data?.["aria-details"], opts["aria-details"]]
         .filter(Boolean)
         .join(" "),
       onChange: (e: ChangeEvent<HTMLInputElement>) => {
