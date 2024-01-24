@@ -1,14 +1,16 @@
 import type { JSX, ReactNode } from "react";
 import React, {
+  createContext,
   useContext,
+  useId,
   useLayoutEffect,
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
 } from "react";
 // We must avoid a circular dependency with @react-aria/utils, and this useLayoutEffect is
 // guarded by a check that it only runs on the client side.
-// eslint-disable-next-line rulesdir/useLayoutEffectRule
 
 // To support SSR, the auto incrementing id counter is stored in a context. This allows
 // it to be reset on every request to ensure the client and server are consistent.
@@ -16,10 +18,10 @@ import React, {
 // Each async boundary must be wrapped in an SSR provider, which appends to the prefix
 // and resets the current id counter. This ensures that async loaded components have
 // consistent ids regardless of the loading order.
-interface SSRContextValue {
+type SSRContextValue = {
   prefix: string;
   current: number;
-}
+};
 
 // Default context value to use in case there is no SSRProvider. This is fine for
 // client-only apps. In order to support multiple copies of React Aria potentially
@@ -31,20 +33,20 @@ const defaultContext: SSRContextValue = {
   current: 0,
 };
 
-const SSRContext = React.createContext<SSRContextValue>(defaultContext);
-const IsSSRContext = React.createContext(false);
+const SSRContext = createContext<SSRContextValue>(defaultContext);
+const IsSSRContext = createContext(false);
 
-export interface SSRProviderProps {
+export type SSRProviderProps = {
   /** Your application here. */
   children: ReactNode;
-}
+};
 
 // This is only used in React < 18.
 function LegacySSRProvider(props: SSRProviderProps): JSX.Element {
-  let cur = useContext(SSRContext);
-  let counter = useCounter(cur === defaultContext);
-  let [isSSR, setIsSSR] = useState(true);
-  let value: SSRContextValue = useMemo(
+  const cur = useContext(SSRContext);
+  const counter = useCounter(cur === defaultContext);
+  const [isSSR, setIsSSR] = useState(true);
+  const value: SSRContextValue = useMemo(
     () => ({
       // If this is the first SSRProvider, start with an empty string prefix, otherwise
       // append and increment the counter.
@@ -81,7 +83,7 @@ let warnedAboutSSRProvider = false;
  * This ensures that auto generated ids are consistent between the client and server.
  */
 export function SSRProvider(props: SSRProviderProps): JSX.Element {
-  if (typeof React["useId"] === "function") {
+  if (typeof useId === "function") {
     if (process.env.NODE_ENV !== "test" && !warnedAboutSSRProvider) {
       console.warn(
         "In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app."
@@ -93,17 +95,13 @@ export function SSRProvider(props: SSRProviderProps): JSX.Element {
   return <LegacySSRProvider {...props} />;
 }
 
-let canUseDOM = Boolean(
-  typeof window !== "undefined" &&
-    window.document &&
-    window.document.createElement
-);
+const canUseDOM = Boolean(window?.document?.createElement);
 
-let componentIds = new WeakMap();
+const componentIds = new WeakMap();
 
-function useCounter(isDisabled = false) {
-  let ctx = useContext(SSRContext);
-  let ref = useRef<number | null>(null);
+function useCounter(isDisabled = false): number | null {
+  const ctx = useContext(SSRContext);
+  const ref = useRef<number | null>(null);
   if (ref.current === null && !isDisabled) {
     // In strict mode, React renders components twice, and the ref will be reset to null on the second render.
     // This means our id counter will be incremented twice instead of once. This is a problem because on the
@@ -115,12 +113,12 @@ function useCounter(isDisabled = false) {
     // a weak map associated with the Fiber. On the second render, we reset the global counter to this value.
     // Since React runs the second render immediately after the first, this is safe.
 
-    let currentOwner =
-      // @ts-ignore - review this later
+    const currentOwner =
+      // @ts-expect-error - review this later
       React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED
         ?.ReactCurrentOwner?.current;
     if (currentOwner) {
-      let prevComponentValue = componentIds.get(currentOwner);
+      const prevComponentValue = componentIds.get(currentOwner);
       if (prevComponentValue == null) {
         // On the first render, and first call to useId, store the id and state in our weak map.
         componentIds.set(currentOwner, {
@@ -141,7 +139,7 @@ function useCounter(isDisabled = false) {
 }
 
 function useLegacySSRSafeId(defaultId?: string): string {
-  let ctx = useContext(SSRContext);
+  const ctx = useContext(SSRContext);
 
   // If we are rendering in a non-DOM environment, and there's no SSRProvider,
   // provide a warning to hint to the developer to add one.
@@ -151,8 +149,8 @@ function useLegacySSRSafeId(defaultId?: string): string {
     );
   }
 
-  let counter = useCounter(!!defaultId);
-  let prefix =
+  const counter = useCounter(Boolean(defaultId));
+  const prefix =
     ctx === defaultContext && process.env.NODE_ENV === "test"
       ? "react-aria"
       : `react-aria${ctx.prefix}`;
@@ -160,10 +158,9 @@ function useLegacySSRSafeId(defaultId?: string): string {
 }
 
 function useModernSSRSafeId(defaultId?: string): string {
-  // @ts-ignore
-  let id = React.useId();
-  let [didSSR] = useState(useIsSSR());
-  let prefix =
+  const id = useId();
+  const [didSSR] = useState(useIsSSR());
+  const prefix =
     didSSR || process.env.NODE_ENV === "test"
       ? "react-aria"
       : `react-aria${defaultContext.prefix}`;
@@ -173,15 +170,13 @@ function useModernSSRSafeId(defaultId?: string): string {
 // Use React.useId in React 18 if available, otherwise fall back to our old implementation.
 /** @private */
 export const useSSRSafeId =
-  typeof React["useId"] === "function"
-    ? useModernSSRSafeId
-    : useLegacySSRSafeId;
+  typeof useId === "function" ? useModernSSRSafeId : useLegacySSRSafeId;
 
-function getSnapshot() {
+function getSnapshot(): boolean {
   return false;
 }
 
-function getServerSnapshot() {
+function getServerSnapshot(): boolean {
   return true;
 }
 
@@ -198,12 +193,8 @@ function subscribe(onStoreChange: () => void): () => void {
  */
 export function useIsSSR(): boolean {
   // In React 18, we can use useSyncExternalStore to detect if we're server rendering or hydrating.
-  if (typeof React["useSyncExternalStore"] === "function") {
-    return React["useSyncExternalStore"](
-      subscribe,
-      getSnapshot,
-      getServerSnapshot
-    );
+  if (typeof useSyncExternalStore === "function") {
+    return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   }
 
   // eslint-disable-next-line react-hooks/rules-of-hooks

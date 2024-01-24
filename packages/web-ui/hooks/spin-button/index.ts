@@ -1,12 +1,4 @@
-import type {
-  ButtonProps,
-  DOMAttributes,
-  FocusableElement,
-  InputBase,
-  RangeInputBase,
-  Validation,
-  ValueBase,
-} from "types";
+import type { FocusableElement, SpinButtonProps, SpinbuttonAria } from "types";
 import { announce, clearAnnouncer } from "utilities";
 // @ts-ignore
 import intlMessages from "store/i18n/builtin-strings/*.json";
@@ -16,25 +8,6 @@ import {
   useGlobalListeners,
   useLocalizedStringFormatter,
 } from "hooks";
-
-export type SpinButtonProps = {
-  textValue: string;
-  onIncrement: () => void;
-  onIncrementPage?: () => void;
-  onDecrement: () => void;
-  onDecrementPage?: () => void;
-  onDecrementToMin?: () => void;
-  onIncrementToMax?: () => void;
-} & InputBase &
-  Validation<number> &
-  ValueBase<number> &
-  RangeInputBase<number>;
-
-export type SpinbuttonAria = {
-  spinButtonProps: DOMAttributes;
-  incrementButtonProps: ButtonProps;
-  decrementButtonProps: ButtonProps;
-};
 
 export function useSpinButton(props: SpinButtonProps): SpinbuttonAria {
   const _async = useRef<number>();
