@@ -1,6 +1,7 @@
 import type {
   ButtonProps,
   DOMAttributes,
+  FocusableElement,
   InputBase,
   RangeInputBase,
   Validation,
@@ -17,10 +18,10 @@ import {
 } from "hooks";
 
 export type SpinButtonProps = {
-  textValue?: string;
-  onIncrement?: () => void;
+  textValue: string;
+  onIncrement: () => void;
   onIncrementPage?: () => void;
-  onDecrement?: () => void;
+  onDecrement: () => void;
   onDecrementPage?: () => void;
   onDecrementToMin?: () => void;
   onIncrementToMax?: () => void;
@@ -57,14 +58,17 @@ export function useSpinButton(props: SpinButtonProps): SpinbuttonAria {
     "@react-aria/spinbutton"
   );
 
-  const clearAsync = () => clearTimeout(_async.current);
+  const clearAsync = (): void => {
+    clearTimeout(_async.current);
+  };
 
-  // eslint-disable-next-line arrow-body-style
   useEffect(() => {
-    return () => clearAsync();
+    return () => {
+      clearAsync();
+    };
   }, []);
 
-  let onKeyDown = (e) => {
+  const onKeyDown = (e: React.KeyboardEvent<FocusableElement>): void => {
     if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || isReadOnly) {
       return;
     }
@@ -113,12 +117,12 @@ export function useSpinButton(props: SpinButtonProps): SpinbuttonAria {
     }
   };
 
-  let isFocused = useRef(false);
-  let onFocus = () => {
+  const isFocused = useRef(false);
+  const onFocus = (): void => {
     isFocused.current = true;
   };
 
-  let onBlur = () => {
+  const onBlur = (): void => {
     isFocused.current = false;
   };
 
@@ -143,7 +147,11 @@ export function useSpinButton(props: SpinButtonProps): SpinbuttonAria {
     onIncrement();
     // Start spinning after initial delay
     _async.current = window.setTimeout(() => {
-      if (isNaN(maxValue) || isNaN(value) || value < maxValue) {
+      if (
+        maxValue &&
+        value &&
+        (isNaN(maxValue) || isNaN(value) || value < maxValue)
+      ) {
         onIncrementPressStart(60);
       }
     }, initialStepDelay);
@@ -154,28 +162,32 @@ export function useSpinButton(props: SpinButtonProps): SpinbuttonAria {
     onDecrement();
     // Start spinning after initial delay
     _async.current = window.setTimeout(() => {
-      if (isNaN(minValue) || isNaN(value) || value > minValue) {
+      if (
+        minValue &&
+        value &&
+        (isNaN(minValue) || isNaN(value) || value > minValue)
+      ) {
         onDecrementPressStart(60);
       }
     }, initialStepDelay);
   });
 
-  let cancelContextMenu = (e) => {
+  const cancelContextMenu = (e: MouseEvent): void => {
     e.preventDefault();
   };
 
-  let { addGlobalListener, removeAllGlobalListeners } = useGlobalListeners();
+  const { addGlobalListener, removeAllGlobalListeners } = useGlobalListeners();
 
   return {
     spinButtonProps: {
       role: "spinbutton",
-      "aria-valuenow": !isNaN(value) ? value : null,
+      "aria-valuenow": value && !isNaN(value) ? value : undefined,
       "aria-valuetext": textValue,
       "aria-valuemin": minValue,
       "aria-valuemax": maxValue,
-      "aria-disabled": isDisabled || null,
-      "aria-readonly": isReadOnly || null,
-      "aria-required": isRequired || null,
+      "aria-disabled": isDisabled || undefined,
+      "aria-readonly": isReadOnly || undefined,
+      "aria-required": isRequired || undefined,
       onKeyDown,
       onFocus,
       onBlur,
