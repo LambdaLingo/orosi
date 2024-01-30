@@ -11,3 +11,5 @@ export * from "./input";
 export * from "./provider";
 export * from "./radio";
 export * from "./input";
+export * from "./slider";
+export * from "./combobox";

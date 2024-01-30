@@ -1,45 +1,52 @@
-import { AriaComboBoxProps, useComboBox, useFilter } from "react-aria";
-import type { ContextValue, ForwardRefType, RACValidation } from "types";
-import { ButtonContext } from "store";
-import {
-  Collection,
+import React, {
+  type ForwardedRef,
+  type RefObject,
+  createContext,
+  forwardRef,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import type {
+  AriaComboBoxProps,
   ComboBoxState,
+  ContextValue,
+  ForwardRefType,
+  RACValidation,
   Node,
+  Collection,
+  RenderChildren,
+  SlotProps,
+} from "types";
+import {
+  FieldErrorContext,
+  GroupContext,
+  InputContext,
+  LabelContext,
+  ListBoxContext,
+  ListStateContext,
+  OverlayTriggerStateContext,
+  PopoverContext,
+  TextContext,
+  ButtonContext,
+} from "store";
+import {
   useComboBoxState,
-} from "react-stately";
+  useComboBox,
+  useFilter,
+  useContextProps,
+  useRenderChildren,
+  useResizeObserver,
+  useSlot,
+} from "hooks";
+import { removeDataAttributes, filterDOMProps } from "utilities";
 import {
   CollectionDocumentContext,
   useCollectionDocument,
 } from "components/collection";
 import { Provider } from "components/provider";
 import { Hidden } from "components/hidden";
-import {
-  removeDataAttributes,
-  RenderProps,
-  SlotProps,
-  useContextProps,
-  useRenderProps,
-  useSlot,
-} from "./utils";
-import { FieldErrorContext } from "./FieldError";
-import { filterDOMProps, useResizeObserver } from "@react-aria/utils";
-import { GroupContext } from "./Group";
-import { InputContext } from "./Input";
-import { LabelContext } from "./Label";
-import { ListBoxContext, ListStateContext } from "./ListBox";
-import { OverlayTriggerStateContext } from "./Dialog";
-import { PopoverContext } from "./Popover";
-import React, {
-  createContext,
-  ForwardedRef,
-  forwardRef,
-  RefObject,
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { TextContext } from "./Text";
 
 export type ComboBoxRenderProps = {
   /**
@@ -84,7 +91,7 @@ export type ComboBoxProps<T extends object> = {
   | "validationBehavior"
 > &
   RACValidation &
-  RenderProps<ComboBoxRenderProps> &
+  RenderChildren<ComboBoxRenderProps> &
   SlotProps;
 
 export const ComboBoxContext =
@@ -213,7 +220,7 @@ function ComboBoxInner<T extends object>({
   });
 
   // Only expose a subset of state to renderProps function to avoid infinite render loop
-  let renderPropsState = useMemo(
+  let RenderChildrenState = useMemo(
     () => ({
       isOpen: state.isOpen,
       isDisabled: props.isDisabled || false,
@@ -223,10 +230,9 @@ function ComboBoxInner<T extends object>({
     [state.isOpen, props.isDisabled, validation.isInvalid, props.isRequired]
   );
 
-  let renderProps = useRenderProps({
+  let RenderChildren = useRenderChildren({
     ...props,
-    values: renderPropsState,
-    defaultClassName: "react-aria-ComboBox",
+    values: RenderChildrenState,
   });
 
   let DOMProps = filterDOMProps(props);
@@ -277,7 +283,7 @@ function ComboBoxInner<T extends object>({
     >
       <div
         {...DOMProps}
-        {...renderProps}
+        {...RenderChildren}
         ref={ref}
         slot={props.slot || undefined}
         data-focused={state.isFocused || undefined}
