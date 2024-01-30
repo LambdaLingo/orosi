@@ -11,3 +11,4 @@ export * from "./radio";
 export * from "./slider";
 export * from "./interaction";
 export * from "./toggle-button";
+export * from "./hidden";

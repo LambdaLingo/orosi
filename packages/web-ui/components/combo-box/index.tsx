@@ -1,4 +1,5 @@
 import { AriaComboBoxProps, useComboBox, useFilter } from "react-aria";
+import type { ContextValue, ForwardRefType, RACValidation } from "types";
 import { ButtonContext } from "store";
 import {
   Collection,
@@ -6,13 +7,13 @@ import {
   Node,
   useComboBoxState,
 } from "react-stately";
-import { CollectionDocumentContext, useCollectionDocument } from "./Collection";
 import {
-  ContextValue,
-  forwardRefType,
-  Hidden,
-  Provider,
-  RACValidation,
+  CollectionDocumentContext,
+  useCollectionDocument,
+} from "components/collection";
+import { Provider } from "components/provider";
+import { Hidden } from "components/hidden";
+import {
   removeDataAttributes,
   RenderProps,
   SlotProps,
@@ -295,5 +296,5 @@ function ComboBoxInner<T extends object>({
 /**
  * A combo box combines a text input with a listbox, allowing users to filter a list of options to items matching a query.
  */
-const _ComboBox = /*#__PURE__*/ (forwardRef as forwardRefType)(ComboBox);
+const _ComboBox = /*#__PURE__*/ (forwardRef as ForwardRefType)(ComboBox);
 export { _ComboBox as ComboBox };
