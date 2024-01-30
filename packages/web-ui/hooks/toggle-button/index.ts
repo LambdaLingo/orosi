@@ -1,14 +1,11 @@
-import type { ButtonHTMLAttributes, ElementType, RefObject } from "react";
-import type { AriaToggleButtonProps, ButtonResult, ToggleState } from "types";
+import type { ButtonHTMLAttributes, RefObject } from "react";
+import type { ToggleButtonProps, ButtonResult, ToggleState } from "types";
 import { useButton } from "hooks";
 import { chain, mergeProps } from "utilities";
 
-export type AriaToggleButtonOptions<E extends ElementType> = Omit<
-  AriaToggleButtonProps<E>,
-  "children"
->;
+type ToggleButtonOptions = Omit<ToggleButtonProps, "children">;
 
-export type ToggleButtonResult = Omit<
+type ToggleButtonResult = Omit<
   ButtonResult<ButtonHTMLAttributes<HTMLButtonElement>>,
   "isHovered" | "isFocused" | "isFocusVisible"
 >;
@@ -18,7 +15,7 @@ export type ToggleButtonResult = Omit<
  * ToggleButtons allow users to toggle a selection on or off, for example switching between two states or modes.
  */
 export function useToggleButton(
-  props: AriaToggleButtonOptions<ElementType>,
+  props: ToggleButtonOptions,
   state: ToggleState,
   ref: RefObject<HTMLButtonElement>
 ): ToggleButtonResult {

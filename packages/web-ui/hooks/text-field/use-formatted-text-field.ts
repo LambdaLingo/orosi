@@ -1,5 +1,5 @@
 import { type RefObject, useEffect, useRef } from "react";
-import type { AriaTextFieldProps, InputBase, InputDOMProps } from "types";
+import type { AriaTextFieldProps } from "types";
 import { useEffectEvent } from "hooks";
 import { mergeProps } from "utilities";
 import { type TextFieldAria, useTextField } from "./use-text-field";

@@ -17,3 +17,4 @@ export * from "./slider";
 export * from "./switch";
 export * from "./toggle-button";
 export * from "./spin-button";
+export * from "./toolbar";

@@ -1,5 +1,6 @@
 import { type CSSProperties, useMemo, useState } from "react";
-import { useFocusWithin } from "hooks/shared";
+import type { VisuallyHiddenAria, VisuallyHiddenProps } from "types";
+import { useFocusWithin } from "hooks/interactions";
 
 const styles: CSSProperties = {
   border: 0,
@@ -23,10 +24,12 @@ export function useVisuallyHidden(
 ): VisuallyHiddenAria {
   const { style, isFocusable } = props;
 
-  const [isFocused, setFocused] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const { focusWithinProps } = useFocusWithin({
     isDisabled: !isFocusable,
-    onFocusWithinChange: (val) => setFocused(val),
+    onFocusWithinChange: (val) => {
+      setIsFocused(val);
+    },
   });
 
   // If focused, don't hide the element.
@@ -35,11 +38,9 @@ export function useVisuallyHidden(
       return style;
     } else if (style) {
       return { ...styles, ...style };
-    } else {
-      return styles;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFocused]);
+    return styles;
+  }, [isFocused, style]);
 
   return {
     visuallyHiddenProps: {

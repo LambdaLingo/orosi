@@ -15,3 +15,4 @@ export * from "./switch";
 export * from "./toggle-button";
 export * from "./i18n";
 export * from "./spin-button";
+export * from "./toolbar";
