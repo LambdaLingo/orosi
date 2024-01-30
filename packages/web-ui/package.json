@@ -11,7 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "@orosi/eslint-config": "workspace:*",
-    "@orosi/typescript-config": "workspace:*"
+    "@orosi/typescript-config": "workspace:*",
+    "@types/use-sync-external-store": "^0.0.6",
+    "use-sync-external-store": "^1.2.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",

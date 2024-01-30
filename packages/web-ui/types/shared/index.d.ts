@@ -10,3 +10,6 @@ export * from "./orientation";
 export * from "./locale";
 export * from "./press";
 export * from "./interaction";
+export * from "./selection";
+export * from "./key";
+export * from "./collections";
