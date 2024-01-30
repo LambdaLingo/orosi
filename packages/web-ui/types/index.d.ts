@@ -16,3 +16,5 @@ export * from "./toggle-button";
 export * from "./i18n";
 export * from "./spin-button";
 export * from "./toolbar";
+export * from "./meter";
+export * from "./progress-bar";
