@@ -46,14 +46,9 @@ import {
   useCollection,
   useSSRCollectionNode,
   useListState,
+  useObjectRef,
 } from "hooks";
-import {
-  CollectionDocumentContext,
-  CollectionPortal,
-  CollectionProps,
-  ItemRenderProps,
-} from "./Collection";
-import { mergeProps } from "utilities";
+import { mergeProps, filterDOMProps, mergeRefs } from "utilities";
 import {
   DragAndDropContext,
   DragAndDropHooks,
@@ -69,7 +64,12 @@ import {
   Orientation,
   SelectionBehavior,
 } from "react-stately";
-import { filterDOMProps, mergeRefs, useObjectRef } from "@react-aria/utils";
+import {
+  CollectionDocumentContext,
+  CollectionPortal,
+  CollectionProps,
+  ItemRenderProps,
+} from "./Collection";
 import { Header } from "./Header";
 import { Separator, SeparatorContext } from "./Separator";
 import { TextContext } from "./Text";
