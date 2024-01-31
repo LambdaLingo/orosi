@@ -25,3 +25,4 @@ export * from "./live-announcer";
 export * from "./focus-element";
 export * from "./last";
 export * from "./create-focus-manager";
+export * from "./get-child-nodes";

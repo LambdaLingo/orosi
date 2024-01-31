@@ -1,52 +1,20 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ListCollection } from "classes";
 import type {
   Collection,
-  CollectionStateBase,
   FocusStrategy,
   Node,
-  ComboBoxProps,
   MenuTriggerAction,
-  FormValidationState,
+  ComboBoxStateOptions,
+  ComboBoxState,
+  Key,
+  FilterFn,
 } from "types";
 import { useFormValidationState } from "hooks/form";
 import { useOverlayTriggerState } from "hooks/overlays";
-import { getChildNodes } from "@react-stately/collections";
-import { ListCollection, useSingleSelectListState } from "@react-stately/list";
-import { SelectState } from "@react-stately/select";
-import { useControlledState } from "@react-stately/utils";
-
-export interface ComboBoxState<T> extends SelectState<T>, FormValidationState {
-  /** The current value of the combo box input. */
-  inputValue: string;
-  /** Sets the value of the combo box input. */
-  setInputValue(value: string): void;
-  /** Selects the currently focused item and updates the input value. */
-  commit(): void;
-  /** Controls which item will be auto focused when the menu opens. */
-  readonly focusStrategy: FocusStrategy;
-  /** Opens the menu. */
-  open(focusStrategy?: FocusStrategy | null, trigger?: MenuTriggerAction): void;
-  /** Toggles the menu. */
-  toggle(
-    focusStrategy?: FocusStrategy | null,
-    trigger?: MenuTriggerAction
-  ): void;
-  /** Resets the input value to the previously selected item's text if any and closes the menu.  */
-  revert(): void;
-}
-
-type FilterFn = (textValue: string, inputValue: string) => boolean;
-
-export interface ComboBoxStateOptions<T>
-  extends Omit<ComboBoxProps<T>, "children">,
-    CollectionStateBase<T> {
-  /** The filter function used to determine if a option should be included in the combo box list. */
-  defaultFilter?: FilterFn;
-  /** Whether the combo box allows the menu to be open when the collection is empty. */
-  allowsEmptyCollection?: boolean;
-  /** Whether the combo box menu should close on blur. */
-  shouldCloseOnBlur?: boolean;
-}
+import { useControlledState } from "hooks/shared";
+import { getChildNodes } from "utilities";
+import { useSingleSelectListState } from "hooks";
 
 /**
  * Provides state management for a combo box component. Handles building a collection
@@ -56,7 +24,7 @@ export interface ComboBoxStateOptions<T>
 export function useComboBoxState<T extends object>(
   props: ComboBoxStateOptions<T>
 ): ComboBoxState<T> {
-  let {
+  const {
     defaultFilter,
     menuTrigger = "input",
     allowsEmptyCollection = false,
@@ -64,11 +32,11 @@ export function useComboBoxState<T extends object>(
     shouldCloseOnBlur = true,
   } = props;
 
-  let [showAllItems, setShowAllItems] = useState(false);
-  let [isFocused, setFocusedState] = useState(false);
-  let [focusStrategy, setFocusStrategy] = useState<FocusStrategy>(null);
+  const [showAllItems, setShowAllItems] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const [focusStrategy, setFocusStrategy] = useState<FocusStrategy>(null);
 
-  let onSelectionChange = (key) => {
+  const onSelectionChange = (key: Key): void => {
     if (props.onSelectionChange) {
       props.onSelectionChange(key);
     }
@@ -81,7 +49,7 @@ export function useComboBoxState<T extends object>(
     }
   };
 
-  let {
+  const {
     collection,
     selectionManager,
     selectedKey,
@@ -94,15 +62,15 @@ export function useComboBoxState<T extends object>(
     items: props.items ?? props.defaultItems,
   });
 
-  let [inputValue, setInputValue] = useControlledState(
+  const [inputValue, setInputValue] = useControlledState(
     props.inputValue,
     props.defaultInputValue ?? collection.getItem(selectedKey)?.textValue ?? "",
     props.onInputChange
   );
 
   // Preserve original collection so we can show all items on demand
-  let originalCollection = collection;
-  let filteredCollection = useMemo(
+  const originalCollection = collection;
+  const filteredCollection = useMemo(
     () =>
       // No default filter if items are controlled.
       props.items != null || !defaultFilter
@@ -110,11 +78,11 @@ export function useComboBoxState<T extends object>(
         : filterCollection(collection, inputValue, defaultFilter),
     [collection, inputValue, defaultFilter, props.items]
   );
-  let [lastCollection, setLastCollection] = useState(filteredCollection);
+  const [lastCollection, setLastCollection] = useState(filteredCollection);
 
   // Track what action is attempting to open the menu
-  let menuOpenTrigger = useRef("focus" as MenuTriggerAction);
-  let onOpenChange = (open: boolean) => {
+  const menuOpenTrigger = useRef("focus" as MenuTriggerAction);
+  const onOpenChange = (open: boolean) => {
     if (props.onOpenChange) {
       props.onOpenChange(open, open ? menuOpenTrigger.current : undefined);
     }
@@ -125,17 +93,17 @@ export function useComboBoxState<T extends object>(
     }
   };
 
-  let triggerState = useOverlayTriggerState({
+  const triggerState = useOverlayTriggerState({
     ...props,
     onOpenChange,
     isOpen: undefined,
     defaultOpen: undefined,
   });
-  let open = (
+  const open = (
     focusStrategy: FocusStrategy = null,
     trigger?: MenuTriggerAction
-  ) => {
-    let displayAllItems =
+  ): void => {
+    const displayAllItems =
       trigger === "manual" || (trigger === "focus" && menuTrigger === "focus");
     // Prevent open operations from triggering if there is nothing to display
     // Also prevent open operations from triggering if items are uncontrolled but defaultItems is empty, even if displayAllItems is true.
@@ -161,11 +129,11 @@ export function useComboBoxState<T extends object>(
     }
   };
 
-  let toggle = (
+  const toggle = (
     focusStrategy: FocusStrategy = null,
     trigger?: MenuTriggerAction
-  ) => {
-    let displayAllItems =
+  ): void => {
+    const displayAllItems =
       trigger === "manual" || (trigger === "focus" && menuTrigger === "focus");
     // If the menu is closed and there is nothing to display, early return so toggle isn't called to prevent extraneous onOpenChange
     if (
@@ -193,13 +161,13 @@ export function useComboBoxState<T extends object>(
     toggleMenu(focusStrategy);
   };
 
-  let updateLastCollection = useCallback(() => {
+  const updateLastCollection = useCallback(() => {
     setLastCollection(showAllItems ? originalCollection : filteredCollection);
   }, [showAllItems, originalCollection, filteredCollection]);
 
   // If menu is going to close, save the current collection so we can freeze the displayed collection when the
   // user clicks outside the popover to close the menu. Prevents the menu contents from updating as the menu closes.
-  let toggleMenu = useCallback(
+  const toggleMenu = useCallback(
     (focusStrategy: FocusStrategy = null) => {
       if (triggerState.isOpen) {
         updateLastCollection();
@@ -211,24 +179,24 @@ export function useComboBoxState<T extends object>(
     [triggerState, updateLastCollection]
   );
 
-  let closeMenu = useCallback(() => {
+  const closeMenu = useCallback(() => {
     if (triggerState.isOpen) {
       updateLastCollection();
       triggerState.close();
     }
   }, [triggerState, updateLastCollection]);
 
-  let [lastValue, setLastValue] = useState(inputValue);
-  let resetInputValue = () => {
-    let itemText = collection.getItem(selectedKey)?.textValue ?? "";
+  const [lastValue, setLastValue] = useState(inputValue);
+  const resetInputValue = () => {
+    const itemText = collection.getItem(selectedKey)?.textValue ?? "";
     setLastValue(itemText);
     setInputValue(itemText);
   };
 
-  let lastSelectedKey = useRef(
+  const lastSelectedKey = useRef(
     props.selectedKey ?? props.defaultSelectedKey ?? null
   );
-  let lastSelectedKeyText = useRef(
+  const lastSelectedKeyText = useRef(
     collection.getItem(selectedKey)?.textValue ?? ""
   );
   // intentional omit dependency array, want this to happen on every render
@@ -293,7 +261,7 @@ export function useComboBoxState<T extends object>(
     // This is to handle cases where a selectedKey is specified but the items aren't available (async loading) or the selected item's text value updates.
     // Only reset if the user isn't currently within the field so we don't erroneously modify user input.
     // If inputValue is controlled, it is the user's responsibility to update the inputValue when items change.
-    let selectedItemText = collection.getItem(selectedKey)?.textValue ?? "";
+    const selectedItemText = collection.getItem(selectedKey)?.textValue ?? "";
     if (
       !isFocused &&
       selectedKey != null &&
@@ -310,7 +278,7 @@ export function useComboBoxState<T extends object>(
     lastSelectedKeyText.current = selectedItemText;
   });
 
-  let validation = useFormValidationState({
+  const validation = useFormValidationState({
     ...props,
     value: useMemo(
       () => ({ inputValue, selectedKey }),
@@ -319,7 +287,7 @@ export function useComboBoxState<T extends object>(
   });
 
   // Revert input value and close menu
-  let revert = () => {
+  const revert = () => {
     if (allowsCustomValue && selectedKey == null) {
       commitCustomValue();
     } else {
@@ -327,19 +295,19 @@ export function useComboBoxState<T extends object>(
     }
   };
 
-  let commitCustomValue = () => {
+  const commitCustomValue = () => {
     lastSelectedKey.current = null;
     setSelectedKey(null);
     closeMenu();
   };
 
-  let commitSelection = () => {
+  const commitSelection = () => {
     // If multiple things are controlled, call onSelectionChange
     if (props.selectedKey !== undefined && props.inputValue !== undefined) {
       props.onSelectionChange(selectedKey);
 
       // Stop menu from reopening from useEffect
-      let itemText = collection.getItem(selectedKey)?.textValue ?? "";
+      const itemText = collection.getItem(selectedKey)?.textValue ?? "";
       setLastValue(itemText);
       closeMenu();
     } else {
@@ -349,7 +317,7 @@ export function useComboBoxState<T extends object>(
     }
   };
 
-  const commitValue = () => {
+  const commitValue = (): void => {
     if (allowsCustomValue) {
       const itemText = collection.getItem(selectedKey)?.textValue ?? "";
       inputValue === itemText ? commitSelection() : commitCustomValue();
@@ -359,7 +327,7 @@ export function useComboBoxState<T extends object>(
     }
   };
 
-  let commit = () => {
+  const commit = (): void => {
     if (triggerState.isOpen && selectionManager.focusedKey != null) {
       // Reset inputValue and close menu here if the selected key is already the focused key. Otherwise
       // fire onSelectionChange to allow the application to control the closing.
@@ -373,8 +341,8 @@ export function useComboBoxState<T extends object>(
     }
   };
 
-  let valueOnFocus = useRef(inputValue);
-  let setFocused = (isFocused: boolean) => {
+  const valueOnFocus = useRef(inputValue);
+  const setFocused = (isFocused: boolean) => {
     if (isFocused) {
       valueOnFocus.current = inputValue;
       if (menuTrigger === "focus") {
@@ -390,10 +358,10 @@ export function useComboBoxState<T extends object>(
       }
     }
 
-    setFocusedState(isFocused);
+    setIsFocused(isFocused);
   };
 
-  let displayedCollection = useMemo(() => {
+  const displayedCollection = useMemo(() => {
     if (triggerState.isOpen) {
       if (showAllItems) {
         return originalCollection;
@@ -449,10 +417,10 @@ function filterNodes<T>(
   inputValue: string,
   filter: FilterFn
 ): Iterable<Node<T>> {
-  let filteredNode = [];
-  for (let node of nodes) {
+  const filteredNode = [];
+  for (const node of nodes) {
     if (node.type === "section" && node.hasChildNodes) {
-      let filtered = filterNodes(
+      const filtered = filterNodes(
         collection,
         getChildNodes(node, collection),
         inputValue,

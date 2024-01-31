@@ -22,3 +22,4 @@ export * from "./combobox";
 export * from "./list";
 export * from "./overlays";
 export * from "./select";
+export * from "./collections";

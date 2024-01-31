@@ -1,3 +1,5 @@
+import type { Key } from "types/shared";
+
 export type ListOptions<T> = {
   /** Initial items in the list. */
   initialItems?: T[];

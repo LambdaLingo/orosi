@@ -103,3 +103,39 @@ export type ComboBoxStateOptions<T> = {
   shouldCloseOnBlur?: boolean;
 } & Omit<ComboBoxProps<T>, "children"> &
   CollectionStateBase<T>;
+
+export type ComboBoxState<T> = {
+  /** The current value of the combo box input. */
+  inputValue: string;
+  /** Sets the value of the combo box input. */
+  setInputValue: (value: string) => void;
+  /** Selects the currently focused item and updates the input value. */
+  commit: () => void;
+  /** Controls which item will be auto focused when the menu opens. */
+  readonly focusStrategy: FocusStrategy;
+  /** Opens the menu. */
+  open: (
+    focusStrategy?: FocusStrategy | null,
+    trigger?: MenuTriggerAction
+  ) => void;
+  /** Toggles the menu. */
+  toggle: (
+    focusStrategy?: FocusStrategy | null,
+    trigger?: MenuTriggerAction
+  ) => void;
+  /** Resets the input value to the previously selected item's text if any and closes the menu.  */
+  revert: () => void;
+} & SelectState<T> &
+  FormValidationState;
+
+export type FilterFn = (textValue: string, inputValue: string) => boolean;
+
+export type ComboBoxStateOptions<T> = {
+  /** The filter function used to determine if a option should be included in the combo box list. */
+  defaultFilter?: FilterFn;
+  /** Whether the combo box allows the menu to be open when the collection is empty. */
+  allowsEmptyCollection?: boolean;
+  /** Whether the combo box menu should close on blur. */
+  shouldCloseOnBlur?: boolean;
+} & Omit<ComboBoxProps<T>, "children"> &
+  CollectionStateBase<T>;
