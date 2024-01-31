@@ -20,5 +20,5 @@ export * from "./meter";
 export * from "./progress-bar";
 export * from "./combobox";
 export * from "./list";
-export * from "./overlay";
+export * from "./overlays";
 export * from "./select";

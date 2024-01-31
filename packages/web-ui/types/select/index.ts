@@ -1,6 +1,6 @@
 import type { FormValidationState, RACValidation } from "types/form";
 import type { ListState } from "types/list";
-import type { OverlayTriggerState } from "types/overlay";
+import type { OverlayTriggerState } from "types/overlays";
 import type {
   AriaLabelingProps,
   CollectionBase,
