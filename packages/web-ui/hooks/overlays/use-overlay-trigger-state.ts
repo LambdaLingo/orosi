@@ -2,18 +2,18 @@ import { useCallback } from "react";
 import type { OverlayTriggerProps } from "types/overlays";
 import { useControlledState } from "hooks/shared";
 
-export interface OverlayTriggerState {
+type OverlayTriggerState = {
   /** Whether the overlay is currently open. */
   readonly isOpen: boolean;
   /** Sets whether the overlay is open. */
-  setOpen(isOpen: boolean): void;
+  setOpen: (isOpen: boolean) => void;
   /** Opens the overlay. */
-  open(): void;
+  open: () => void;
   /** Closes the overlay. */
-  close(): void;
+  close: () => void;
   /** Toggles the overlay's visibility. */
-  toggle(): void;
-}
+  toggle: () => void;
+};
 
 /**
  * Manages state for an overlay trigger. Tracks whether the overlay is open, and provides
@@ -22,7 +22,7 @@ export interface OverlayTriggerState {
 export function useOverlayTriggerState(
   props: OverlayTriggerProps
 ): OverlayTriggerState {
-  let [isOpen, setOpen] = useControlledState(
+  const [isOpen, setOpen] = useControlledState(
     props.isOpen,
     props.defaultOpen || false,
     props.onOpenChange

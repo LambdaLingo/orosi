@@ -4,7 +4,6 @@ import type {
   ReactElement,
   ReactNode,
 } from "react";
-import type { StyleProps } from "types/shared";
 
 export type Placement =
   | "bottom"
@@ -94,8 +93,7 @@ export type ModalProps = {
   onClose?: () => void;
   type?: "modal" | "fullscreen" | "fullscreenTakeover";
   isDismissable?: boolean;
-} & StyleProps &
-  Omit<OverlayProps, "nodeRef">;
+} & Omit<OverlayProps, "nodeRef">;
 
 export type PopoverProps = {
   children: ReactNode;
@@ -107,8 +105,7 @@ export type PopoverProps = {
   shouldCloseOnBlur?: boolean;
   isNonModal?: boolean;
   isDismissable?: boolean;
-} & StyleProps &
-  Omit<OverlayProps, "nodeRef">;
+} & Omit<OverlayProps, "nodeRef">;
 
 export type TrayProps = {
   children: ReactElement;
@@ -117,8 +114,7 @@ export type TrayProps = {
   shouldCloseOnBlur?: boolean;
   isFixedHeight?: boolean;
   isNonModal?: boolean;
-} & StyleProps &
-  Omit<OverlayProps, "nodeRef">;
+} & Omit<OverlayProps, "nodeRef">;
 
 export type OverlayTriggerProps = {
   /** Whether the overlay is open by default (controlled). */
